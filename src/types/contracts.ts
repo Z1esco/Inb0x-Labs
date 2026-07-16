@@ -450,6 +450,69 @@ export interface UserSettings {
   dataRetentionHours: number;
   preferredTone: ReplyDraft["tone"];
   preferredReplyLength: ReplyDraft["length"];
+  timezone?: string;
+  locale?: string;
+  appearance?: AppearanceMode;
+  defaultLandingPage?: DefaultLandingPage;
+  compactMode?: boolean;
+  showAnalytics?: boolean;
+  showInboxHealth?: boolean;
+  showRecentActivity?: boolean;
+  displayName?: string | null;
+}
+export type AppearanceMode = "light" | "dark" | "system";
+export type DefaultLandingPage = "dashboard" | "inbox" | "tasks";
+export interface SettingsData {
+  profile: {
+    displayName: string | null;
+    avatarUrl: string | null;
+    timezone: string;
+    locale: string;
+  };
+  appearance: AppearanceMode;
+  dashboard: {
+    defaultLandingPage: DefaultLandingPage;
+    compactMode: boolean;
+    showAnalytics: boolean;
+    showInboxHealth: boolean;
+    showRecentActivity: boolean;
+  };
+  ai: {
+    defaultReplyTone: ReplyTone;
+    defaultReplyLength: ReplyLength;
+    dailyAnalysisLimit: number;
+    usage: { analysis: AnalysisUsage; replies: ReplyUsage };
+    demoMode: boolean;
+  };
+  gmail: GmailConnectionStatus;
+}
+export interface UpdateSettingsRequest {
+  displayName?: string | null | undefined;
+  timezone?: string | undefined;
+  locale?: string | undefined;
+  appearance?: AppearanceMode | undefined;
+  defaultLandingPage?: DefaultLandingPage | undefined;
+  compactMode?: boolean | undefined;
+  showAnalytics?: boolean | undefined;
+  showInboxHealth?: boolean | undefined;
+  showRecentActivity?: boolean | undefined;
+  defaultReplyTone?: ReplyTone | undefined;
+  defaultReplyLength?: ReplyLength | undefined;
+}
+export interface AccountData {
+  id: string;
+  email: string | null;
+  createdAt: string | null;
+  demoMode: boolean;
+  exportData: {
+    profile: Record<string, unknown> | null;
+    settings: Record<string, unknown> | null;
+    gmail: Record<string, unknown> | null;
+    threads: Record<string, unknown>[];
+    analyses: Record<string, unknown>[];
+    tasks: Record<string, unknown>[];
+    drafts: Record<string, unknown>[];
+  };
 }
 export interface ApiSuccess<
   T,
