@@ -48,12 +48,31 @@ export interface EmailAnalysis {
   evidence: string[];
   safetyFlags: string[];
 }
+
+export interface EmailParticipant {
+  name: string | null;
+  email: string;
+}
+
+export interface AttachmentMetadata {
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
 export interface EmailMessage {
   id: string;
   from: string;
   to: string[];
+  cc: string[];
+  replyTo: string | null;
   sentAt: string;
+  subject: string;
   body: string;
+  mimeType: string;
+  attachments: AttachmentMetadata[];
+  trimmed: boolean;
+  containsPotentialPromptInjection: boolean;
 }
 export interface EmailThreadListItem {
   id: string;
@@ -64,10 +83,25 @@ export interface EmailThreadListItem {
   latestMessageAt: string;
   messageCount: number;
   hasAttachments: boolean;
+  labels: string[];
   analysis: EmailAnalysis | null;
 }
 export interface EmailThreadDetail extends EmailThreadListItem {
   messages: EmailMessage[];
+  contentHash: string;
+  normalizedCharacterCount: number;
+  trimmed: boolean;
+  containsPotentialPromptInjection: boolean;
+}
+export interface GmailSyncResult {
+  requested: number;
+  fetched: number;
+  created: number;
+  updated: number;
+  unchanged: number;
+  failed: number;
+  nextPageToken: string | null;
+  syncedAt: string;
 }
 export type PriorityEmail = EmailThreadListItem & { analysis: EmailAnalysis };
 export interface Task {
@@ -145,6 +179,8 @@ export type ErrorCode =
   | "GMAIL_NOT_CONNECTED"
   | "GMAIL_AUTH_EXPIRED"
   | "GMAIL_PERMISSION_DENIED"
+  | "GMAIL_RATE_LIMITED"
+  | "GMAIL_SYNC_FAILED"
   | "THREAD_NOT_FOUND"
   | "ANALYSIS_LIMIT_REACHED"
   | "ANALYSIS_FAILED"

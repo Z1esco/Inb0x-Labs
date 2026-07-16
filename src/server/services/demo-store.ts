@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { AppError } from "@/lib/errors";
 import { demoThreads } from "@/mock/emails";
 import { initialDemoTasks } from "@/mock/tasks";
 import type {
@@ -41,6 +42,46 @@ export function listDemoThreads(query?: string): EmailThreadDetail[] {
       !normalized ||
       `${thread.subject} ${thread.snippet}`.toLowerCase().includes(normalized),
   );
+}
+
+export function listDemoThreadsPage(input: {
+  limit: number;
+  pageToken?: string | undefined;
+  query?: string | undefined;
+  category?: string | undefined;
+  priority?: string | undefined;
+  needsReply?: boolean | undefined;
+}): { threads: EmailThreadDetail[]; nextPageToken: string | null } {
+  let offset = 0;
+  if (input.pageToken) {
+    try {
+      const decoded = Buffer.from(input.pageToken, "base64url").toString(
+        "utf8",
+      );
+      if (!/^\d+$/.test(decoded)) throw new Error("invalid cursor");
+      offset = Number(decoded);
+      if (!Number.isSafeInteger(offset) || offset < 0)
+        throw new Error("invalid cursor");
+    } catch {
+      throw new AppError("INVALID_REQUEST", "The page token is invalid.", 400);
+    }
+  }
+  const filtered = listDemoThreads(input.query).filter(
+    (thread) =>
+      (!input.category || thread.analysis?.category === input.category) &&
+      (!input.priority || thread.analysis?.priorityLevel === input.priority) &&
+      (input.needsReply === undefined ||
+        thread.analysis?.needsReply === input.needsReply),
+  );
+  const threads = filtered.slice(offset, offset + input.limit);
+  const nextOffset = offset + threads.length;
+  return {
+    threads,
+    nextPageToken:
+      nextOffset < filtered.length
+        ? Buffer.from(String(nextOffset), "utf8").toString("base64url")
+        : null,
+  };
 }
 export function getDemoThread(id: string): EmailThreadDetail | undefined {
   return demoThreads.find((thread) => thread.id === id);

@@ -18,6 +18,9 @@ attachments are never downloaded, and logs must use an allowlist.
 | Hallucination                         | Evidence, confidence, nullable/empty unknowns, manual review                                       |
 | Sensitive logs                        | No content, tokens, secrets, cookies, prompts, drafts, or provider errors                          |
 | Gmail write access                    | Scope allowlist and absence of write/send code                                                     |
+| Hostile or oversized MIME content     | Pre-conversion byte cap, inert text conversion, bounded output, no remote resource fetching        |
+| Attachment exfiltration               | Metadata only; provider attachment IDs and contents are never public or persisted                  |
+| Stale concurrent synchronization      | User/thread uniqueness plus timestamp and content-hash optimistic update checks                    |
 | Encrypted-token exposure              | Token and OAuth-state tables revoked from browser Data API roles                                   |
 | SQL injection                         | Typed Supabase query builder and validated values                                                  |
 | Sync races / duplicate tasks          | Unique upsert constraints; task IDs and ownership checks                                           |

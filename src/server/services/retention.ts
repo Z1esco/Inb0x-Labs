@@ -9,7 +9,11 @@ export async function cleanExpiredEmailText(
   ).toISOString();
   const { data, error } = await createSupabaseAdminClient()
     .from("email_threads")
-    .update({ normalized_text: null })
+    .update({
+      normalized_text: null,
+      normalized_character_count: 0,
+      messages: [],
+    })
     .eq("user_id", userId)
     .lt("synced_at", cutoff)
     .not("normalized_text", "is", null)
