@@ -9,7 +9,7 @@
   --surface-active: #202c3a;
   --text-primary: #f5f7fa;
   --text-secondary: #a8b3c2;
-  --text-muted: #718094;
+  --text-muted: #8997ab;
   --border-subtle: #202b38;
   --border-strong: #344354;
   --signal-red: #ff4d5e;
@@ -24,9 +24,9 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
-  --font-display: "Sora", "Avenir Next", "Segoe UI", sans-serif;
-  --font-body: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
-  --font-data: "Space Grotesk", "SFMono-Regular", Consolas, monospace;
+  --font-display: var(--font-sora), "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: var(--font-manrope), "Avenir Next", "Segoe UI", sans-serif;
+  --font-data: var(--font-space-grotesk), "SFMono-Regular", Consolas, monospace;
 }
 
 * {
@@ -169,6 +169,12 @@ p {
 
 .skip-link:focus {
   transform: translateY(0);
+}
+
+.sign-out-button {
+  width: 100%;
+  border: 0;
+  text-align: left;
 }
 
 .app-shell {

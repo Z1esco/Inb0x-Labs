@@ -16,7 +16,7 @@ export function PageShell({
   children: ReactNode;
 }) {
   return (
-    <main id="main-content" className="page">
+    <main id="main-content" className="page" tabIndex={-1}>
       <header className="page-header">
         <div className="page-header-copy">
           {eyebrow && <p className="eyebrow">{eyebrow}</p>}
