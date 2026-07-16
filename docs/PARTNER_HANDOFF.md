@@ -27,3 +27,8 @@ selected action index. Never send action text or evidence from the browser. Task
 existing `listTasks(): Promise<Task[]>` convenience for the current task board.
 Use `analyzeThreadWithMetadata()` to retain the analysis ID, then
 `createTaskFromAnalysis()` after the user explicitly selects an action.
+
+Reply contracts expose `ReplyDraft`, `ReplyEvidence`, request/filter/pagination types, and usage
+metadata. Use `createDraft()`, `listDrafts()`, `getDraft()`, and `deleteDraft()`. The UI's primary
+action is **Copy reply**. Render plain text only, show warnings and uncertain points, and never add a
+Send button or imply delivery. Every returned draft has `copyOnly: true` and `sent: false`.

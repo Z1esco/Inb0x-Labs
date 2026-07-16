@@ -19,7 +19,9 @@ fictional user. No route accepts a client-supplied user ID.
 | POST             | `/api/analysis/thread`         | Analyze one thread                                             |
 | POST             | `/api/analysis/inbox`          | Analyze a bounded thread batch                                 |
 | GET              | `/api/analysis/:threadId`      | Return the current owned cached analysis                       |
-| POST             | `/api/replies/draft`           | Create manual-copy reply draft                                 |
+| POST             | `/api/replies/draft`           | Generate or reuse a grounded copy-only reply draft             |
+| GET              | `/api/replies`                 | List owned reply drafts                                        |
+| GET/DELETE       | `/api/replies/:draftId`        | Read or delete an owned reply draft                            |
 | GET/POST         | `/api/tasks`                   | Filter/list or manually create tasks                           |
 | POST             | `/api/tasks/from-analysis`     | Explicitly accept one stored analysis action                   |
 | GET/PATCH/DELETE | `/api/tasks/:taskId`           | Read, update, complete, reopen, or delete an owned task        |
@@ -45,7 +47,9 @@ Stable errors include `UNAUTHENTICATED`, `FORBIDDEN`, `INVALID_REQUEST`,
 `GMAIL_NOT_CONNECTED`, `GMAIL_AUTH_EXPIRED`, `GMAIL_PERMISSION_DENIED`,
 `GMAIL_RATE_LIMITED`, `GMAIL_SYNC_FAILED`,
 `THREAD_NOT_FOUND`, `ANALYSIS_LIMIT_REACHED`, `ANALYSIS_FAILED`,
-`MODEL_OUTPUT_INVALID`, `RATE_LIMITED`, `DEMO_MODE_ONLY`, and `INTERNAL_ERROR`.
+`MODEL_OUTPUT_INVALID`, `THREAD_CONTENT_UNAVAILABLE`, `REPLY_DRAFT_NOT_FOUND`,
+`REPLY_LIMIT_REACHED`, `OPENAI_NOT_CONFIGURED`, `REPLY_GENERATION_FAILED`, `MODEL_TIMEOUT`,
+`GROUNDING_FAILED`, `RATE_LIMITED`, `DEMO_MODE_ONLY`, and `INTERNAL_ERROR`.
 
 `GET /api/gmail/status` returns only `connected`, `gmailAddress`, `grantedScopes`,
 `connectedAt`, `lastSyncedAt`, `requiresReauthorization`, and `readOnly`. Provider tokens,
@@ -102,3 +106,15 @@ returns `{ "task", "created", "duplicate" }`. It rejects client-supplied action 
 `GET`, `PATCH`, and `DELETE /api/tasks/:taskId` hide missing and unauthorized tasks behind
 `TASK_NOT_FOUND`. PATCH accepts only title, description, priority, due date, and status. DELETE is
 idempotent and never deletes the source email or analysis.
+
+## Reply draft APIs
+
+`POST /api/replies/draft` accepts `{ "threadId", "tone", "length", "instructions?", "force?" }`.
+The stored owned thread is the only email source. The response contains a plain-text draft with
+grounded evidence, warnings, `copyOnly: true`, and `sent: false`; metadata contains cache and daily
+usage state. It never accepts a user ID, recipients, raw email, analysis output, tokens, or evidence.
+
+`GET /api/replies` accepts `threadId`, `tone`, `length`, `limit`, `cursor`, and `sort`. Sort values
+are `created_desc`, `created_asc`, and `updated_desc`; the maximum page size is 100.
+`GET /api/replies/:draftId` and `DELETE /api/replies/:draftId` use authenticated ownership and hide
+missing or cross-user IDs behind `REPLY_DRAFT_NOT_FOUND`. Deletion never removes source data.

@@ -8,6 +8,7 @@ do not create parallel architectures or move presentation files for backend work
 | `src/app/api`                                                              | Thin HTTP authentication, validation, service calls, response mapping         | Backend lead                        |
 | `src/server`                                                               | Server-only business logic, repositories, provider clients, security controls | Backend lead                        |
 | `src/server/tasks`                                                         | Task service, repository, mapper, deduplication, and demo repository          | Backend lead                        |
+| `src/server/replies`                                                       | Reply service, repository, mapper, grounding, and deterministic demo storage  | Backend lead                        |
 | `src/schemas`                                                              | Strict Zod request and model-output schemas                                   | Backend lead                        |
 | `src/types`                                                                | Shared public contracts and database type surface                             | Shared; backend coordinates changes |
 | `src/lib`                                                                  | Shared API, validation, encryption, hashing, and Supabase utilities           | Backend lead                        |

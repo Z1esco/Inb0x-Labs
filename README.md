@@ -50,7 +50,7 @@ reading every message.
 | ☑️ **Task management**      | Manages manual or email-linked tasks with evidence, due dates, and priorities.           |
 | 📅 **Deadline detection**   | Surfaces supported dates, deadlines, and meeting details.                                |
 | 🏷️ **Email classification** | Organizes messages into useful categories such as work, finance, meetings, and security. |
-| ✍️ **Reply studio**         | Generates optional reply drafts that users can review and copy manually.                 |
+| ✍️ **Reply studio**         | Generates grounded plain-text drafts with tone and length controls for manual copying.   |
 | 📊 **Inbox insights**       | Highlights patterns and productivity signals across the inbox.                           |
 | 🎭 **Demo mode**            | Provides a complete fictional inbox experience without Gmail or AI credentials.          |
 
@@ -68,6 +68,7 @@ Inb0x will never:
 - follow instructions embedded inside untrusted email content.
 
 Reply suggestions remain drafts inside Inb0x and must be copied manually by the user.
+They expose `copyOnly: true` and `sent: false`; Inb0x has no send route or Gmail draft creation.
 See [SECURITY.md](SECURITY.md) for the vulnerability disclosure policy and security model.
 
 ## 🏗️ Architecture
@@ -150,14 +151,14 @@ Never commit `.env.local`, provider secrets, encryption keys, or service-role ke
 
 The complete, documented list will live in `.env.example`. Key configuration groups are:
 
-| Group        | Variables                                                                                |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| Application  | `NEXT_PUBLIC_APP_URL`, `DEMO_MODE`                                                       |
-| Supabase     | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
-| Google OAuth | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, `OAUTH_STATE_SECRET`  |
-| Encryption   | `TOKEN_ENCRYPTION_KEY`                                                                   |
-| OpenAI       | `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_REASONING_EFFORT`                              |
-| Usage limits | `ANALYSIS_DAILY_LIMIT`, `GMAIL_MAX_THREADS`, `THREAD_MAX_CHARACTERS`                     |
+| Group        | Variables                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| Application  | `NEXT_PUBLIC_APP_URL`, `DEMO_MODE`                                                        |
+| Supabase     | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`  |
+| Google OAuth | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, `OAUTH_STATE_SECRET`   |
+| Encryption   | `TOKEN_ENCRYPTION_KEY`                                                                    |
+| OpenAI       | `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_REASONING_EFFORT`                               |
+| Usage limits | `ANALYSIS_DAILY_LIMIT`, `REPLY_DAILY_LIMIT`, `GMAIL_MAX_THREADS`, `THREAD_MAX_CHARACTERS` |
 
 ## 🗄️ Database and external services
 
