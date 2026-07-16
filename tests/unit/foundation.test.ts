@@ -117,9 +117,13 @@ describe("strict structured outputs", () => {
       replyDraftOutputSchema.parse({
         subject: "Re: Hello",
         body: "Thanks",
+        tone: "balanced",
+        length: "short",
         confidence: 0.8,
+        usedFacts: [],
         uncertainPoints: [],
         warnings: [],
+        evidence: [],
       }).body,
     ).toBe("Thanks");
   });

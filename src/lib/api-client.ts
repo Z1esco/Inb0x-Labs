@@ -9,6 +9,8 @@ import type {
   EmailThreadDetail,
   EmailThreadListItem,
   ReplyDraft,
+  CreateReplyDraftRequest,
+  ReplyDraftListResponse,
   Task,
   CreateTaskRequest,
   TaskListResponse,
@@ -82,18 +84,22 @@ export const apiClient = {
     );
     return { analysis: result.data, ...result.meta };
   },
-  createDraft: (
-    input: {
-      threadId: string;
-      tone: ReplyDraft["tone"];
-      length: ReplyDraft["length"];
-      instructions?: string;
-    },
-    signal?: AbortSignal,
-  ) =>
+  createDraft: (input: CreateReplyDraftRequest, signal?: AbortSignal) =>
     request<ReplyDraft>(
       "/api/replies/draft",
       { method: "POST", body: JSON.stringify(input) },
+      signal,
+    ),
+  listDrafts: (signal?: AbortSignal) =>
+    request<ReplyDraftListResponse>("/api/replies", {}, signal).then(
+      (result) => result.drafts,
+    ),
+  getDraft: (id: string, signal?: AbortSignal) =>
+    request<ReplyDraft>(`/api/replies/${encodeURIComponent(id)}`, {}, signal),
+  deleteDraft: (id: string, signal?: AbortSignal) =>
+    request<{ deleted: boolean }>(
+      `/api/replies/${encodeURIComponent(id)}`,
+      { method: "DELETE" },
       signal,
     ),
   listTasks: (signal?: AbortSignal) =>

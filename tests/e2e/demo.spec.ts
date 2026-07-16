@@ -18,6 +18,25 @@ test("judge can complete the critical demo flow", async ({ page }) => {
   await expect(
     page.getByText("Re: Approval needed: Aurora proposal"),
   ).toBeVisible();
+  const draftListResponse = await page.request.get("/api/replies");
+  expect(draftListResponse.ok()).toBe(true);
+  const draftList = await draftListResponse.json();
+  expect(draftList.data.drafts).toHaveLength(1);
+  expect(draftList.data.drafts[0]).toMatchObject({
+    copyOnly: true,
+    sent: false,
+  });
+  const draftId = String(draftList.data.drafts[0].id);
+  const draftDetailResponse = await page.request.get(
+    `/api/replies/${encodeURIComponent(draftId)}`,
+  );
+  expect(draftDetailResponse.ok()).toBe(true);
+  expect((await draftDetailResponse.json()).data.id).toBe(draftId);
+  const deleteDraftResponse = await page.request.delete(
+    `/api/replies/${encodeURIComponent(draftId)}`,
+  );
+  expect(deleteDraftResponse.ok()).toBe(true);
+  expect((await deleteDraftResponse.json()).data.deleted).toBe(true);
   await page.getByRole("link", { name: "Tasks", exact: true }).click();
   await page.getByLabel("Task title").fill("Prepare judging notes");
   await page.getByRole("button", { name: "Create task" }).click();

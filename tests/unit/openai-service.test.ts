@@ -35,7 +35,7 @@ vi.mock("@/lib/env", () => ({
   }),
 }));
 
-import { analyzeWithOpenAI } from "@/server/ai/openai-service";
+import { analyzeWithOpenAI, draftWithOpenAI } from "@/server/ai/openai-service";
 
 const output = {
   summary: "A short grounded summary.",
@@ -140,5 +140,60 @@ describe("OpenAI Responses analysis client", () => {
       status: 504,
       message: "The analysis request timed out. Please try again.",
     });
+  });
+});
+
+describe("OpenAI Responses reply client", () => {
+  const draft = {
+    subject: "Re: Approval",
+    body: "Thank you. I approve the proposal.",
+    tone: "professional",
+    length: "short",
+    confidence: 0.9,
+    usedFacts: ["approve the proposal"],
+    uncertainPoints: [],
+    warnings: [],
+    evidence: [],
+  };
+
+  it("uses copy-only structured output settings without provider storage", async () => {
+    mocks.parse.mockResolvedValue({
+      id: "resp_reply",
+      output_parsed: draft,
+      usage: { input_tokens: 80, output_tokens: 30 },
+    });
+    const result = await draftWithOpenAI(
+      "<thread_data>{}</thread_data>",
+      "safe-user-hash",
+    );
+    const request = mocks.parse.mock.calls[0]?.[0];
+    expect(request).toMatchObject({
+      model: "account-model",
+      store: false,
+      parallel_tool_calls: false,
+      safety_identifier: "safe-user-hash",
+      metadata: { prompt_version: "draft-reply-v2", schema_version: "1" },
+    });
+    expect(request.instructions).toMatch(/never claim the reply was sent/i);
+    expect(request.text.format).toMatchObject({
+      type: "json_schema",
+      strict: true,
+    });
+    expect(result).toMatchObject({
+      output: draft,
+      responseId: "resp_reply",
+      model: "account-model",
+      inputTokens: 80,
+      outputTokens: 30,
+    });
+  });
+
+  it("maps reply timeouts to a stable reply-specific error", async () => {
+    mocks.parse.mockRejectedValue(
+      new mocks.APIConnectionTimeoutError("private"),
+    );
+    await expect(
+      draftWithOpenAI("<thread_data>{}</thread_data>", "safe-user-hash"),
+    ).rejects.toMatchObject({ code: "MODEL_TIMEOUT", status: 504 });
   });
 });

@@ -234,17 +234,66 @@ export interface CreateTaskResult {
   created: boolean;
   duplicate: boolean;
 }
+export type ReplyTone = "direct" | "balanced" | "warm" | "professional";
+export type ReplyLength = "short" | "medium" | "detailed";
+export interface ReplyEvidence {
+  claim: string;
+  sourceMessageId: string;
+  excerpt: string;
+}
 export interface ReplyDraft {
   id: string;
   threadId: string;
-  tone: "direct" | "balanced" | "warm" | "professional";
-  length: "short" | "medium" | "detailed";
+  analysisId: string | null;
+  tone: ReplyTone;
+  length: ReplyLength;
   subject: string;
   body: string;
   confidence: number;
+  usedFacts: string[];
   uncertainPoints: string[];
   warnings: string[];
+  evidence: ReplyEvidence[];
+  createdAt: string;
+  updatedAt: string;
+  copyOnly: true;
+  sent: false;
   isDraftOnly: true;
+}
+export interface CreateReplyDraftRequest {
+  threadId: string;
+  tone: ReplyTone;
+  length: ReplyLength;
+  instructions?: string | undefined;
+  force?: boolean | undefined;
+}
+export type ReplySort = "created_desc" | "created_asc" | "updated_desc";
+export interface ReplyDraftFilters {
+  threadId?: string | undefined;
+  tone?: ReplyTone | undefined;
+  length?: ReplyLength | undefined;
+  limit: number;
+  cursor?: string | undefined;
+  sort: ReplySort;
+}
+export interface ReplyDraftListResponse {
+  drafts: ReplyDraft[];
+}
+export interface ReplyPagination {
+  nextCursor: string | null;
+  limit: number;
+  total: number;
+}
+export interface ReplyUsage {
+  used: number;
+  limit: number;
+  remaining: number;
+}
+export interface ReplyGenerationMeta extends Record<string, unknown> {
+  cached: boolean;
+  usage: ReplyUsage;
+  demo?: boolean | undefined;
+  copyOnly: true;
 }
 export interface InboxInsight {
   label: string;
@@ -306,6 +355,13 @@ export type ErrorCode =
   | "ANALYSIS_LIMIT_REACHED"
   | "ANALYSIS_FAILED"
   | "MODEL_OUTPUT_INVALID"
+  | "THREAD_CONTENT_UNAVAILABLE"
+  | "REPLY_DRAFT_NOT_FOUND"
+  | "REPLY_LIMIT_REACHED"
+  | "OPENAI_NOT_CONFIGURED"
+  | "REPLY_GENERATION_FAILED"
+  | "MODEL_TIMEOUT"
+  | "GROUNDING_FAILED"
   | "RATE_LIMITED"
   | "DEMO_MODE_ONLY"
   | "INTERNAL_ERROR";
