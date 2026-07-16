@@ -36,3 +36,11 @@ Send button or imply delivery. Every returned draft has `copyOnly: true` and `se
 Use `apiClient.getDashboard({ timezone, signal })` for bounded overview, focus, priority, task,
 copy-only draft, usage, analytics, and activity data. Do not trigger sync, analysis, or reply
 generation during render. Present health as transparent workload triage, not a user judgment.
+
+Settings contracts are `SettingsData` and `UpdateSettingsRequest`. Use `apiClient.getSettings()` and
+`apiClient.updateSettings(input)`; do not send a user ID, credential, usage counter, or Gmail state.
+The appearance and dashboard fields are preferences only—the current backend does not alter visual
+components. Use `apiClient.getAccount()` for a user-initiated JSON export and
+`apiClient.deleteAccount("DELETE MY ACCOUNT")` only behind a destructive confirmation flow. Gmail
+disconnect and demo reset remain explicit buttons; loading the settings screen must never trigger
+sync, analysis, draft generation, or provider calls.

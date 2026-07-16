@@ -13,6 +13,7 @@ architecture, security, Git workflow, verification, and reporting requirements.
 | `src/server/tasks`                                                         | Task service, repository, mapper, deduplication, and demo repository          | Backend lead                        |
 | `src/server/replies`                                                       | Reply service, repository, mapper, grounding, and deterministic demo storage  | Backend lead                        |
 | `src/server/dashboard`                                                     | Read-only aggregation, health, analytics, and bounded persistence reads       | Backend lead                        |
+| `src/server/settings`                                                      | Settings/account service and user-scoped repository operations                | Backend lead                        |
 | `src/schemas`                                                              | Strict Zod request and model-output schemas                                   | Backend lead                        |
 | `src/types`                                                                | Shared public contracts and database type surface                             | Shared; backend coordinates changes |
 | `src/lib`                                                                  | Shared API, validation, encryption, hashing, and Supabase utilities           | Backend lead                        |
