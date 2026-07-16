@@ -84,4 +84,57 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
     .click();
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByRole("status")).toContainText("Demo restored");
+  await page.getByRole("button", { name: "Exit demo" }).click();
+  await expect(
+    page.getByRole("heading", { name: /Noise becomes signal/i }),
+  ).toBeVisible();
+});
+
+test("dashboard shell remains usable at release viewports", async ({
+  page,
+}) => {
+  const viewports = [
+    { width: 360, height: 800 },
+    { width: 390, height: 844 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+    { width: 1280, height: 800 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ];
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/dashboard");
+    await expect(
+      page.getByRole("heading", { name: "Inbox focus" }),
+    ).toBeVisible();
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(
+      overflow,
+      `${viewport.width}x${viewport.height} overflow`,
+    ).toBeLessThanOrEqual(0);
+  }
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/dashboard");
+  await expect(
+    page.getByRole("navigation", { name: "Mobile navigation" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  await expect(
+    page.getByRole("complementary", { name: "Primary navigation" }),
+  ).toBeVisible();
+
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/dashboard");
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("link", { name: "Skip to content" }),
+  ).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#main-content")).toBeFocused();
 });
