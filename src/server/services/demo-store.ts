@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { AppError } from "@/lib/errors";
 import { demoThreads } from "@/mock/emails";
 import {
@@ -8,6 +7,10 @@ import {
   resetDemoTasks,
   updateDemoTaskRecord,
 } from "@/server/tasks/demo-task-repository";
+import {
+  createDemoReply,
+  resetDemoReplies,
+} from "@/server/replies/demo-reply-repository";
 import type {
   DashboardSummary,
   EmailThreadDetail,
@@ -35,6 +38,7 @@ const state: DemoState = {
 
 export function resetDemo(): void {
   resetDemoTasks();
+  resetDemoReplies();
   state.settings = { ...defaultSettings };
   state.analysisCount = 0;
 }
@@ -126,19 +130,14 @@ export function createDemoDraft(
   length: ReplyDraft["length"],
 ): ReplyDraft {
   const thread = getDemoThread(threadId);
-  const subject = thread?.subject ?? "Your message";
-  return {
-    id: randomUUID(),
-    threadId,
-    tone,
-    length,
-    subject: `Re: ${subject}`,
-    body: `Hi,\n\nThank you for the update. I have reviewed the details and will follow up on the requested next step.\n\nBest,`,
-    confidence: 0.86,
-    uncertainPoints: [],
-    warnings: [],
-    isDraftOnly: true,
-  };
+  if (!thread)
+    throw new AppError(
+      "THREAD_NOT_FOUND",
+      "The requested email thread was not found.",
+      404,
+    );
+  return createDemoReply(thread, { threadId, tone, length, force: false })
+    .draft;
 }
 export function getDashboardSummary(): DashboardSummary {
   const tasks = listAllDemoTasks();

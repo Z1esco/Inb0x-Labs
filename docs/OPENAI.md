@@ -49,3 +49,11 @@ use stable safe codes such as `MODEL_OUTPUT_INVALID`, `ANALYSIS_LIMIT_REACHED`, 
 
 Prompt and schema versions live in `src/prompts/versions.ts`. Increment the relevant version whenever
 behavior or the public schema changes materially so stale cached output cannot be reused.
+
+## Reply generation
+
+Reply generation reuses the Responses API and strict Zod parsing but has a separate prompt and
+schema version. Stored normalized thread content is authoritative; current owned analysis is optional.
+The provider request uses `store=false`, no tools, and no background mode. Post-validation removes
+ungrounded evidence and used facts before persistence. Tone, length, and normalized-instruction hash
+participate in the cache identity, and `REPLY_DAILY_LIMIT` controls real calls. See `docs/REPLIES.md`.

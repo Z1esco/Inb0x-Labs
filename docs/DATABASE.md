@@ -27,6 +27,14 @@ read-only table access through RLS; mutations use the server-only service role b
 fields must never be writable through the Data API. Every privileged mutation still filters or assigns
 the authenticated user explicitly. User/status, due-date, source, and priority indexes support filters.
 
+`reply_drafts` stores schema-validated plain-text drafts, short grounded evidence, content and
+instruction hashes, prompt/schema/model identity, and token counts. Its unique cache constraint
+covers user, thread, content, prompt, schema, model, tone, length, and instructions hash. A trigger
+rejects cross-user thread or analysis links. Authenticated clients may select only their own rows
+through RLS; insert/update/delete grants are revoked and server mutations remain explicitly user
+scoped. `reserve_reply_usage` atomically limits real model calls per user and UTC day and is executable
+only by `service_role`.
+
 All user-owned tables enable Row Level Security. SELECT, INSERT, UPDATE, and DELETE policies
 combine `TO authenticated` with `(select auth.uid()) = user_id` (or profile `id`). UPDATE uses
 both `USING` and `WITH CHECK`. Explicit Data API grants are present because table exposure and

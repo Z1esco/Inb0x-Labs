@@ -39,6 +39,12 @@ JSON data inside a delimiter in the user input, separate from the system trust b
 identity includes thread, content hash, prompt version, schema version, and configured model. Reply
 generation remains separate and returns only a local draft; no Gmail write or send client exists.
 
+Reply routes delegate to `src/server/replies`: a repository loads only owned stored content, the
+service applies cache/quota rules, the Responses API returns strict structured output, and a
+post-validator grounds evidence and used facts before persistence. Cache identity includes content,
+prompt/schema versions, model, tone, length, and instructions hash. Public drafts are always
+`copyOnly: true` and `sent: false`.
+
 ## Demo mode
 
 `DEMO_MODE=true` replaces credentials and providers with deterministic fictional threads,

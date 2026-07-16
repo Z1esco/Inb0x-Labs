@@ -137,6 +137,10 @@ not send, delete, archive, mark as read, relabel, or otherwise modify email.
 - Structured model output is validated before it is stored or returned.
 - AI summaries and drafts are assistive suggestions, not guaranteed facts.
 - Reply drafts are never sent automatically and require manual user action outside Inb0x.
+- Reply drafts are grounded against stored owned threads, returned as plain text with
+  `copyOnly: true` and `sent: false`, and cannot create Gmail drafts or send messages.
+- Rotate any Supabase privileged key exposed outside approved secret stores before live database or
+  deployment work; never reuse or publish the exposed value.
 
 ### Task integrity
 

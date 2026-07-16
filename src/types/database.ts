@@ -74,6 +74,34 @@ export interface Database {
           updated_at: string;
         };
       };
+      reply_drafts: {
+        Row: {
+          id: string;
+          user_id: string;
+          email_thread_id: string;
+          email_analysis_id: string | null;
+          thread_content_hash: string;
+          prompt_version: string;
+          schema_version: string;
+          model: string;
+          response_id: string | null;
+          tone: string;
+          length: string;
+          instructions: string | null;
+          instructions_hash: string;
+          subject: string;
+          body: string;
+          confidence: number;
+          used_facts: Json;
+          uncertain_points: Json;
+          warnings: Json;
+          evidence: Json;
+          input_tokens: number | null;
+          output_tokens: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+      };
     };
   };
 }

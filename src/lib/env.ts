@@ -60,6 +60,7 @@ const environmentSchema = z
     DEMO_MODE: booleanWithDefault,
     ANALYSIS_DAILY_LIMIT: intWithDefault(20, 1, 100),
     ANALYSIS_BATCH_LIMIT: intWithDefault(10, 1, 20),
+    REPLY_DAILY_LIMIT: intWithDefault(20, 1, 100),
     GMAIL_LOOKBACK_DAYS: intWithDefault(30, 1, 365),
     GMAIL_MAX_THREADS: intWithDefault(50, 1, 100),
     THREAD_MAX_CHARACTERS: intWithDefault(12_000, 1_000, 50_000),
