@@ -32,3 +32,7 @@ Reply contracts expose `ReplyDraft`, `ReplyEvidence`, request/filter/pagination 
 metadata. Use `createDraft()`, `listDrafts()`, `getDraft()`, and `deleteDraft()`. The UI's primary
 action is **Copy reply**. Render plain text only, show warnings and uncertain points, and never add a
 Send button or imply delivery. Every returned draft has `copyOnly: true` and `sent: false`.
+
+Use `apiClient.getDashboard({ timezone, signal })` for bounded overview, focus, priority, task,
+copy-only draft, usage, analytics, and activity data. Do not trigger sync, analysis, or reply
+generation during render. Present health as transparent workload triage, not a user judgment.

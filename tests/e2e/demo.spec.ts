@@ -6,6 +6,24 @@ test("judge can complete the critical demo flow", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Today’s inbox focus" }),
   ).toBeVisible();
+  const dashboardResponse = await page.request.get(
+    "/api/dashboard?timezone=UTC",
+  );
+  expect(dashboardResponse.ok()).toBe(true);
+  const dashboard = (await dashboardResponse.json()).data;
+  expect(dashboard).toMatchObject({
+    demoMode: true,
+    gmail: { connected: true, readOnly: true },
+    overview: { threads: 12 },
+    inboxHealth: { label: "attention" },
+  });
+  expect(dashboard.today.items[0].type).toBe("task");
+  expect(dashboard.priorityThreads[0].threadId).toBe("proposal-approval");
+  expect(dashboard.analytics.weeklyThreads).toHaveLength(7);
+  expect(dashboard.replies.recentDrafts[0]).toMatchObject({
+    copyOnly: true,
+    sent: false,
+  });
   await page.getByRole("link", { name: "Inbox", exact: true }).click();
   await page
     .getByRole("link", { name: "Approval needed: Aurora proposal" })

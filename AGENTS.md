@@ -1,5 +1,6 @@
 # Inb0x repository guidance
 
+- Read and follow `PROJECT_RULES.md` first; it is the permanent project source of truth.
 - Read `docs/IMPLEMENTATION_PLAN.md`, `docs/ARCHITECTURE.md`, `docs/SECURITY.md`, and `docs/OWNERSHIP.md` first.
 - Keep TypeScript strict; do not use `any` to bypass type safety.
 - Use Server Components by default and create per-request server clients.

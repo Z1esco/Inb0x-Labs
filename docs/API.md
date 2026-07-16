@@ -9,6 +9,7 @@ fictional user. No route accepts a client-supplied user ID.
 | Method           | Route                          | Purpose                                                        |
 | ---------------- | ------------------------------ | -------------------------------------------------------------- |
 | GET              | `/api/health`                  | Safe configuration health                                      |
+| GET              | `/api/dashboard`               | Read-only persisted dashboard aggregation                      |
 | GET              | `/api/gmail/connect`           | Start read-only Gmail OAuth                                    |
 | GET              | `/api/gmail/callback`          | Validate OAuth callback                                        |
 | GET              | `/api/gmail/status`            | Connection status without tokens                               |
@@ -118,3 +119,9 @@ usage state. It never accepts a user ID, recipients, raw email, analysis output,
 are `created_desc`, `created_asc`, and `updated_desc`; the maximum page size is 100.
 `GET /api/replies/:draftId` and `DELETE /api/replies/:draftId` use authenticated ownership and hide
 missing or cross-user IDs behind `REPLY_DRAFT_NOT_FOUND`. Deletion never removes source data.
+
+## Dashboard API
+
+`GET /api/dashboard?timezone=Asia%2FKuala_Lumpur` returns user-owned persisted overview, focus,
+priority metadata, tasks, copy-only drafts, usage, seven-day trends, and safe activity. The timezone
+must be a valid IANA name. It never calls Gmail/OpenAI or performs mutations. See `docs/DASHBOARD.md`.

@@ -35,6 +35,10 @@ through RLS; insert/update/delete grants are revoked and server mutations remain
 scoped. `reserve_reply_usage` atomically limits real model calls per user and UTC day and is executable
 only by `service_role`.
 
+The dashboard adds no database object. It reads bounded safe projections from existing RLS-protected
+tables, scopes every privileged query by authenticated `user_id`, excludes bodies, and treats only
+analyses whose content hash matches the current thread as current.
+
 All user-owned tables enable Row Level Security. SELECT, INSERT, UPDATE, and DELETE policies
 combine `TO authenticated` with `(select auth.uid()) = user_id` (or profile `id`). UPDATE uses
 both `USING` and `WITH CHECK`. Explicit Data API grants are present because table exposure and
