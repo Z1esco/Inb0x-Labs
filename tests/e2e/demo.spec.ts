@@ -4,7 +4,7 @@ test("judge can complete the critical demo flow", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Open demo" }).click();
   await expect(
-    page.getByRole("heading", { name: "Today’s inbox focus" }),
+    page.getByRole("heading", { name: "Inbox focus" }),
   ).toBeVisible();
   const dashboardResponse = await page.request.get(
     "/api/dashboard?timezone=UTC",
@@ -25,14 +25,10 @@ test("judge can complete the critical demo flow", async ({ page }) => {
     sent: false,
   });
   await page.getByRole("link", { name: "Inbox", exact: true }).click();
-  await page
-    .getByRole("link", { name: "Approval needed: Aurora proposal" })
-    .click();
+  await page.locator('a[href="/inbox/proposal-approval"]').first().click();
   await expect(page.getByRole("heading", { name: "Analysis" })).toBeVisible();
-  await page.getByRole("button", { name: "Generate demo draft" }).click();
-  await expect(
-    page.getByText("Draft only—Inb0x cannot send email."),
-  ).toBeVisible();
+  await page.getByRole("button", { name: "Generate draft" }).click();
+  await expect(page.getByText("Copy only")).toBeVisible();
   await expect(
     page.getByText("Re: Approval needed: Aurora proposal"),
   ).toBeVisible();
@@ -61,7 +57,7 @@ test("judge can complete the critical demo flow", async ({ page }) => {
   await expect(page.getByText("Prepare judging notes")).toBeVisible();
   await page.getByRole("link", { name: "Insights" }).click();
   await expect(page.getByRole("heading", { name: "Insights" })).toBeVisible();
-  await page.getByRole("link", { name: "Settings" }).click();
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
   await page.getByRole("button", { name: "Reset demo" }).click();
-  await expect(page.getByRole("status")).toHaveText("Demo data reset.");
+  await expect(page.getByRole("status")).toContainText("Demo restored");
 });
