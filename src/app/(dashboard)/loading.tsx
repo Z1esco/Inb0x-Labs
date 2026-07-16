@@ -1,9 +1,11 @@
 export default function Loading() {
   return (
-    <main>
-      <div className="shell card">
-        <p>Loading your workspace…</p>
-      </div>
+    <main id="main-content" className="page">
+      <div
+        className="skeleton"
+        style={{ minHeight: 360 }}
+        aria-label="Loading workspace"
+      />
     </main>
   );
 }

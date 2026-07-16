@@ -1,14 +1,13 @@
 import { TaskBoard } from "@/components/task-board";
+import { PageShell } from "@/components/page-primitives";
 export default function TasksPage() {
   return (
-    <main>
-      <div className="shell grid">
-        <div>
-          <h1>Tasks</h1>
-          <p className="muted">Email actions and tasks you add manually.</p>
-        </div>
-        <TaskBoard />
-      </div>
-    </main>
+    <PageShell
+      eyebrow="Signal room / tasks"
+      title="Tasks"
+      description="Work you explicitly chose to own, with the source context kept close."
+    >
+      <TaskBoard />
+    </PageShell>
   );
 }
