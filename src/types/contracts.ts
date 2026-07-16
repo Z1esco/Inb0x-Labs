@@ -309,6 +309,130 @@ export interface DashboardSummary {
   priorityEmails: PriorityEmail[];
   insights: InboxInsight[];
 }
+export type InboxHealthLabel =
+  "excellent" | "good" | "attention" | "overloaded" | "insufficient_data";
+export interface DashboardHealthFactor {
+  key: string;
+  label: string;
+  value: number;
+  impact: "positive" | "neutral" | "negative";
+}
+export interface DashboardFocusItem {
+  id: string;
+  type: "task" | "deadline" | "meeting" | "thread" | "draft";
+  title: string;
+  at: string | null;
+  urgency: number;
+  threadId: string | null;
+  taskId: string | null;
+  draftId: string | null;
+}
+export interface DashboardPriorityThread {
+  threadId: string;
+  subject: string;
+  sender: string | null;
+  snippet: string;
+  priority: PriorityLevel;
+  score: number;
+  needsReply: boolean;
+  latestMessageAt: string;
+  nearestDeadline: string | null;
+}
+export interface DashboardTaskItem {
+  id: string;
+  title: string;
+  priority: TaskPriority;
+  dueAt: string | null;
+  completedAt: string | null;
+}
+export interface DashboardRecentDraft {
+  id: string;
+  threadId: string;
+  subject: string;
+  tone: ReplyTone;
+  length: ReplyLength;
+  createdAt: string;
+  warningCount: number;
+  confidence: number;
+  copyOnly: true;
+  sent: false;
+}
+export interface DashboardDistributionItem {
+  key: string;
+  count: number;
+  percentage: number;
+}
+export interface DashboardTrendPoint {
+  date: string;
+  count: number;
+}
+export interface DashboardActivityItem {
+  id: string;
+  type:
+    | "gmail_sync"
+    | "analysis"
+    | "task_created"
+    | "task_completed"
+    | "reply_draft";
+  title: string;
+  at: string;
+}
+export interface DashboardData {
+  generatedAt: string;
+  timezone: string;
+  demoMode: boolean;
+  gmail: {
+    connected: boolean;
+    gmailAddress: string | null;
+    lastSyncedAt: string | null;
+    requiresReauthorization: boolean;
+    readOnly: true;
+  };
+  overview: {
+    threads: number;
+    analyzedThreads: number;
+    criticalThreads: number;
+    highPriorityThreads: number;
+    needsReply: number;
+    openTasks: number;
+    completedTasks: number;
+    overdueTasks: number;
+    drafts: number;
+    deadlines: number;
+    meetings: number;
+  };
+  inboxHealth: {
+    score: number;
+    label: InboxHealthLabel;
+    factors: DashboardHealthFactor[];
+  };
+  today: { date: string; items: DashboardFocusItem[] };
+  priorityThreads: DashboardPriorityThread[];
+  tasks: {
+    open: number;
+    completed: number;
+    overdue: number;
+    dueToday: number;
+    upcoming: DashboardTaskItem[];
+    recentCompletions: DashboardTaskItem[];
+  };
+  replies: {
+    totalDrafts: number;
+    recentDrafts: DashboardRecentDraft[];
+    pendingReplyThreads: number;
+  };
+  usage: { analysis: AnalysisUsage; replies: ReplyUsage };
+  analytics: {
+    categoryDistribution: DashboardDistributionItem[];
+    priorityDistribution: DashboardDistributionItem[];
+    weeklyThreads: DashboardTrendPoint[];
+    weeklyTasksCompleted: DashboardTrendPoint[];
+    weeklyDraftsCreated: DashboardTrendPoint[];
+    averageConfidence: number;
+    estimatedTimeSavedMinutes: number;
+  };
+  recentActivity: DashboardActivityItem[];
+}
 export interface GmailConnectionStatus {
   connected: boolean;
   gmailAddress: string | null;

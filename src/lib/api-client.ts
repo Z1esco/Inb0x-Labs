@@ -8,6 +8,7 @@ import type {
   EmailAnalysis,
   EmailThreadDetail,
   EmailThreadListItem,
+  DashboardData,
   ReplyDraft,
   CreateReplyDraftRequest,
   ReplyDraftListResponse,
@@ -58,6 +59,16 @@ async function requestEnvelope<
   return payload;
 }
 export const apiClient = {
+  getDashboard: (options?: { timezone?: string; signal?: AbortSignal }) => {
+    const query = options?.timezone
+      ? `?timezone=${encodeURIComponent(options.timezone)}`
+      : "";
+    return request<DashboardData>(
+      `/api/dashboard${query}`,
+      {},
+      options?.signal,
+    );
+  },
   listThreads: (signal?: AbortSignal) =>
     request<EmailThreadListItem[]>("/api/gmail/threads", {}, signal),
   getThread: (id: string, signal?: AbortSignal) =>
