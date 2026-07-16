@@ -42,7 +42,13 @@ export interface Database {
           gmail_thread_id: string;
           subject: string;
           normalized_text: string | null;
+          normalized_character_count: number;
           content_hash: string;
+          content_trimmed: boolean;
+          contains_potential_prompt_injection: boolean;
+          messages: Json;
+          has_attachments: boolean;
+          gmail_labels: string[];
           latest_message_at: string;
           created_at: string;
           updated_at: string;

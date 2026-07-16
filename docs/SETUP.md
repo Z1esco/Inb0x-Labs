@@ -21,6 +21,11 @@ Register `http://localhost:3000/api/gmail/callback` and
 variables. Testing-mode refresh-token restrictions and restricted-scope verification requirements
 apply; use a dedicated test mailbox. See `docs/GOOGLE_OAUTH.md` for troubleshooting and lifecycle details.
 
+For real Gmail synchronization, configure bounded values for `GMAIL_LOOKBACK_DAYS` (default 30),
+`GMAIL_MAX_THREADS` (default 50), `THREAD_MAX_CHARACTERS` (default 12000), and
+`DATA_RETENTION_HOURS` (default 24). Run the initial sync with a dedicated mailbox and verify that
+only recent inbox threads appear. See `docs/GMAIL_SYNC.md` for the parser and retention design.
+
 ## OpenAI
 
 Create an API key, configure API billing or credits and a low project limit, set an available

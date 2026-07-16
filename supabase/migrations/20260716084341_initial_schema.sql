@@ -27,6 +27,9 @@ create table public.email_threads (
   gmail_thread_id text not null, gmail_history_id text, subject text not null default '(No subject)',
   participants text[] not null default '{}', sender_names text[] not null default '{}', message_count integer not null default 0 check (message_count >= 0),
   latest_message_at timestamptz not null, snippet text not null default '', normalized_text text, content_hash text not null,
+  normalized_character_count integer not null default 0 check (normalized_character_count >= 0),
+  content_trimmed boolean not null default false, contains_potential_prompt_injection boolean not null default false,
+  messages jsonb not null default '[]'::jsonb check (jsonb_typeof(messages) = 'array'),
   has_attachments boolean not null default false, gmail_labels text[] not null default '{}', synced_at timestamptz not null default timezone('utc', now()),
   created_at timestamptz not null default timezone('utc', now()), updated_at timestamptz not null default timezone('utc', now()),
   constraint email_threads_user_gmail_unique unique(user_id, gmail_thread_id)

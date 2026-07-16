@@ -24,10 +24,12 @@ and encrypts provider tokens. Gmail scopes are restricted to identity and `gmail
 
 ## Gmail synchronization
 
-An explicit sync request loads encrypted credentials, lists recent inbox threads with a bounded
-query, retrieves full message payloads in batches of five, prefers plain text, converts HTML to
-text, detects but never downloads attachments, caps content, hashes it, and upserts by user and
-Gmail thread ID.
+An explicit sync request obtains a server-only authenticated Google client, lists recent inbox
+threads with a bounded query, and retrieves full thread payloads with four-worker concurrency,
+timeouts, and one transient retry. The normalizer prefers plain text, converts HTML to inert text,
+detects but never downloads attachments, trims duplicate history, caps newest context, hashes the
+stable result, and conditionally persists by user and Gmail thread ID. Routes read only persisted,
+owned projections; `docs/GMAIL_SYNC.md` records the complete trust boundary.
 
 ## AI analysis and reply drafts
 

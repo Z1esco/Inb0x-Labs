@@ -6,6 +6,11 @@ The initial migration is in `supabase/migrations`. `profiles` mirrors Supabase A
 threads; `user_settings` holds limits and retention; `usage_events` supports quotas and safe
 auditing; `oauth_states` and `rate_limits` support security controls.
 
+`email_threads.messages` is a JSON array containing only normalized message text and safe metadata.
+It never contains raw HTML, attachment bodies, or provider attachment IDs. The row also records the
+normalized character count, whether content was trimmed, and a non-authoritative prompt-injection
+marker. A unique constraint on `user_id + gmail_thread_id` prevents duplicate synchronization.
+
 All user-owned tables enable Row Level Security. SELECT, INSERT, UPDATE, and DELETE policies
 combine `TO authenticated` with `(select auth.uid()) = user_id` (or profile `id`). UPDATE uses
 both `USING` and `WITH CHECK`. Explicit Data API grants are present because table exposure and
