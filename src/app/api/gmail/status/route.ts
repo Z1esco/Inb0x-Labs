@@ -1,33 +1,23 @@
 import { failure, ok } from "@/lib/api-response";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentUser } from "@/server/auth/current-user";
+import { getGmailConnectionStatus } from "@/server/gmail/connection-service";
 export async function GET() {
   try {
     const user = await requireCurrentUser();
     if (user.demo)
       return ok(
         {
-          connected: false,
-          address: null,
+          connected: true,
+          gmailAddress: "judge@inb0x.demo",
+          grantedScopes: ["https://www.googleapis.com/auth/gmail.readonly"],
+          connectedAt: "2026-07-01T00:00:00.000Z",
           lastSyncedAt: null,
-          scopes: [],
+          requiresReauthorization: false,
           readOnly: true as const,
         },
         { demo: true },
       );
-    const { data } = await createSupabaseAdminClient()
-      .from("gmail_connections")
-      .select("gmail_address,last_synced_at,granted_scopes")
-      .eq("user_id", user.id)
-      .is("revoked_at", null)
-      .maybeSingle();
-    return ok({
-      connected: Boolean(data),
-      address: data?.gmail_address ?? null,
-      lastSyncedAt: data?.last_synced_at ?? null,
-      scopes: data?.granted_scopes ?? [],
-      readOnly: true as const,
-    });
+    return ok(await getGmailConnectionStatus(user.id));
   } catch (error) {
     return failure(error);
   }

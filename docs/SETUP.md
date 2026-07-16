@@ -14,10 +14,12 @@ public table has RLS, and test ownership with two users. Enable Google Auth, add
 
 ## Google Cloud
 
-Enable Gmail API, configure consent, add test users, create Web OAuth credentials, and register
-`http://localhost:3000/api/gmail/callback` plus `https://YOUR_DOMAIN/api/gmail/callback`. Copy the
-client ID and secret. Testing-mode refresh-token restrictions and public verification requirements
-apply; use a dedicated test mailbox.
+Enable Gmail API, configure the consent screen, add test users, and create Web OAuth credentials.
+Register `http://localhost:3000/api/gmail/callback` and
+`https://YOUR_DOMAIN/api/gmail/callback` exactly. Configure only `openid`, `email`, `profile`, and
+`https://www.googleapis.com/auth/gmail.readonly`. Copy the client ID and secret into server-only
+variables. Testing-mode refresh-token restrictions and restricted-scope verification requirements
+apply; use a dedicated test mailbox. See `docs/GOOGLE_OAUTH.md` for troubleshooting and lifecycle details.
 
 ## OpenAI
 

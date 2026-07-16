@@ -130,5 +130,7 @@ create trigger on_auth_user_created after insert on auth.users for each row exec
 grant usage on schema public to authenticated;
 grant select, insert, update, delete on all tables in schema public to authenticated;
 revoke all on all tables in schema public from anon;
+-- OAuth tokens and state are server-only. Users access safe projections through app routes.
+revoke all on public.gmail_connections, public.oauth_states from authenticated, anon;
 
 commit;

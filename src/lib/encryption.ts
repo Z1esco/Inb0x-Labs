@@ -13,17 +13,26 @@ export class TokenDecryptionError extends Error {
     this.name = "TokenDecryptionError";
   }
 }
+export class SecretEncryptionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SecretEncryptionError";
+  }
+}
 function decodeKey(encodedKey: string): Buffer {
   const key = Buffer.from(encodedKey, "base64");
   if (key.length !== 32)
-    throw new Error("TOKEN_ENCRYPTION_KEY must decode to exactly 32 bytes");
+    throw new SecretEncryptionError(
+      "TOKEN_ENCRYPTION_KEY must decode to exactly 32 bytes",
+    );
   return key;
 }
-export function encryptToken(token: string, encodedKey: string): string {
+export function encryptSecret(secret: string, encodedKey: string): string {
+  if (!secret) throw new SecretEncryptionError("Secret must not be empty");
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", decodeKey(encodedKey), iv);
   const ciphertext = Buffer.concat([
-    cipher.update(token, "utf8"),
+    cipher.update(secret, "utf8"),
     cipher.final(),
   ]);
   return JSON.stringify({
@@ -33,12 +42,14 @@ export function encryptToken(token: string, encodedKey: string): string {
     ciphertext: ciphertext.toString("base64"),
   });
 }
-export function decryptToken(serialized: string, encodedKey: string): string {
+export function decryptSecret(serialized: string, encodedKey: string): string {
+  if (!serialized) throw new TokenDecryptionError();
   try {
+    const key = decodeKey(encodedKey);
     const parsed = payloadSchema.parse(JSON.parse(serialized));
     const decipher = createDecipheriv(
       "aes-256-gcm",
-      decodeKey(encodedKey),
+      key,
       Buffer.from(parsed.iv, "base64"),
     );
     decipher.setAuthTag(Buffer.from(parsed.tag, "base64"));
@@ -50,3 +61,6 @@ export function decryptToken(serialized: string, encodedKey: string): string {
     throw new TokenDecryptionError();
   }
 }
+
+export const encryptToken = encryptSecret;
+export const decryptToken = decryptSecret;

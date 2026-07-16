@@ -17,9 +17,10 @@ flowchart LR
 ## Authentication and Gmail authorization
 
 Supabase Google sign-in establishes the application session. Gmail authorization is a second,
-explicit OAuth authorization-code flow. The server signs a random, expiring state value, stores
-it in an HTTP-only SameSite cookie, validates it on callback, exchanges the code, and encrypts
-provider tokens. Gmail scopes are restricted to identity and `gmail.readonly`.
+explicit OAuth authorization-code flow. The server stores a keyed hash of random, user-bound,
+expiring state and sends the raw value only through Google plus an HTTP-only SameSite cookie.
+The callback atomically consumes state, exchanges the code, validates scopes and Google identity,
+and encrypts provider tokens. Gmail scopes are restricted to identity and `gmail.readonly`.
 
 ## Gmail synchronization
 
