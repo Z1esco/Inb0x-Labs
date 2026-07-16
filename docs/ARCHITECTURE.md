@@ -33,10 +33,11 @@ owned projections; `docs/GMAIL_SYNC.md` records the complete trust boundary.
 
 ## AI analysis and reply drafts
 
-Analysis is explicit, quota-controlled, and cached by thread content hash plus prompt version.
-The Responses API parses strict Zod-backed structured output. Email content is placed in the
-untrusted user-data position after a system trust boundary. Reply generation returns a local
-draft only; no Gmail write or send client exists.
+Analysis is explicit and ownership-checked. The Responses API parses strict Zod-backed Structured
+Outputs; a post-validator grounds excerpts and source IDs before any persistence. Email content is
+JSON data inside a delimiter in the user input, separate from the system trust boundary. Cache
+identity includes thread, content hash, prompt version, schema version, and configured model. Reply
+generation remains separate and returns only a local draft; no Gmail write or send client exists.
 
 ## Demo mode
 
@@ -46,10 +47,10 @@ in-memory state. Server restart also resets it; demo mode does not require files
 
 ## Caching, rate limiting, and cost control
 
-Analysis caching uses `email_thread_id + content_hash + prompt_version`. Daily usage events
-enforce AI quotas. Lightweight per-user action buckets protect the demo and single-instance MVP;
-the schema includes `rate_limits` for a production atomic database implementation. Inputs,
-batches, timeouts, and retries are bounded.
+Analysis caching uses `email_thread_id + content_hash + prompt_version + schema_version + model`.
+An atomic PostgreSQL reservation function serializes each user's UTC-day usage count before a real
+model call; cache hits and demo results do not reserve usage. Lightweight per-user action buckets
+protect request bursts in this MVP. Inputs, batches, concurrency, timeouts, and retries are bounded.
 
 ## Data deletion
 

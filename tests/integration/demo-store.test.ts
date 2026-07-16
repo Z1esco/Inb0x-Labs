@@ -15,7 +15,7 @@ describe("credential-free demo workflows", () => {
   it("lists fictional threads and the prompt-injection fixture", () => {
     expect(listDemoThreads()).toHaveLength(12);
     expect(getDemoThread("prompt-injection")?.analysis?.safetyFlags).toContain(
-      "prompt-injection",
+      "possible_prompt_injection",
     );
   });
   it("creates, updates, and deletes a task", () => {

@@ -40,11 +40,11 @@ create table public.email_analyses (
   prompt_version text not null, schema_version text not null, model text not null, response_id text,
   summary text not null, category text not null check (category in ('urgent','work','finance','meeting','personal','newsletter','promotion','notification','security','other')),
   priority_score integer not null check (priority_score between 0 and 100), priority_level text not null check (priority_level in ('critical','high','medium','low')),
-  priority_reason text not null, needs_reply boolean not null, confidence double precision not null check (confidence between 0 and 1),
+  priority_reason text not null, needs_reply boolean not null, reply_reason text, confidence double precision not null check (confidence between 0 and 1),
   deadlines jsonb not null default '[]', action_items jsonb not null default '[]', meetings jsonb not null default '[]', evidence jsonb not null default '[]', safety_flags jsonb not null default '[]',
   input_tokens integer check (input_tokens is null or input_tokens >= 0), output_tokens integer check (output_tokens is null or output_tokens >= 0),
   created_at timestamptz not null default timezone('utc', now()), updated_at timestamptz not null default timezone('utc', now()),
-  constraint email_analyses_cache_unique unique(email_thread_id, content_hash, prompt_version)
+  constraint email_analyses_cache_unique unique(email_thread_id, content_hash, prompt_version, schema_version, model)
 );
 create table public.tasks (
   id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade,
@@ -129,6 +129,45 @@ begin
 end; $$;
 revoke all on function private.handle_new_user() from public, anon, authenticated;
 create trigger on_auth_user_created after insert on auth.users for each row execute function private.handle_new_user();
+
+create function public.reserve_analysis_usage(
+  p_user_id uuid,
+  p_daily_limit integer,
+  p_model text,
+  p_metadata jsonb default '{}'::jsonb
+)
+returns table(event_id uuid, used integer)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_used integer;
+  v_event_id uuid;
+  v_day date := timezone('utc', now())::date;
+begin
+  if p_user_id is null or p_daily_limit < 1 or p_model is null or btrim(p_model) = '' then
+    raise exception 'invalid analysis reservation';
+  end if;
+  perform pg_advisory_xact_lock(hashtextextended(p_user_id::text || ':' || v_day::text, 0));
+  select count(*)::integer into v_used
+  from public.usage_events
+  where user_id = p_user_id
+    and event_type = 'analysis'
+    and created_at >= (v_day::timestamp at time zone 'UTC')
+    and created_at < ((v_day + 1)::timestamp at time zone 'UTC');
+  if v_used >= p_daily_limit then
+    return query select null::uuid, v_used;
+    return;
+  end if;
+  insert into public.usage_events(user_id, event_type, model, metadata)
+  values(p_user_id, 'analysis', p_model, coalesce(p_metadata, '{}'::jsonb))
+  returning id into v_event_id;
+  return query select v_event_id, v_used + 1;
+end;
+$$;
+revoke all on function public.reserve_analysis_usage(uuid, integer, text, jsonb) from public, anon, authenticated;
+grant execute on function public.reserve_analysis_usage(uuid, integer, text, jsonb) to service_role;
 
 grant usage on schema public to authenticated;
 grant select, insert, update, delete on all tables in schema public to authenticated;

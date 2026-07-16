@@ -11,6 +11,12 @@ It never contains raw HTML, attachment bodies, or provider attachment IDs. The r
 normalized character count, whether content was trimmed, and a non-authoritative prompt-injection
 marker. A unique constraint on `user_id + gmail_thread_id` prevents duplicate synchronization.
 
+`email_analyses` stores only schema-validated structured output and provider audit metadata. Its
+cache uniqueness covers thread, content hash, prompt version, schema version, and model. The
+`reserve_analysis_usage` service-role-only function uses a transaction advisory lock to atomically
+count and reserve one real model call per authenticated user and UTC day. Browser roles cannot call
+that function. Cache hits and demo responses do not create usage events.
+
 All user-owned tables enable Row Level Security. SELECT, INSERT, UPDATE, and DELETE policies
 combine `TO authenticated` with `(select auth.uid()) = user_id` (or profile `id`). UPDATE uses
 both `USING` and `WITH CHECK`. Explicit Data API grants are present because table exposure and

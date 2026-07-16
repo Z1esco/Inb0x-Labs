@@ -27,11 +27,15 @@ export const gmailThreadListQuerySchema = z.strictObject({
 });
 
 export const analyzeThreadInputSchema = z.strictObject({
-  threadId: z.string().min(1),
+  threadId: z.string().trim().min(1).max(200),
   force: z.boolean().default(false),
 });
 export const analyzeInboxInputSchema = z.strictObject({
-  threadIds: z.array(z.string().min(1)).min(1).max(20),
+  threadIds: z
+    .array(z.string().trim().min(1).max(200))
+    .min(1)
+    .max(50)
+    .transform((values) => [...new Set(values)]),
   force: z.boolean().default(false),
 });
 export const settingsInputSchema = z

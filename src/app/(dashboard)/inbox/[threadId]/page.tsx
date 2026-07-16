@@ -35,7 +35,9 @@ export default async function ThreadPage({
             {thread.analysis?.actionItems.length ? (
               <ul>
                 {thread.analysis.actionItems.map((item) => (
-                  <li key={item.id}>{item.title}</li>
+                  <li key={`${item.sourceMessageId}:${item.title}`}>
+                    {item.title}
+                  </li>
                 ))}
               </ul>
             ) : (

@@ -13,26 +13,46 @@ export type PriorityLevel = "critical" | "high" | "medium" | "low";
 export type TaskStatus = "open" | "in_progress" | "completed";
 
 export interface Deadline {
-  id: string;
   label: string;
-  dueAt: string | null;
-  evidence: string;
+  dateTime: string | null;
+  dateText: string | null;
+  timezone: string | null;
   confidence: number;
+  sourceMessageId: string;
+  evidence: string;
 }
 export interface ActionItem {
-  id: string;
   title: string;
-  owner: string | null;
+  description: string | null;
+  assignee: "user" | "sender" | "other" | "unclear";
   dueAt: string | null;
+  confidence: number;
+  sourceMessageId: string;
   evidence: string;
 }
 export interface Meeting {
-  id: string;
   title: string;
-  startsAt: string | null;
+  startAt: string | null;
+  endAt: string | null;
   location: string | null;
+  participants: string[];
+  confidence: number;
+  sourceMessageId: string;
   evidence: string;
 }
+export interface AnalysisEvidence {
+  claim: string;
+  sourceMessageId: string;
+  excerpt: string;
+}
+export type AnalysisSafetyFlag =
+  | "possible_prompt_injection"
+  | "sensitive_information"
+  | "suspicious_link"
+  | "financial_request"
+  | "credential_request"
+  | "uncertain_date"
+  | "other";
 export interface EmailAnalysis {
   summary: string;
   category: EmailCategory;
@@ -45,8 +65,39 @@ export interface EmailAnalysis {
   deadlines: Deadline[];
   actionItems: ActionItem[];
   meetings: Meeting[];
-  evidence: string[];
-  safetyFlags: string[];
+  evidence: AnalysisEvidence[];
+  safetyFlags: AnalysisSafetyFlag[];
+}
+
+export interface AnalysisUsage {
+  used: number;
+  limit: number;
+  remaining: number;
+}
+
+export interface ThreadAnalysisResult {
+  analysis: EmailAnalysis;
+  cached: boolean;
+  usage: AnalysisUsage;
+}
+
+export type BatchAnalysisStatus = "analyzed" | "cached" | "failed" | "skipped";
+
+export interface BatchAnalysisItemResult {
+  threadId: string;
+  status: BatchAnalysisStatus;
+  errorCode: ErrorCode | null;
+}
+
+export interface BatchAnalysisResult {
+  requested: number;
+  analyzed: number;
+  cached: number;
+  failed: number;
+  skipped: number;
+  limitReached: boolean;
+  usage: AnalysisUsage;
+  results: BatchAnalysisItemResult[];
 }
 
 export interface EmailParticipant {
