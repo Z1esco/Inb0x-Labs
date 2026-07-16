@@ -10,6 +10,8 @@ Inb0x is an AI-powered email productivity workspace that summarizes Gmail thread
 surfaces deadlines, extracts tasks, prioritizes what matters, and helps people work
 toward Inbox Zero—without changing anything in their mailbox.
 
+Repository contributors and Codex sessions must follow [PROJECT_RULES.md](PROJECT_RULES.md).
+
 [![Status](https://img.shields.io/badge/status-in%20development-F59E0B?style=for-the-badge)](#-project-status)
 [![Gmail Access](https://img.shields.io/badge/Gmail-read--only-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](#-privacy-first-by-design)
 [![License](https://img.shields.io/badge/license-MIT-22C55E?style=for-the-badge)](LICENSE)
@@ -52,6 +54,7 @@ reading every message.
 | 🏷️ **Email classification** | Organizes messages into useful categories such as work, finance, meetings, and security. |
 | ✍️ **Reply studio**         | Generates grounded plain-text drafts with tone and length controls for manual copying.   |
 | 📊 **Inbox insights**       | Highlights patterns and productivity signals across the inbox.                           |
+| 📈 **Dashboard API**        | Aggregates persisted focus, tasks, drafts, usage, and trends without provider calls.     |
 | 🎭 **Demo mode**            | Provides a complete fictional inbox experience without Gmail or AI credentials.          |
 
 ## 🔒 Privacy first by design
@@ -186,6 +189,9 @@ npm run check
 
 Tests mock Gmail and OpenAI integrations; automated tests must never call real user
 mailboxes or consume paid AI requests.
+
+`GET /api/dashboard` returns deterministic demo or user-owned persisted metrics without calling
+Gmail/OpenAI or triggering mutations. Final dashboard visuals remain frontend-partner work.
 
 ## 🚢 Deployment
 

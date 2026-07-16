@@ -32,6 +32,11 @@ attachments are never downloaded, and logs must use an allowlist.
 | Sensitive reply logging                 | Drafts, instructions, prompts, evidence, and model output excluded from logs                      |
 | Generation abuse                        | Explicit action, per-user rate limit, atomic daily quota, bounded retry, cache                    |
 | Accidental email send or Gmail draft    | No write scopes, send route, draft API, write client, or sent-success state                       |
+| Cross-user dashboard metric leakage     | Server identity, explicit user filters, RLS, no client ownership fields                           |
+| Aggregate/body/draft leakage            | Safe bounded projections omit all email and reply bodies                                          |
+| Unbounded analytics or N+1 abuse        | Seven parallel capped queries, seven-day windows, bounded outputs                                 |
+| Timezone and score misuse               | Validated IANA zones, transparent clamped formula, insufficient-data state                        |
+| Demo/production or quota leakage        | Explicit demo adapter and per-user usage without reservation internals                            |
 
 Task action items are untrusted suggestions until a user explicitly accepts them. The browser may
 submit only an analysis ID and action index; title, evidence, source message, ownership, source type,

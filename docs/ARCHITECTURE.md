@@ -66,6 +66,12 @@ An atomic PostgreSQL reservation function serializes each user's UTC-day usage c
 model call; cache hits and demo results do not reserve usage. Lightweight per-user action buckets
 protect request bursts in this MVP. Inputs, batches, concurrency, timeouts, and retries are bounded.
 
+## Dashboard aggregation
+
+The dashboard uses seven bounded, parallel, user-scoped metadata queries. Mapping, health scoring,
+timezone-aware focus, trends, and activity composition are pure server logic. No bodies, provider
+calls, or mutations occur during dashboard loading.
+
 ## Data deletion
 
 Disconnect attempts Google revocation, then deletes local encrypted tokens even if revocation
