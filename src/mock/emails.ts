@@ -5,6 +5,21 @@ import type {
   PriorityLevel,
 } from "@/types/contracts";
 
+export const DEMO_ANALYSIS_IDS: Record<string, string> = {
+  "proposal-approval": "00000000-0000-4000-8000-000000000001",
+  "interview-schedule": "00000000-0000-4000-8000-000000000002",
+  "invoice-deadline": "00000000-0000-4000-8000-000000000003",
+  "team-meeting": "00000000-0000-4000-8000-000000000004",
+  "security-alert": "00000000-0000-4000-8000-000000000005",
+  newsletter: "00000000-0000-4000-8000-000000000006",
+  "product-update": "00000000-0000-4000-8000-000000000007",
+  "design-feedback": "00000000-0000-4000-8000-000000000008",
+  "subscription-renewal": "00000000-0000-4000-8000-000000000009",
+  promotion: "00000000-0000-4000-8000-000000000010",
+  "long-thread": "00000000-0000-4000-8000-000000000011",
+  "prompt-injection": "00000000-0000-4000-8000-000000000012",
+};
+
 function analysis(
   summary: string,
   category: EmailCategory,
@@ -49,6 +64,7 @@ function thread(
     messageCount,
     hasAttachments: false,
     labels: ["INBOX"],
+    analysisId: DEMO_ANALYSIS_IDS[id] ?? null,
     analysis: value,
     contentHash: `demo-${id}`,
     normalizedCharacterCount: body.length,

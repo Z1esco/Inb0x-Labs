@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/logo/inb0x-labs-logo.png" alt="Inb0x Labs logo" width="720" />
+
 # 📬 Inb0x
 
 ### Turn inbox overload into a clear action plan.
@@ -44,7 +46,8 @@ reading every message.
 | --------------------------- | ---------------------------------------------------------------------------------------- |
 | 🧠 **Thread summaries**     | Turns long conversations into concise, evidence-based summaries.                         |
 | 🎯 **Smart prioritization** | Scores messages by urgency, importance, and whether a reply is needed.                   |
-| ✅ **Action extraction**    | Identifies actionable work and converts it into manageable tasks.                        |
+| ✅ **Action extraction**    | Suggests actionable work that users explicitly accept as manageable tasks.               |
+| ☑️ **Task management**      | Manages manual or email-linked tasks with evidence, due dates, and priorities.           |
 | 📅 **Deadline detection**   | Surfaces supported dates, deadlines, and meeting details.                                |
 | 🏷️ **Email classification** | Organizes messages into useful categories such as work, finance, meetings, and security. |
 | ✍️ **Reply studio**         | Generates optional reply drafts that users can review and copy manually.                 |
@@ -86,6 +89,7 @@ The application follows a layered architecture:
 - **Mailbox connection:** Google OAuth and the official Gmail API client.
 - **AI analysis:** OpenAI Responses API with strict structured outputs.
 - **Validation and testing:** Zod, Vitest, Testing Library, and Playwright.
+- **Task integrity:** explicit acceptance, source evidence, ownership checks, and idempotent writes.
 - **Deployment:** Vercel-compatible server code with GitHub Actions checks.
 
 ## 🧰 Technology stack
@@ -160,6 +164,7 @@ The complete, documented list will live in `.env.example`. Key configuration gro
 - Database migrations and RLS policies will be documented in `docs/DATABASE.md`.
 - Google OAuth setup and callback URLs will be documented in `docs/GOOGLE_OAUTH.md`.
 - OpenAI model and cost configuration will be documented in `docs/OPENAI.md`.
+- Task acceptance, deduplication, lifecycle, and demo behavior are documented in `docs/TASKS.md`.
 - Full local and production setup will be documented in `docs/SETUP.md`.
 
 ## 🧪 Quality checks

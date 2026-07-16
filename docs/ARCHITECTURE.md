@@ -45,6 +45,14 @@ generation remains separate and returns only a local draft; no Gmail write or se
 analyses, tasks, drafts, settings, and insights behind the same public contracts. Reset restores
 in-memory state. Server restart also resets it; demo mode does not require filesystem persistence.
 
+## Task management
+
+Task routes delegate to `src/server/tasks/task-service.ts`; production database access is isolated in
+the task repository and all rows are explicitly scoped by the authenticated user. Analysis action
+items remain suggestions until an explicit create-from-analysis request. A deterministic source key
+plus a database unique constraint makes acceptance idempotent under concurrent requests. A database
+trigger independently validates that linked threads and analyses belong to the task owner.
+
 ## Caching, rate limiting, and cost control
 
 Analysis caching uses `email_thread_id + content_hash + prompt_version + schema_version + model`.

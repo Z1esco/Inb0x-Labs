@@ -11,6 +11,9 @@ export type EmailCategory =
   | "other";
 export type PriorityLevel = "critical" | "high" | "medium" | "low";
 export type TaskStatus = "open" | "in_progress" | "completed";
+export type TaskPriority = PriorityLevel;
+export type TaskSource =
+  "manual" | "email_action" | "email_deadline" | "email_meeting";
 
 export interface Deadline {
   label: string;
@@ -76,9 +79,19 @@ export interface AnalysisUsage {
 }
 
 export interface ThreadAnalysisResult {
+  analysisId: string;
   analysis: EmailAnalysis;
   cached: boolean;
   usage: AnalysisUsage;
+}
+export interface AnalysisResponseMeta extends Record<string, unknown> {
+  analysisId: string;
+  cached: boolean;
+  usage: AnalysisUsage;
+  demo?: boolean | undefined;
+}
+export interface AnalyzedThreadResult extends AnalysisResponseMeta {
+  analysis: EmailAnalysis;
 }
 
 export type BatchAnalysisStatus = "analyzed" | "cached" | "failed" | "skipped";
@@ -135,6 +148,7 @@ export interface EmailThreadListItem {
   messageCount: number;
   hasAttachments: boolean;
   labels: string[];
+  analysisId: string | null;
   analysis: EmailAnalysis | null;
 }
 export interface EmailThreadDetail extends EmailThreadListItem {
@@ -155,17 +169,70 @@ export interface GmailSyncResult {
   syncedAt: string;
 }
 export type PriorityEmail = EmailThreadListItem & { analysis: EmailAnalysis };
+export interface TaskSourceEmail {
+  threadId: string | null;
+  analysisId: string | null;
+  messageId: string | null;
+  evidence: string | null;
+  threadSubject: string | null;
+}
 export interface Task {
   id: string;
   threadId: string | null;
+  analysisId: string | null;
   title: string;
   description: string | null;
-  source: "email" | "manual";
+  source: TaskSource;
   status: TaskStatus;
-  priority: PriorityLevel;
+  priority: TaskPriority;
   dueAt: string | null;
   completedAt: string | null;
+  sourceEmail: TaskSourceEmail | null;
   createdAt: string;
+  updatedAt: string;
+}
+export interface CreateTaskRequest {
+  title: string;
+  description?: string | null | undefined;
+  priority?: TaskPriority | undefined;
+  dueAt?: string | null | undefined;
+}
+export interface CreateTaskFromAnalysisRequest {
+  analysisId: string;
+  actionIndex: number;
+}
+export interface UpdateTaskRequest {
+  title?: string | undefined;
+  description?: string | null | undefined;
+  priority?: TaskPriority | undefined;
+  dueAt?: string | null | undefined;
+  status?: TaskStatus | undefined;
+}
+export type TaskSort =
+  "due_asc" | "due_desc" | "created_desc" | "created_asc" | "priority_desc";
+export interface TaskFilters {
+  status?: TaskStatus | undefined;
+  priority?: TaskPriority | undefined;
+  source?: TaskSource | undefined;
+  dueBefore?: string | undefined;
+  dueAfter?: string | undefined;
+  threadId?: string | undefined;
+  limit: number;
+  cursor?: string | undefined;
+  sort: TaskSort;
+}
+export interface TaskPagination {
+  nextCursor: string | null;
+  limit: number;
+  total: number;
+}
+export interface TaskListResponse {
+  tasks: Task[];
+}
+export interface CreateTaskResult {
+  task: Task;
+  created: boolean;
+  duplicate: boolean;
 }
 export interface ReplyDraft {
   id: string;
@@ -233,6 +300,9 @@ export type ErrorCode =
   | "GMAIL_RATE_LIMITED"
   | "GMAIL_SYNC_FAILED"
   | "THREAD_NOT_FOUND"
+  | "ANALYSIS_NOT_FOUND"
+  | "ACTION_ITEM_NOT_FOUND"
+  | "TASK_NOT_FOUND"
   | "ANALYSIS_LIMIT_REACHED"
   | "ANALYSIS_FAILED"
   | "MODEL_OUTPUT_INVALID"

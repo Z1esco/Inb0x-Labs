@@ -518,6 +518,7 @@ function listItemFromRow(row: StoredThreadRow): EmailThreadListItem {
     messageCount: row.message_count,
     hasAttachments: row.has_attachments,
     labels: row.gmail_labels,
+    analysisId: null,
     analysis: null,
   };
 }

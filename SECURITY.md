@@ -92,6 +92,7 @@ Reports are especially valuable when they involve:
 - sensitive information exposed through logs, errors, builds, or client bundles;
 - rate-limit bypass that creates material abuse or unexpected API spending;
 - failure of account disconnection or user-data deletion.
+- forged task sources, cross-user task links, or duplicate extracted-task creation.
 
 The following are generally out of scope unless they create a demonstrated security impact:
 
@@ -137,6 +138,16 @@ not send, delete, archive, mark as read, relabel, or otherwise modify email.
 - AI summaries and drafts are assistive suggestions, not guaranteed facts.
 - Reply drafts are never sent automatically and require manual user action outside Inb0x.
 
+### Task integrity
+
+- Extracted action items remain suggestions until an authenticated user explicitly accepts them.
+- Manual task requests cannot set user, source, email, analysis, evidence, or completion fields.
+- Email-derived tasks reload stored validated analysis data instead of trusting browser-supplied text.
+- Database ownership checks prevent linking a task to another user's thread or analysis.
+- Stable source-action keys and database uniqueness prevent concurrent duplicate acceptance.
+- Public responses omit internal deduplication keys and return the same not-found result for missing
+  and unauthorized task IDs.
+
 ## 🧩 Threat model summary
 
 | Threat                        | Primary control                                                            |
@@ -153,6 +164,7 @@ not send, delete, archive, mark as read, relabel, or otherwise modify email.
 | Accidental Gmail mutation     | Read-only scopes and no write or send implementation                       |
 | Model hallucination           | Evidence requirements, confidence values, and user review                  |
 | Duplicate or racing writes    | Database constraints and idempotent service operations                     |
+| Forged or cross-user tasks    | Strict schemas, owned source lookup, RLS, and database ownership trigger   |
 
 ## 🧑‍💻 Guidance for contributors
 
@@ -178,6 +190,7 @@ As the implementation lands, detailed operational guidance will be maintained in
 - `docs/SETUP.md` — secure local and production configuration;
 - `docs/GOOGLE_OAUTH.md` — OAuth scopes, redirect URIs, and credential handling;
 - `docs/DATABASE.md` — table ownership and Row Level Security policies.
+- `docs/TASKS.md` — explicit task acceptance, ownership, and idempotency controls.
 
 ---
 

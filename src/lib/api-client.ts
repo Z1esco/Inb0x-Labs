@@ -1,11 +1,18 @@
 import type {
   ApiError,
   ApiSuccess,
+  AnalysisResponseMeta,
+  AnalyzedThreadResult,
+  CreateTaskFromAnalysisRequest,
+  CreateTaskResult,
   EmailAnalysis,
   EmailThreadDetail,
   EmailThreadListItem,
   ReplyDraft,
   Task,
+  CreateTaskRequest,
+  TaskListResponse,
+  UpdateTaskRequest,
   UserSettings,
 } from "@/types/contracts";
 
@@ -24,19 +31,29 @@ async function request<T>(
   init: RequestInit = {},
   signal?: AbortSignal,
 ): Promise<T> {
+  return (await requestEnvelope<T>(path, init, signal)).data;
+}
+async function requestEnvelope<
+  T,
+  M extends Record<string, unknown> = Record<string, unknown>,
+>(
+  path: string,
+  init: RequestInit = {},
+  signal?: AbortSignal,
+): Promise<ApiSuccess<T, M>> {
   const response = await fetch(path, {
     ...init,
     ...(signal ? { signal } : {}),
     headers: { "content-type": "application/json", ...init.headers },
   });
-  const payload = (await response.json()) as ApiSuccess<T> | ApiError;
+  const payload = (await response.json()) as ApiSuccess<T, M> | ApiError;
   if (!payload.success)
     throw new ApiClientError(
       payload.error.code,
       payload.error.message,
       payload.error.requestId,
     );
-  return payload.data;
+  return payload;
 }
 export const apiClient = {
   listThreads: (signal?: AbortSignal) =>
@@ -53,6 +70,18 @@ export const apiClient = {
       { method: "POST", body: JSON.stringify({ threadId, force }) },
       signal,
     ),
+  analyzeThreadWithMetadata: async (
+    threadId: string,
+    force = false,
+    signal?: AbortSignal,
+  ): Promise<AnalyzedThreadResult> => {
+    const result = await requestEnvelope<EmailAnalysis, AnalysisResponseMeta>(
+      "/api/analysis/thread",
+      { method: "POST", body: JSON.stringify({ threadId, force }) },
+      signal,
+    );
+    return { analysis: result.data, ...result.meta };
+  },
   createDraft: (
     input: {
       threadId: string;
@@ -68,28 +97,36 @@ export const apiClient = {
       signal,
     ),
   listTasks: (signal?: AbortSignal) =>
-    request<Task[]>("/api/tasks", {}, signal),
-  createTask: (
-    input: {
-      title: string;
-      priority: Task["priority"];
-      threadId?: string | null;
-    },
-    signal?: AbortSignal,
-  ) =>
+    request<TaskListResponse>("/api/tasks", {}, signal).then(
+      (result) => result.tasks,
+    ),
+  createTask: (input: CreateTaskRequest, signal?: AbortSignal) =>
     request<Task>(
       "/api/tasks",
       { method: "POST", body: JSON.stringify(input) },
       signal,
     ),
-  updateTask: (
-    id: string,
-    input: Partial<Pick<Task, "title" | "status" | "priority" | "dueAt">>,
+  createTaskFromAnalysis: (
+    input: CreateTaskFromAnalysisRequest,
     signal?: AbortSignal,
   ) =>
+    request<CreateTaskResult>(
+      "/api/tasks/from-analysis",
+      { method: "POST", body: JSON.stringify(input) },
+      signal,
+    ),
+  getTask: (id: string, signal?: AbortSignal) =>
+    request<Task>(`/api/tasks/${encodeURIComponent(id)}`, {}, signal),
+  updateTask: (id: string, input: UpdateTaskRequest, signal?: AbortSignal) =>
     request<Task>(
       `/api/tasks/${encodeURIComponent(id)}`,
       { method: "PATCH", body: JSON.stringify(input) },
+      signal,
+    ),
+  deleteTask: (id: string, signal?: AbortSignal) =>
+    request<{ deleted: boolean }>(
+      `/api/tasks/${encodeURIComponent(id)}`,
+      { method: "DELETE" },
       signal,
     ),
   getSettings: (signal?: AbortSignal) =>

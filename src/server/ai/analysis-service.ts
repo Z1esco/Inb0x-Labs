@@ -47,6 +47,7 @@ interface AnalysisThreadRow {
 }
 
 interface AnalysisCacheRow extends Record<string, unknown> {
+  id: unknown;
   summary: unknown;
   category: unknown;
   priority_score: unknown;
@@ -60,6 +61,11 @@ interface AnalysisCacheRow extends Record<string, unknown> {
   meetings: unknown;
   evidence: unknown;
   safety_flags: unknown;
+}
+
+interface StoredAnalysis {
+  id: string;
+  analysis: EmailAnalysis;
 }
 
 function utcDayStart(now = new Date()): string {
@@ -135,7 +141,7 @@ async function findCachedAnalysis(
   userId: string,
   thread: AnalysisThreadRow,
   model: string,
-): Promise<EmailAnalysis | null> {
+): Promise<StoredAnalysis | null> {
   const { data, error } = await createSupabaseAdminClient()
     .from("email_analyses")
     .select("*")
@@ -152,7 +158,9 @@ async function findCachedAnalysis(
       "The analysis cache could not be loaded.",
       500,
     );
-  return data ? analysisFromRow(data as AnalysisCacheRow) : null;
+  if (!data) return null;
+  const row = data as AnalysisCacheRow;
+  return { id: String(row.id), analysis: analysisFromRow(row) };
 }
 
 async function dailyLimit(userId: string): Promise<number> {
@@ -263,8 +271,8 @@ async function persistAnalysis(
     inputTokens: number | null;
     outputTokens: number | null;
   },
-): Promise<void> {
-  const { error } = await createSupabaseAdminClient()
+): Promise<string> {
+  const { data, error } = await createSupabaseAdminClient()
     .from("email_analyses")
     .upsert(
       {
@@ -295,13 +303,16 @@ async function persistAnalysis(
         onConflict:
           "email_thread_id,content_hash,prompt_version,schema_version,model",
       },
-    );
-  if (error)
+    )
+    .select("id")
+    .single();
+  if (error || !data)
     throw new AppError(
       "INTERNAL_ERROR",
       "The email analysis could not be saved.",
       500,
     );
+  return String(data.id);
 }
 
 export async function analyzeRealThread(
@@ -342,7 +353,8 @@ export async function analyzeRealThread(
     );
     if (cached)
       return {
-        analysis: cached,
+        analysisId: cached.id,
+        analysis: cached.analysis,
         cached: true,
         usage: await getAnalysisUsage(userId, limit),
       };
@@ -372,9 +384,14 @@ export async function analyzeRealThread(
     messages,
     thread.contains_potential_prompt_injection,
   );
-  await persistAnalysis(userId, thread, analysis, modelResult);
+  const analysisId = await persistAnalysis(
+    userId,
+    thread,
+    analysis,
+    modelResult,
+  );
   await completeUsageEvent(userId, reservation.eventId, modelResult);
-  return { analysis, cached: false, usage: reservation.usage };
+  return { analysisId, analysis, cached: false, usage: reservation.usage };
 }
 
 function safeErrorCode(error: unknown): ErrorCode {
@@ -475,7 +492,8 @@ export async function getCurrentAnalysis(
       404,
     );
   return {
-    analysis: cached,
+    analysisId: cached.id,
+    analysis: cached.analysis,
     cached: true,
     usage: await getAnalysisUsage(userId),
   };

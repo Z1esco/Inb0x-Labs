@@ -19,14 +19,15 @@ export async function GET(
         400,
       );
     if (user.demo) {
-      const analysis = getDemoThread(threadId)?.analysis;
-      if (!analysis)
+      const thread = getDemoThread(threadId);
+      if (!thread?.analysis || !thread.analysisId)
         throw new AppError(
           "THREAD_NOT_FOUND",
           "No current analysis exists for this thread.",
           404,
         );
-      return ok(analysis, {
+      return ok(thread.analysis, {
+        analysisId: thread.analysisId,
         demo: true,
         cached: true,
         usage: { used: 0, limit: 20, remaining: 20 },
@@ -34,6 +35,7 @@ export async function GET(
     }
     const result = await getCurrentAnalysis(user.id, threadId);
     return ok(result.analysis, {
+      analysisId: result.analysisId,
       cached: true,
       usage: result.usage,
     });
