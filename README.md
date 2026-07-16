@@ -76,6 +76,10 @@ See [SECURITY.md](SECURITY.md) for the vulnerability disclosure policy and secur
 
 ## 🏗️ Architecture
 
+Settings and account controls use authenticated, user-scoped APIs for validated preferences, safe
+JSON export, Gmail disconnect, and explicit account deletion. Loading settings never triggers Gmail
+sync, OpenAI analysis, or reply generation.
+
 ```mermaid
 flowchart LR
     U["👤 User"] --> W["🌐 Next.js application"]

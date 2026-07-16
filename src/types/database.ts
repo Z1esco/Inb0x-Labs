@@ -18,6 +18,28 @@ export interface Database {
           updated_at: string;
         };
       };
+      user_settings: {
+        Row: {
+          user_id: string;
+          demo_mode: boolean;
+          daily_analysis_limit: number;
+          gmail_lookback_days: number;
+          gmail_max_threads: number;
+          data_retention_hours: number;
+          preferred_tone: string;
+          preferred_reply_length: string;
+          timezone: string;
+          locale: string;
+          appearance: string;
+          default_landing_page: string;
+          compact_mode: boolean;
+          show_analytics: boolean;
+          show_inbox_health: boolean;
+          show_recent_activity: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+      };
       gmail_connections: {
         Row: {
           id: string;

@@ -16,7 +16,9 @@ import type {
   CreateTaskRequest,
   TaskListResponse,
   UpdateTaskRequest,
-  UserSettings,
+  SettingsData,
+  UpdateSettingsRequest,
+  AccountData,
 } from "@/types/contracts";
 
 export class ApiClientError extends Error {
@@ -147,11 +149,19 @@ export const apiClient = {
       signal,
     ),
   getSettings: (signal?: AbortSignal) =>
-    request<UserSettings>("/api/settings", {}, signal),
-  updateSettings: (input: Partial<UserSettings>, signal?: AbortSignal) =>
-    request<UserSettings>(
+    request<SettingsData>("/api/settings", {}, signal),
+  updateSettings: (input: UpdateSettingsRequest, signal?: AbortSignal) =>
+    request<SettingsData>(
       "/api/settings",
       { method: "PATCH", body: JSON.stringify(input) },
+      signal,
+    ),
+  getAccount: (signal?: AbortSignal) =>
+    request<AccountData>("/api/account", {}, signal),
+  deleteAccount: (confirmation: "DELETE MY ACCOUNT", signal?: AbortSignal) =>
+    request<{ deleted: true }>(
+      "/api/account",
+      { method: "DELETE", body: JSON.stringify({ confirmation }) },
       signal,
     ),
   resetDemo: (signal?: AbortSignal) =>

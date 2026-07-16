@@ -17,5 +17,13 @@ export async function getRealSettings(userId: string): Promise<UserSettings> {
     dataRetentionHours: data.data_retention_hours,
     preferredTone: data.preferred_tone,
     preferredReplyLength: data.preferred_reply_length,
+    timezone: data.timezone,
+    locale: data.locale,
+    appearance: data.appearance,
+    defaultLandingPage: data.default_landing_page,
+    compactMode: data.compact_mode,
+    showAnalytics: data.show_analytics,
+    showInboxHealth: data.show_inbox_health,
+    showRecentActivity: data.show_recent_activity,
   };
 }
