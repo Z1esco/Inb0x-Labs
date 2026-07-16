@@ -97,7 +97,13 @@ describe("strict structured outputs", () => {
     deadlines: [],
     actionItems: [],
     meetings: [],
-    evidence: ["Please reply"],
+    evidence: [
+      {
+        claim: "A reply is requested.",
+        sourceMessageId: "message-1",
+        excerpt: "Please reply",
+      },
+    ],
     safetyFlags: [],
   };
   it("accepts valid analysis and rejects unknown fields", () => {

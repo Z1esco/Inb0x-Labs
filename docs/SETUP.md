@@ -29,7 +29,11 @@ only recent inbox threads appear. See `docs/GMAIL_SYNC.md` for the parser and re
 ## OpenAI
 
 Create an API key, configure API billing or credits and a low project limit, set an available
-`OPENAI_MODEL`, and remember API billing is separate from ChatGPT. Use demo mode without a key.
+`OPENAI_MODEL`, and remember API billing is separate from ChatGPT. Configure timeout/retries and
+daily/batch limits from `.env.example`. Do not guess a model name: select one enabled for the API
+project and compatible with Responses Structured Outputs. Use demo mode without a key or model call.
+Apply the database migration before real analysis so atomic usage reservation and the versioned
+analysis cache are available. See `docs/OPENAI.md` for the trust boundary and failure behavior.
 
 Generate secrets with Node:
 

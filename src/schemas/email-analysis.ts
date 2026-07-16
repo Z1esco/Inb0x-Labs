@@ -1,29 +1,61 @@
 import { z } from "zod";
 
-const evidenceText = z.string().min(1).max(500);
+const boundedString = (maximum: number) =>
+  z.string().trim().min(1).max(maximum);
+const nullableString = (maximum: number) => boundedString(maximum).nullable();
+const nullableDateTime = z.string().datetime({ offset: true }).nullable();
+const confidence = z.number().min(0).max(1);
+const evidenceExcerpt = boundedString(300);
+
 export const deadlineSchema = z.strictObject({
-  id: z.string().min(1),
-  label: z.string().min(1).max(200),
-  dueAt: z.string().datetime().nullable(),
-  evidence: evidenceText,
-  confidence: z.number().min(0).max(1),
+  label: boundedString(200),
+  dateTime: nullableDateTime,
+  dateText: nullableString(200),
+  timezone: nullableString(100),
+  confidence,
+  sourceMessageId: boundedString(200),
+  evidence: evidenceExcerpt,
 });
+
 export const actionItemSchema = z.strictObject({
-  id: z.string().min(1),
-  title: z.string().min(1).max(300),
-  owner: z.string().max(200).nullable(),
-  dueAt: z.string().datetime().nullable(),
-  evidence: evidenceText,
+  title: boundedString(300),
+  description: nullableString(500),
+  assignee: z.enum(["user", "sender", "other", "unclear"]),
+  dueAt: nullableDateTime,
+  confidence,
+  sourceMessageId: boundedString(200),
+  evidence: evidenceExcerpt,
 });
+
 export const meetingSchema = z.strictObject({
-  id: z.string().min(1),
-  title: z.string().min(1).max(300),
-  startsAt: z.string().datetime().nullable(),
-  location: z.string().max(300).nullable(),
-  evidence: evidenceText,
+  title: boundedString(300),
+  startAt: nullableDateTime,
+  endAt: nullableDateTime,
+  location: nullableString(300),
+  participants: z.array(boundedString(200)).max(20),
+  confidence,
+  sourceMessageId: boundedString(200),
+  evidence: evidenceExcerpt,
 });
+
+export const analysisEvidenceSchema = z.strictObject({
+  claim: boundedString(500),
+  sourceMessageId: boundedString(200),
+  excerpt: evidenceExcerpt,
+});
+
+export const analysisSafetyFlagSchema = z.enum([
+  "possible_prompt_injection",
+  "sensitive_information",
+  "suspicious_link",
+  "financial_request",
+  "credential_request",
+  "uncertain_date",
+  "other",
+]);
+
 export const emailAnalysisSchema = z.strictObject({
-  summary: z.string().min(1).max(800),
+  summary: boundedString(900),
   category: z.enum([
     "urgent",
     "work",
@@ -38,14 +70,15 @@ export const emailAnalysisSchema = z.strictObject({
   ]),
   priorityScore: z.number().int().min(0).max(100),
   priorityLevel: z.enum(["critical", "high", "medium", "low"]),
-  priorityReason: z.string().min(1).max(500),
+  priorityReason: boundedString(500),
   needsReply: z.boolean(),
-  replyReason: z.string().max(500).nullable(),
-  confidence: z.number().min(0).max(1),
+  replyReason: nullableString(500),
+  confidence,
   deadlines: z.array(deadlineSchema).max(10),
-  actionItems: z.array(actionItemSchema).max(20),
+  actionItems: z.array(actionItemSchema).max(15),
   meetings: z.array(meetingSchema).max(10),
-  evidence: z.array(evidenceText).max(20),
-  safetyFlags: z.array(z.string().min(1).max(200)).max(20),
+  evidence: z.array(analysisEvidenceSchema).max(20),
+  safetyFlags: z.array(analysisSafetyFlagSchema).max(10),
 });
+
 export type EmailAnalysisOutput = z.infer<typeof emailAnalysisSchema>;

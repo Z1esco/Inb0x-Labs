@@ -3,42 +3,46 @@ import { getEnvironment } from "@/lib/env";
 import { AppError } from "@/lib/errors";
 import { analyzeInboxInputSchema } from "@/schemas/api";
 import { requireCurrentUser } from "@/server/auth/current-user";
+import { analyzeRealInbox } from "@/server/ai/analysis-service";
 import { enforceRateLimit } from "@/server/rate-limit/limiter";
-import {
-  consumeDemoAnalysis,
-  getDemoThread,
-} from "@/server/services/demo-store";
-import { analyzeRealThread } from "@/server/services/real-data";
+import { getDemoThread } from "@/server/services/demo-store";
+import type { BatchAnalysisResult } from "@/types/contracts";
+
 export async function POST(request: Request) {
   try {
     const user = await requireCurrentUser();
     enforceRateLimit(user.id, "inbox-analysis", 3, 60_000);
     const input = analyzeInboxInputSchema.parse(await request.json());
-    if (input.threadIds.length > getEnvironment().ANALYSIS_BATCH_LIMIT)
+    const maximum = getEnvironment().ANALYSIS_BATCH_LIMIT;
+    if (input.threadIds.length > maximum)
       throw new AppError(
         "INVALID_REQUEST",
-        "The requested batch is too large.",
+        `A maximum of ${maximum} threads can be analyzed at once.`,
         400,
       );
-    const results = [];
-    for (const id of input.threadIds) {
-      if (user.demo) {
-        consumeDemoAnalysis();
-        const thread = getDemoThread(id);
-        if (thread?.analysis)
-          results.push({
-            threadId: id,
-            analysis: thread.analysis,
-            cached: true,
-          });
-      } else
-        results.push({
-          threadId: id,
-          analysis: await analyzeRealThread(user.id, id, input.force),
-          cached: false,
-        });
+    if (user.demo) {
+      const results = input.threadIds.map((threadId) => ({
+        threadId,
+        status: getDemoThread(threadId)?.analysis
+          ? ("cached" as const)
+          : ("failed" as const),
+        errorCode: getDemoThread(threadId)?.analysis
+          ? null
+          : ("THREAD_NOT_FOUND" as const),
+      }));
+      const data: BatchAnalysisResult = {
+        requested: results.length,
+        analyzed: 0,
+        cached: results.filter((item) => item.status === "cached").length,
+        failed: results.filter((item) => item.status === "failed").length,
+        skipped: 0,
+        limitReached: false,
+        usage: { used: 0, limit: 20, remaining: 20 },
+        results,
+      };
+      return ok(data, { demo: true });
     }
-    return ok(results, { demo: user.demo });
+    return ok(await analyzeRealInbox(user.id, input.threadIds, input.force));
   } catch (error) {
     return failure(error);
   }

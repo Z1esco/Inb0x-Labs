@@ -52,7 +52,7 @@ const environmentSchema = z
     OPENAI_REASONING_EFFORT: z.preprocess(
       blankToUndefined,
       z
-        .enum(["none", "minimal", "low", "medium", "high", "xhigh"])
+        .enum(["none", "minimal", "low", "medium", "high", "xhigh", "max"])
         .default("low"),
     ),
     OPENAI_TIMEOUT_MS: intWithDefault(30_000, 1_000, 120_000),

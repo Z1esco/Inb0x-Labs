@@ -18,6 +18,7 @@ fictional user. No route accepts a client-supplied user ID.
 | POST         | `/api/gmail/sync`              | Explicit bounded synchronization                               |
 | POST         | `/api/analysis/thread`         | Analyze one thread                                             |
 | POST         | `/api/analysis/inbox`          | Analyze a bounded thread batch                                 |
+| GET          | `/api/analysis/:threadId`      | Return the current owned cached analysis                       |
 | POST         | `/api/replies/draft`           | Create manual-copy reply draft                                 |
 | GET/POST     | `/api/tasks`                   | List or create tasks                                           |
 | PATCH/DELETE | `/api/tasks/:taskId`           | Update or delete owned task                                    |
@@ -65,3 +66,20 @@ credentials, or internal Gmail thread IDs.
 `POST /api/gmail/sync` accepts `{ "limit": 25, "query": "optional", "pageToken": "optional" }`.
 It returns `requested`, `fetched`, `created`, `updated`, `unchanged`, `failed`, `nextPageToken`, and
 `syncedAt`. Each failed thread is isolated unless the OAuth grant or Gmail permission is invalid.
+
+## Analysis APIs
+
+`POST /api/analysis/thread` accepts `{ "threadId": "owned-thread-id", "force": false }`. It checks
+the current authenticated owner, normalized content, cache identity, daily quota, and per-user rate
+limit. The structured analysis is returned in `data`; `meta` contains `cached` and
+`usage: { used, limit, remaining }`. Cache hits do not consume quota.
+
+`POST /api/analysis/inbox` accepts `{ "threadIds": ["id"], "force": false }`. IDs are validated and
+deduplicated, the server maximum defaults to 10, and work runs with concurrency two. The response
+contains requested, analyzed, cached, failed, skipped, limitReached, usage, and ordered per-thread
+statuses. One malformed thread does not fail the batch.
+
+`GET /api/analysis/:threadId` returns only the current cached analysis matching the thread's content,
+prompt version, schema version, and configured model. Missing and unauthorized records both return
+`THREAD_NOT_FOUND`. No route accepts a user ID or exposes prompts, raw model output, tokens, provider
+response bodies, usage event IDs, or internal analysis IDs.
