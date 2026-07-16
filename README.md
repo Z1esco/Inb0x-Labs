@@ -81,6 +81,10 @@ Frontend decisions are documented in [DESIGN_RULES.md](DESIGN_RULES.md) and
 [docs/FRONTEND_ARCHITECTURE.md](docs/FRONTEND_ARCHITECTURE.md). The product is dark-first, uses no
 green-family UI colors, and avoids textual pillboxes.
 
+Settings and account controls use authenticated, user-scoped APIs for validated preferences, safe
+JSON export, Gmail disconnect, and explicit account deletion. Loading settings never triggers Gmail
+sync, OpenAI analysis, or reply generation.
+
 ```mermaid
 flowchart LR
     U["👤 User"] --> W["🌐 Next.js application"]

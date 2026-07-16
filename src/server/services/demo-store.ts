@@ -26,6 +26,15 @@ const defaultSettings: UserSettings = {
   dataRetentionHours: 24,
   preferredTone: "balanced",
   preferredReplyLength: "medium",
+  timezone: "UTC",
+  locale: "en",
+  appearance: "system",
+  defaultLandingPage: "dashboard",
+  compactMode: false,
+  showAnalytics: true,
+  showInboxHealth: true,
+  showRecentActivity: true,
+  displayName: "Demo Judge",
 };
 interface DemoState {
   settings: UserSettings;
@@ -115,6 +124,22 @@ export function updateDemoSettings(patch: {
     state.settings.preferredTone = patch.preferredTone;
   if (patch.preferredReplyLength !== undefined)
     state.settings.preferredReplyLength = patch.preferredReplyLength;
+  if (patch.timezone !== undefined) state.settings.timezone = patch.timezone;
+  if (patch.locale !== undefined) state.settings.locale = patch.locale;
+  if (patch.appearance !== undefined)
+    state.settings.appearance = patch.appearance;
+  if (patch.defaultLandingPage !== undefined)
+    state.settings.defaultLandingPage = patch.defaultLandingPage;
+  if (patch.compactMode !== undefined)
+    state.settings.compactMode = patch.compactMode;
+  if (patch.showAnalytics !== undefined)
+    state.settings.showAnalytics = patch.showAnalytics;
+  if (patch.showInboxHealth !== undefined)
+    state.settings.showInboxHealth = patch.showInboxHealth;
+  if (patch.showRecentActivity !== undefined)
+    state.settings.showRecentActivity = patch.showRecentActivity;
+  if (patch.displayName !== undefined)
+    state.settings.displayName = patch.displayName;
   return { ...state.settings };
 }
 export function consumeDemoAnalysis(): number {

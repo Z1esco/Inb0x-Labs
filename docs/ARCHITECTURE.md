@@ -81,6 +81,10 @@ empty, and error states. See `DESIGN_RULES.md` and `docs/FRONTEND_ARCHITECTURE.m
 
 ## Data deletion
 
+Settings and account routes follow the same route/service/repository boundary. Preference reads and
+writes, Gmail status, bounded JSON export, and destructive account deletion are explicitly initiated;
+they never trigger Gmail synchronization, OpenAI analysis, or reply generation.
+
 Disconnect attempts Google revocation, then deletes local encrypted tokens even if revocation
 fails. Confirmed data deletion removes provider connections and user content in dependency order.
 Retention cleanup clears expired normalized email text while preserving minimal metadata and

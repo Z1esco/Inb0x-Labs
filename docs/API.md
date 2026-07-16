@@ -27,6 +27,7 @@ fictional user. No route accepts a client-supplied user ID.
 | POST             | `/api/tasks/from-analysis`     | Explicitly accept one stored analysis action                   |
 | GET/PATCH/DELETE | `/api/tasks/:taskId`           | Read, update, complete, reopen, or delete an owned task        |
 | GET/PATCH        | `/api/settings`                | Read or update settings                                        |
+| GET/DELETE       | `/api/account`                 | Export owned data or delete the authenticated account          |
 | POST             | `/api/settings/delete-data`    | Delete data after exact confirmation                           |
 | POST             | `/api/demo/reset`              | Reset demo state                                               |
 
@@ -128,5 +129,23 @@ must be a valid IANA name. It never calls Gmail/OpenAI or performs mutations. Se
 
 The frontend consumes this response through `src/lib/api-client.ts`. Dashboard, Inbox, Insights, Tasks,
 and Drafts render loading, empty, and safe error states; none of them starts Gmail sync, analysis, or
-reply generation automatically. Settings controls use only fields available on the current branch; the
-expanded account/settings contract is staged in PR #8.
+reply generation automatically. Settings and account controls consume the merged settings contract.
+
+## Settings and account APIs
+
+`GET /api/settings` returns profile metadata, appearance, dashboard preferences, AI defaults and
+usage, the demo indicator, and safe Gmail connection status. `PATCH /api/settings` accepts only
+`displayName`, `timezone`, `locale`, `appearance`, `defaultLandingPage`, `compactMode`,
+`showAnalytics`, `showInboxHealth`, `showRecentActivity`, `defaultReplyTone`, and
+`defaultReplyLength`. Unknown ownership or credential fields are rejected. These routes never sync
+Gmail, invoke OpenAI, or trigger analysis.
+
+`GET /api/account` returns a bounded JSON export of the authenticated user's owned application data.
+Its Gmail projection excludes access tokens, refresh tokens, encrypted payloads, OAuth state, and
+provider secrets. `DELETE /api/account` requires
+`{ "confirmation": "DELETE MY ACCOUNT" }`; real mode deletes the current Supabase Auth user and
+relies on existing foreign-key cascades, while demo mode resets the fixed fictional state.
+
+`POST /api/gmail/disconnect` remains idempotent: remote revocation is attempted, local encrypted
+credentials are removed even if revocation fails, and no provider error body is exposed.
+`POST /api/demo/reset` is authenticated, demo-only, rate-limited, and restores deterministic data.

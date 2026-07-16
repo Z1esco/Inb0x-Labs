@@ -40,6 +40,9 @@ attachments are never downloaded, and logs must use an allowlist.
 | Misleading frontend action state        | Copy-only reply labels, no Send control, explicit task acceptance, and read-only Gmail copy       |
 | Unsafe client rendering                 | Plain-text email contracts and no `dangerouslySetInnerHTML`                                       |
 | Destructive UI confusion                | Explicit reset/delete hierarchy, safe messages, and keyboard-visible confirmation paths           |
+| Cross-user settings or export access    | Server-derived identity, strict schemas, explicit user filters, RLS, safe export projections      |
+| Accidental destructive account action   | Exact confirmation phrase, per-user rate limit, server-only Auth Admin call, FK cascades          |
+| Credential leakage through export       | Gmail export allowlist excludes provider tokens, encrypted payloads, secrets, and OAuth state     |
 
 Task action items are untrusted suggestions until a user explicitly accepts them. The browser may
 submit only an analysis ID and action index; title, evidence, source message, ownership, source type,
@@ -51,6 +54,12 @@ same not-found response.
 Before production, replace the lightweight request-burst limiter with a distributed implementation,
 run Supabase advisors, verify every policy and the atomic usage reservation with two real test users,
 rotate any exposed secret, and test deletion against a dedicated Gmail account.
+
+Settings updates are authenticated, strictly validated, rate-limited, and explicitly scoped by the
+server-derived user ID. Account export selects bounded allowlisted fields; it intentionally includes
+owned normalized content and generated drafts because it is a user data export, but never credential
+material. Account deletion uses the server-only Supabase admin client for exactly the authenticated
+Auth user. Production deletion must be manually verified in a disposable test project before launch.
 
 The previously exposed Supabase privileged key must be rotated before any further live migration or
 production deployment. Store the replacement only in local `.env.local` and Vercel. Reply drafts use

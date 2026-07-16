@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("judge can complete the critical demo flow", async ({ page }) => {
+test("judge can complete the critical demo flow", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
   await page.getByRole("link", { name: "Open demo" }).click();
   await expect(
@@ -24,7 +25,10 @@ test("judge can complete the critical demo flow", async ({ page }) => {
     copyOnly: true,
     sent: false,
   });
-  await page.getByRole("link", { name: "Inbox", exact: true }).click();
+  await page
+    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("link", { name: "Inbox", exact: true })
+    .click();
   await page.locator('a[href="/inbox/proposal-approval"]').first().click();
   await expect(page.getByRole("heading", { name: "Analysis" })).toBeVisible();
   await page.getByRole("button", { name: "Generate draft" }).click();
@@ -32,6 +36,11 @@ test("judge can complete the critical demo flow", async ({ page }) => {
   await expect(
     page.getByText("Re: Approval needed: Aurora proposal"),
   ).toBeVisible();
+  await page.getByRole("button", { name: "Copy reply" }).click();
+  await expect(
+    page.getByRole("button", { name: "Copied to clipboard" }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: /send/i })).toHaveCount(0);
   const draftListResponse = await page.request.get("/api/replies");
   expect(draftListResponse.ok()).toBe(true);
   const draftList = await draftListResponse.json();
@@ -51,13 +60,28 @@ test("judge can complete the critical demo flow", async ({ page }) => {
   );
   expect(deleteDraftResponse.ok()).toBe(true);
   expect((await deleteDraftResponse.json()).data.deleted).toBe(true);
-  await page.getByRole("link", { name: "Tasks", exact: true }).click();
+  await page
+    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("link", { name: "Tasks", exact: true })
+    .click();
   await page.getByLabel("Task title").fill("Prepare judging notes");
   await page.getByRole("button", { name: "Create task" }).click();
   await expect(page.getByText("Prepare judging notes")).toBeVisible();
-  await page.getByRole("link", { name: "Insights" }).click();
+  await page
+    .getByRole("button", { name: "Complete Prepare judging notes" })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Reopen Prepare judging notes" }),
+  ).toBeVisible();
+  await page
+    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("link", { name: "Insights", exact: true })
+    .click();
   await expect(page.getByRole("heading", { name: "Insights" })).toBeVisible();
-  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  await page
+    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("link", { name: "Settings", exact: true })
+    .click();
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByRole("status")).toContainText("Demo restored");
 });

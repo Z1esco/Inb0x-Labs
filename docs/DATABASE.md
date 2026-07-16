@@ -11,6 +11,11 @@ It never contains raw HTML, attachment bodies, or provider attachment IDs. The r
 normalized character count, whether content was trimmed, and a non-authoritative prompt-injection
 marker. A unique constraint on `user_id + gmail_thread_id` prevents duplicate synchronization.
 
+`user_settings` also stores validated timezone, locale, appearance, default landing page, compact
+mode, and dashboard visibility preferences. Defaults are deterministic and database checks constrain
+all enum-like fields. Profile display name and future avatar URL remain in `profiles`; account
+deletion removes the Supabase Auth user and existing foreign keys cascade owned application rows.
+
 `email_analyses` stores only schema-validated structured output and provider audit metadata. Its
 cache uniqueness covers thread, content hash, prompt version, schema version, and model. The
 `reserve_analysis_usage` service-role-only function uses a transaction advisory lock to atomically

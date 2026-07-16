@@ -3,38 +3,59 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 import { apiClient } from "@/lib/api-client";
-import type { ReplyLength, ReplyTone, UserSettings } from "@/types/contracts";
+import type {
+  AppearanceMode,
+  DefaultLandingPage,
+  ReplyLength,
+  ReplyTone,
+  SettingsData,
+  UpdateSettingsRequest,
+} from "@/types/contracts";
 
 export function SettingsPanel({ demo }: { demo: boolean }) {
-  const [settings, setSettings] = useState<UserSettings | null>(null);
-  const [tone, setTone] = useState<ReplyTone>("balanced");
-  const [length, setLength] = useState<ReplyLength>("medium");
+  const [settings, setSettings] = useState<SettingsData | null>(null);
+  const [displayName, setDisplayName] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  async function loadSettings() {
+    const value = await apiClient.getSettings();
+    setSettings(value);
+    setDisplayName(value.profile.displayName ?? "");
+  }
+
   useEffect(() => {
+    let mounted = true;
     void apiClient
       .getSettings()
       .then((value) => {
+        if (!mounted) return;
         setSettings(value);
-        setTone(value.preferredTone);
-        setLength(value.preferredReplyLength);
+        setDisplayName(value.profile.displayName ?? "");
       })
-      .catch((value) =>
-        setError(
-          value instanceof Error ? value.message : "Settings could not load.",
-        ),
-      )
-      .finally(() => setLoading(false));
+      .catch((value: unknown) => {
+        if (mounted)
+          setError(
+            value instanceof Error ? value.message : "Settings could not load.",
+          );
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
-  async function save(input: Partial<UserSettings>) {
+
+  async function save(input: UpdateSettingsRequest) {
     setMessage(null);
     setError(null);
     try {
       const next = await apiClient.updateSettings(input);
       setSettings(next);
-      setTone(next.preferredTone);
-      setLength(next.preferredReplyLength);
+      setDisplayName(next.profile.displayName ?? "");
       setMessage("Preferences saved.");
     } catch (value) {
       setError(
@@ -42,38 +63,40 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
       );
     }
   }
+
   async function reset() {
     setMessage(null);
     setError(null);
     try {
       await apiClient.resetDemo();
+      await loadSettings();
       setMessage("Demo restored to its original signal.");
     } catch (value) {
       setError(value instanceof Error ? value.message : "Reset failed.");
     }
   }
+
   async function disconnect() {
     setMessage(null);
     setError(null);
     try {
       const response = await fetch("/api/gmail/disconnect", { method: "POST" });
       if (!response.ok) throw new Error("Gmail could not disconnect.");
-      setMessage("Gmail disconnected locally. No email data was deleted.");
+      await loadSettings();
+      setMessage(
+        "Gmail disconnected locally. No email-derived data was deleted.",
+      );
     } catch (value) {
       setError(value instanceof Error ? value.message : "Disconnect failed.");
     }
   }
+
   async function exportData() {
     setMessage(null);
     setError(null);
     try {
-      const response = await fetch("/api/account");
-      if (!response.ok)
-        throw new Error(
-          "Account export is available after the settings backend stack is merged.",
-        );
-      const payload = (await response.json()) as { data: unknown };
-      const blob = new Blob([JSON.stringify(payload.data, null, 2)], {
+      const account = await apiClient.getAccount();
+      const blob = new Blob([JSON.stringify(account, null, 2)], {
         type: "application/json",
       });
       const url = URL.createObjectURL(blob);
@@ -87,6 +110,27 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
       setError(value instanceof Error ? value.message : "Export failed.");
     }
   }
+
+  async function deleteAccount() {
+    if (deleteConfirmation !== "DELETE MY ACCOUNT") return;
+    setMessage(null);
+    setError(null);
+    try {
+      await apiClient.deleteAccount("DELETE MY ACCOUNT");
+      if (demo) {
+        await loadSettings();
+        setDeleteConfirmation("");
+        setMessage("Demo account data reset.");
+      } else {
+        window.location.assign("/login");
+      }
+    } catch (value) {
+      setError(
+        value instanceof Error ? value.message : "Account deletion failed.",
+      );
+    }
+  }
+
   if (loading)
     return (
       <div className="settings-grid">
@@ -94,6 +138,14 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
         <div className="skeleton" style={{ minHeight: 320 }} />
       </div>
     );
+
+  if (!settings)
+    return (
+      <div className="danger-box" role="alert">
+        <Icon name="warning" /> {error ?? "Settings are unavailable."}
+      </div>
+    );
+
   return (
     <div className="settings-grid">
       <div className="stack">
@@ -101,31 +153,85 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
           <div className="surface-header">
             <div>
               <h2>Workspace preferences</h2>
-              <p>Keep the operating layer aligned with how you work.</p>
+              <p>Persisted to your authenticated workspace.</p>
             </div>
-            <span className="status-label">{demo ? "Demo" : "Live"}</span>
+            <span className="status-label">
+              {settings.ai.demoMode ? "Demo" : "Live"}
+            </span>
           </div>
           <div className="settings-section">
-            <div className="setting-line">
-              <div>
-                <strong>Profile</strong>
-                <span>Demo Judge · judge@inb0x.demo</span>
+            <div className="field">
+              <label htmlFor="settings-display-name">Display name</label>
+              <div className="control-row">
+                <input
+                  id="settings-display-name"
+                  className="form-input"
+                  style={{ flex: 1 }}
+                  value={displayName}
+                  onChange={(event) => setDisplayName(event.target.value)}
+                />
+                <button
+                  className="button secondary"
+                  type="button"
+                  disabled={!displayName.trim()}
+                  onClick={() => void save({ displayName: displayName.trim() })}
+                >
+                  Save profile
+                </button>
               </div>
-              <span className="avatar">JD</span>
             </div>
-            <div className="setting-line">
-              <div>
-                <strong>Appearance</strong>
-                <span>Dark-first visual system</span>
-              </div>
-              <span className="status-label connected">Dark</span>
+            <div className="field">
+              <label htmlFor="settings-timezone">Timezone</label>
+              <input
+                id="settings-timezone"
+                className="form-input"
+                value={settings.profile.timezone}
+                onChange={(event) =>
+                  setSettings({
+                    ...settings,
+                    profile: {
+                      ...settings.profile,
+                      timezone: event.target.value,
+                    },
+                  })
+                }
+                onBlur={(event) => void save({ timezone: event.target.value })}
+              />
             </div>
-            <div className="setting-line">
-              <div>
-                <strong>Timezone</strong>
-                <span>UTC in the current dashboard contract</span>
-              </div>
-              <span className="status-label">UTC</span>
+            <div className="field">
+              <label htmlFor="settings-locale">Locale</label>
+              <input
+                id="settings-locale"
+                className="form-input"
+                value={settings.profile.locale}
+                onChange={(event) =>
+                  setSettings({
+                    ...settings,
+                    profile: {
+                      ...settings.profile,
+                      locale: event.target.value,
+                    },
+                  })
+                }
+                onBlur={(event) => void save({ locale: event.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="settings-appearance">Appearance</label>
+              <select
+                id="settings-appearance"
+                className="form-select"
+                value={settings.appearance}
+                onChange={(event) =>
+                  void save({
+                    appearance: event.target.value as AppearanceMode,
+                  })
+                }
+              >
+                <option value="dark">Dark</option>
+                <option value="system">System</option>
+                <option value="light">Light preference</option>
+              </select>
             </div>
           </div>
           <div className="settings-section">
@@ -135,12 +241,12 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
               <select
                 id="settings-tone"
                 className="form-select"
-                value={tone}
-                onChange={(event) => {
-                  const value = event.target.value as ReplyTone;
-                  setTone(value);
-                  void save({ preferredTone: value });
-                }}
+                value={settings.ai.defaultReplyTone}
+                onChange={(event) =>
+                  void save({
+                    defaultReplyTone: event.target.value as ReplyTone,
+                  })
+                }
               >
                 {["direct", "balanced", "warm", "professional"].map((value) => (
                   <option key={value} value={value}>
@@ -154,12 +260,12 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
               <select
                 id="settings-length"
                 className="form-select"
-                value={length}
-                onChange={(event) => {
-                  const value = event.target.value as ReplyLength;
-                  setLength(value);
-                  void save({ preferredReplyLength: value });
-                }}
+                value={settings.ai.defaultReplyLength}
+                onChange={(event) =>
+                  void save({
+                    defaultReplyLength: event.target.value as ReplyLength,
+                  })
+                }
               >
                 {["short", "medium", "detailed"].map((value) => (
                   <option key={value} value={value}>
@@ -174,34 +280,54 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
           <div className="surface-header">
             <div>
               <h2>Dashboard controls</h2>
-              <p>
-                Additional preference persistence is staged with the settings
-                backend.
-              </p>
+              <p>Choose what appears in your default overview.</p>
             </div>
           </div>
           <div className="stack">
-            <div className="setting-line">
-              <div>
-                <strong>Compact mode</strong>
-                <span>Condense dense data panels</span>
-              </div>
-              <span className="status-label">Coming next</span>
+            <div className="field">
+              <label htmlFor="settings-landing">Default landing page</label>
+              <select
+                id="settings-landing"
+                className="form-select"
+                value={settings.dashboard.defaultLandingPage}
+                onChange={(event) =>
+                  void save({
+                    defaultLandingPage: event.target
+                      .value as DefaultLandingPage,
+                  })
+                }
+              >
+                <option value="dashboard">Dashboard</option>
+                <option value="inbox">Inbox</option>
+                <option value="tasks">Tasks</option>
+              </select>
             </div>
-            <div className="setting-line">
-              <div>
-                <strong>Landing page</strong>
-                <span>Choose Dashboard, Inbox, or Tasks</span>
-              </div>
-              <span className="status-label">Coming next</span>
-            </div>
-            <div className="setting-line">
-              <div>
-                <strong>Locale</strong>
-                <span>Future-ready profile metadata</span>
-              </div>
-              <span className="status-label">Coming next</span>
-            </div>
+            {(
+              [
+                "compactMode",
+                "showAnalytics",
+                "showInboxHealth",
+                "showRecentActivity",
+              ] as const
+            ).map((key) => (
+              <label className="setting-line" key={key}>
+                <span>
+                  <strong>
+                    {key
+                      .replace(/([A-Z])/g, " $1")
+                      .replace(/^./, (value) => value.toUpperCase())}
+                  </strong>
+                  <span>Stored per workspace</span>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={settings.dashboard[key]}
+                  onChange={(event) =>
+                    void save({ [key]: event.target.checked })
+                  }
+                />
+              </label>
+            ))}
           </div>
         </section>
       </div>
@@ -214,27 +340,36 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
             </div>
             <Icon name="activity" />
           </div>
-          {settings && (
-            <div className="stack">
-              <div className="setting-line">
-                <div>
-                  <strong>Daily analysis limit</strong>
-                  <span>Remaining usage is server controlled</span>
-                </div>
-                <strong>{settings.dailyAnalysisLimit}</strong>
+          <div className="stack">
+            <div className="setting-line">
+              <div>
+                <strong>Analysis</strong>
+                <span>
+                  {settings.ai.usage.analysis.remaining} remaining today
+                </span>
               </div>
-              <div className="setting-line">
-                <div>
-                  <strong>Gmail lookback</strong>
-                  <span>Recent messages only</span>
-                </div>
-                <strong>{settings.gmailLookbackDays}d</strong>
-              </div>
-              <div className="success-box">
-                <Icon name="check" /> No background analysis. No hidden calls.
-              </div>
+              <strong>
+                {settings.ai.usage.analysis.used}/
+                {settings.ai.usage.analysis.limit}
+              </strong>
             </div>
-          )}
+            <div className="setting-line">
+              <div>
+                <strong>Reply drafts</strong>
+                <span>
+                  {settings.ai.usage.replies.remaining} remaining today
+                </span>
+              </div>
+              <strong>
+                {settings.ai.usage.replies.used}/
+                {settings.ai.usage.replies.limit}
+              </strong>
+            </div>
+            <div className="success-box">
+              <Icon name="check" /> No background analysis. No hidden model
+              calls.
+            </div>
+          </div>
         </section>
         <section className="surface surface-pad">
           <div className="surface-header">
@@ -242,32 +377,40 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
               <h2>Gmail connection</h2>
               <p>Read-only authorization, separate from sign-in.</p>
             </div>
-            <span className="status-label connected">
-              <span className="status-dot connected" /> Connected
+            <span
+              className={`status-label ${settings.gmail.connected ? "connected" : ""}`}
+            >
+              <span
+                className={`status-dot ${settings.gmail.connected ? "connected" : ""}`}
+              />{" "}
+              {settings.gmail.connected ? "Connected" : "Disconnected"}
             </span>
           </div>
-          <p className="muted">judge@inb0x.demo</p>
+          <p className="muted">
+            {settings.gmail.gmailAddress ?? "No Gmail account connected"}
+          </p>
           <div className="control-row">
-            <a
-              className="button secondary"
-              href={demo ? "/settings" : "/api/gmail/connect"}
-            >
-              {demo ? "Demo connection" : "Reconnect Gmail"}
-            </a>
-            <button
-              className="button ghost"
-              type="button"
-              onClick={() => void disconnect()}
-            >
-              Disconnect
-            </button>
+            {!settings.gmail.connected && !demo && (
+              <a className="button secondary" href="/api/gmail/connect">
+                Connect Gmail read-only
+              </a>
+            )}
+            {settings.gmail.connected && (
+              <button
+                className="button ghost"
+                type="button"
+                onClick={() => void disconnect()}
+              >
+                Disconnect
+              </button>
+            )}
           </div>
         </section>
         <section className="surface surface-pad">
           <div className="surface-header">
             <div>
               <h2>Data controls</h2>
-              <p>These actions are explicit and reversible where possible.</p>
+              <p>Export and deletion are explicit authenticated actions.</p>
             </div>
           </div>
           <div className="stack">
@@ -288,10 +431,27 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
               </button>
             )}
             <div className="warning-box">
-              <strong>Account deletion</strong>
-              <br />
-              The destructive account endpoint is staged in PR #8 and will
-              require an exact confirmation phrase after merge.
+              <strong>Delete account</strong>
+              <p>
+                Type DELETE MY ACCOUNT to confirm. Production deletion removes
+                your authenticated account and owned records.
+              </p>
+              <input
+                className="form-input"
+                aria-label="Account deletion confirmation"
+                value={deleteConfirmation}
+                onChange={(event) => setDeleteConfirmation(event.target.value)}
+                placeholder="DELETE MY ACCOUNT"
+              />
+              <button
+                className="button danger"
+                style={{ marginTop: 10 }}
+                type="button"
+                disabled={deleteConfirmation !== "DELETE MY ACCOUNT"}
+                onClick={() => void deleteAccount()}
+              >
+                Delete account
+              </button>
             </div>
           </div>
         </section>
