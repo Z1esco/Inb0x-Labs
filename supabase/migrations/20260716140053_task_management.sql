@@ -20,7 +20,7 @@ alter table public.tasks drop constraint tasks_title_check;
 update public.tasks
 set source = 'email_action',
     source_action_key = encode(
-      digest(user_id::text || ':' || id::text || ':legacy', 'sha256'),
+      extensions.digest(user_id::text || ':' || id::text || ':legacy', 'sha256'),
       'hex'
     )
 where source = 'email';
