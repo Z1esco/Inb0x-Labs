@@ -2,13 +2,13 @@
 
 The root `SECURITY.md` describes responsible disclosure. This document records implementation
 controls. Gmail is read-only, credentials remain server-side, tokens use AES-256-GCM, OAuth state
-is random/signed/expiring, inputs and AI outputs are strict, email HTML is converted to inert text,
+is random/hashed/user-bound/expiring/single-use, inputs and AI outputs are strict, email HTML is converted to inert text,
 attachments are never downloaded, and logs must use an allowlist.
 
 | Threat                                | Control                                                                                            |
 | ------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Stolen refresh token / secret leakage | Authenticated encryption, server-only variables, redacted logs, immediate local deletion           |
-| OAuth CSRF                            | Strong signed state, HTTP-only SameSite cookie, expiry, identity binding                           |
+| OAuth CSRF / replay                   | Keyed state hash, HTTP-only SameSite cookie, user binding, expiry, atomic single-use consumption   |
 | Session theft                         | Server validation, no shared request client, no authenticated response caching                     |
 | Cross-user access / IDOR              | Server-derived identity, ownership filters, RLS on every user table                                |
 | Prompt injection                      | Email is untrusted data; system prompt forbids following it; strict output schema and safety flags |
@@ -18,6 +18,7 @@ attachments are never downloaded, and logs must use an allowlist.
 | Hallucination                         | Evidence, confidence, nullable/empty unknowns, manual review                                       |
 | Sensitive logs                        | No content, tokens, secrets, cookies, prompts, drafts, or provider errors                          |
 | Gmail write access                    | Scope allowlist and absence of write/send code                                                     |
+| Encrypted-token exposure              | Token and OAuth-state tables revoked from browser Data API roles                                   |
 | SQL injection                         | Typed Supabase query builder and validated values                                                  |
 | Sync races / duplicate tasks          | Unique upsert constraints; task IDs and ownership checks                                           |
 

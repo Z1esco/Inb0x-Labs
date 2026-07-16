@@ -9,7 +9,7 @@ fictional user. No route accepts a client-supplied user ID.
 | Method       | Route                          | Purpose                                                                                |
 | ------------ | ------------------------------ | -------------------------------------------------------------------------------------- |
 | GET          | `/api/health`                  | Safe configuration health                                                              |
-| GET/POST     | `/api/gmail/connect`           | Start read-only Gmail OAuth                                                            |
+| GET          | `/api/gmail/connect`           | Start read-only Gmail OAuth                                                            |
 | GET          | `/api/gmail/callback`          | Validate OAuth callback                                                                |
 | GET          | `/api/gmail/status`            | Connection status without tokens                                                       |
 | POST         | `/api/gmail/disconnect`        | Revoke and remove tokens                                                               |
@@ -38,6 +38,15 @@ curl -X POST http://localhost:3000/api/replies/draft \
 ```
 
 Stable errors include `UNAUTHENTICATED`, `FORBIDDEN`, `INVALID_REQUEST`,
+`OAUTH_STATE_INVALID`, `OAUTH_STATE_EXPIRED`, `OAUTH_ACCESS_DENIED`,
+`GOOGLE_CONFIGURATION_ERROR`,
 `GMAIL_NOT_CONNECTED`, `GMAIL_AUTH_EXPIRED`, `GMAIL_PERMISSION_DENIED`,
 `THREAD_NOT_FOUND`, `ANALYSIS_LIMIT_REACHED`, `ANALYSIS_FAILED`,
 `MODEL_OUTPUT_INVALID`, `RATE_LIMITED`, `DEMO_MODE_ONLY`, and `INTERNAL_ERROR`.
+
+`GET /api/gmail/status` returns only `connected`, `gmailAddress`, `grantedScopes`,
+`connectedAt`, `lastSyncedAt`, `requiresReauthorization`, and `readOnly`. Provider tokens,
+encrypted payloads, Google secrets, and internal connection IDs are never public fields.
+
+The browser callback redirects only to fixed destinations: `/dashboard?gmail=connected`,
+`/settings?gmail=denied`, or `/settings?gmail=error`.

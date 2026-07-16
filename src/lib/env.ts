@@ -6,6 +6,23 @@ const optionalString = z.preprocess(
   blankToUndefined,
   z.string().min(1).optional(),
 );
+const oauthStateSecret = z.preprocess(
+  blankToUndefined,
+  z
+    .string()
+    .min(32, "OAUTH_STATE_SECRET must be at least 32 characters")
+    .optional(),
+);
+const tokenEncryptionKey = z.preprocess(
+  blankToUndefined,
+  z
+    .string()
+    .refine(
+      (value) => Buffer.from(value, "base64").length === 32,
+      "TOKEN_ENCRYPTION_KEY must decode to exactly 32 bytes",
+    )
+    .optional(),
+);
 const intWithDefault = (fallback: number, min: number, max: number) =>
   z.preprocess(
     blankToUndefined,
@@ -28,8 +45,8 @@ const environmentSchema = z
     GOOGLE_CLIENT_ID: optionalString,
     GOOGLE_CLIENT_SECRET: optionalString,
     GOOGLE_REDIRECT_URI: optionalUrl,
-    OAUTH_STATE_SECRET: optionalString,
-    TOKEN_ENCRYPTION_KEY: optionalString,
+    OAUTH_STATE_SECRET: oauthStateSecret,
+    TOKEN_ENCRYPTION_KEY: tokenEncryptionKey,
     OPENAI_API_KEY: optionalString,
     OPENAI_MODEL: optionalString,
     OPENAI_REASONING_EFFORT: z.preprocess(

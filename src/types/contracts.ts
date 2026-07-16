@@ -110,9 +110,11 @@ export interface DashboardSummary {
 }
 export interface GmailConnectionStatus {
   connected: boolean;
-  address: string | null;
+  gmailAddress: string | null;
+  grantedScopes: string[];
+  connectedAt: string | null;
   lastSyncedAt: string | null;
-  scopes: string[];
+  requiresReauthorization: boolean;
   readOnly: true;
 }
 export interface UserSettings {
@@ -136,6 +138,10 @@ export type ErrorCode =
   | "UNAUTHENTICATED"
   | "FORBIDDEN"
   | "INVALID_REQUEST"
+  | "OAUTH_STATE_INVALID"
+  | "OAUTH_STATE_EXPIRED"
+  | "OAUTH_ACCESS_DENIED"
+  | "GOOGLE_CONFIGURATION_ERROR"
   | "GMAIL_NOT_CONNECTED"
   | "GMAIL_AUTH_EXPIRED"
   | "GMAIL_PERMISSION_DENIED"
