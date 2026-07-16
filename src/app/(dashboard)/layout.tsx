@@ -8,9 +8,11 @@ export default async function DashboardLayout({
   const user = await requireCurrentUser().catch(() => null);
   if (!user) redirect("/login");
   return (
-    <>
-      <AppNav />
+    <AppNav>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       {children}
-    </>
+    </AppNav>
   );
 }

@@ -113,6 +113,11 @@ Backend work must not redesign UI, overwrite Figma work, change visual component
 introduce final styling, or change frontend behavior without contract coordination. Keep shared
 contract changes backward-compatible where practical.
 
+Frontend work follows `DESIGN_RULES.md` and the documents under `docs/FRONTEND_ARCHITECTURE.md`,
+`docs/DESIGN_SYSTEM.md`, `docs/MOTION_SYSTEM.md`, and `docs/ACCESSIBILITY.md`. The UI is dark-first,
+uses signal red/cyan/blue/amber semantics, contains no green-family colors, and does not use textual
+pillboxes. Frontend routes consume existing contracts and never invent provider behavior.
+
 ## 14. Performance rules
 
 Avoid N+1 queries, unbounded lists/windows, automatic external calls, raw-body dashboard responses,

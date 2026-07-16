@@ -15,6 +15,10 @@ Avatar and locale are future-ready metadata only.
 Reading or updating settings never invokes Google or OpenAI, performs a Gmail sync, analyzes email,
 or generates a reply. Gmail status is read from persisted connection state.
 
+The frontend `SettingsPanel` consumes `SettingsData` directly and persists only the allowlisted
+`UpdateSettingsRequest` fields. It uses the authenticated account export/delete methods, refreshes
+state after Gmail disconnect or demo reset, and never accepts a browser-supplied user identifier.
+
 ## Account controls
 
 `GET /api/account` produces a bounded JSON export for the authenticated user. Export projections

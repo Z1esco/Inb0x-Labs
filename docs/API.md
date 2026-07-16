@@ -127,6 +127,10 @@ missing or cross-user IDs behind `REPLY_DRAFT_NOT_FOUND`. Deletion never removes
 priority metadata, tasks, copy-only drafts, usage, seven-day trends, and safe activity. The timezone
 must be a valid IANA name. It never calls Gmail/OpenAI or performs mutations. See `docs/DASHBOARD.md`.
 
+The frontend consumes this response through `src/lib/api-client.ts`. Dashboard, Inbox, Insights, Tasks,
+and Drafts render loading, empty, and safe error states; none of them starts Gmail sync, analysis, or
+reply generation automatically. Settings and account controls consume the merged settings contract.
+
 ## Settings and account APIs
 
 `GET /api/settings` returns profile metadata, appearance, dashboard preferences, AI defaults and

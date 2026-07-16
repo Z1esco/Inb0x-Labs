@@ -22,6 +22,7 @@ architecture, security, Git workflow, verification, and reporting requirements.
 | `tests/unit`                                                               | Pure schemas, hashing, mapping, and security assertions                       | Backend lead                        |
 | `tests/integration`                                                        | Authenticated routes, service boundaries, persistence behavior, demo flows    | Backend lead                        |
 | `src/components`, dashboard/marketing presentation, `src/styles`, `public` | UI, responsive behavior, animation, assets, visual polish                     | Frontend partner                    |
+| `DESIGN_RULES.md`, `docs/FRONTEND_ARCHITECTURE.md`                         | Frontend design authority, composition, responsive and motion rules           | Frontend partner                    |
 | `docs`                                                                     | Architecture, API, security, setup, and handoff decisions                     | Shared                              |
 
 ## Layer rules

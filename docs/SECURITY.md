@@ -37,6 +37,9 @@ attachments are never downloaded, and logs must use an allowlist.
 | Unbounded analytics or N+1 abuse        | Seven parallel capped queries, seven-day windows, bounded outputs                                 |
 | Timezone and score misuse               | Validated IANA zones, transparent clamped formula, insufficient-data state                        |
 | Demo/production or quota leakage        | Explicit demo adapter and per-user usage without reservation internals                            |
+| Misleading frontend action state        | Copy-only reply labels, no Send control, explicit task acceptance, and read-only Gmail copy       |
+| Unsafe client rendering                 | Plain-text email contracts and no `dangerouslySetInnerHTML`                                       |
+| Destructive UI confusion                | Explicit reset/delete hierarchy, safe messages, and keyboard-visible confirmation paths           |
 | Cross-user settings or export access    | Server-derived identity, strict schemas, explicit user filters, RLS, safe export projections      |
 | Accidental destructive account action   | Exact confirmation phrase, per-user rate limit, server-only Auth Admin call, FK cascades          |
 | Credential leakage through export       | Gmail export allowlist excludes provider tokens, encrypted payloads, secrets, and OAuth state     |
