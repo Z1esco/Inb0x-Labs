@@ -15,6 +15,11 @@ while preserving loading, empty, and error states.
 Own `src/components`, marketing/dashboard presentation routes, `src/styles`, and `public`. Coordinate
 before changing `src/app/api`, `src/server`, `src/schemas`, `src/prompts`, `supabase`, or public contracts.
 
+Read `DESIGN_RULES.md`, `docs/FRONTEND_ARCHITECTURE.md`, `docs/DESIGN_SYSTEM.md`,
+`docs/MOTION_SYSTEM.md`, and `docs/ACCESSIBILITY.md` before changing the frontend foundation. The
+`feat/frontend-cinematic-ui` branch provides the current shell and domain views; preserve the no-green,
+no-textual-pill, read-only, copy-only, and explicit-task boundaries.
+
 Create `feat/short-name` from `develop`, use conventional commits, keep PRs focused, and run
 `npm run check` before review. Avoid moving shared types or rewriting the minimal shell and backend in
 the same PR; this keeps merge conflicts small.

@@ -125,3 +125,8 @@ missing or cross-user IDs behind `REPLY_DRAFT_NOT_FOUND`. Deletion never removes
 `GET /api/dashboard?timezone=Asia%2FKuala_Lumpur` returns user-owned persisted overview, focus,
 priority metadata, tasks, copy-only drafts, usage, seven-day trends, and safe activity. The timezone
 must be a valid IANA name. It never calls Gmail/OpenAI or performs mutations. See `docs/DASHBOARD.md`.
+
+The frontend consumes this response through `src/lib/api-client.ts`. Dashboard, Inbox, Insights, Tasks,
+and Drafts render loading, empty, and safe error states; none of them starts Gmail sync, analysis, or
+reply generation automatically. Settings controls use only fields available on the current branch; the
+expanded account/settings contract is staged in PR #8.

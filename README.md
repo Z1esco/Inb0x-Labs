@@ -11,10 +11,11 @@ surfaces deadlines, extracts tasks, prioritizes what matters, and helps people w
 toward Inbox Zero—without changing anything in their mailbox.
 
 Repository contributors and Codex sessions must follow [PROJECT_RULES.md](PROJECT_RULES.md).
+Frontend work also follows [DESIGN_RULES.md](DESIGN_RULES.md).
 
 [![Status](https://img.shields.io/badge/status-in%20development-F59E0B?style=for-the-badge)](#-project-status)
 [![Gmail Access](https://img.shields.io/badge/Gmail-read--only-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](#-privacy-first-by-design)
-[![License](https://img.shields.io/badge/license-MIT-22C55E?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-65D9E8?style=for-the-badge)](LICENSE)
 [![Hackathon](https://img.shields.io/badge/hackathon-Apps%20for%20Your%20Life-6366F1?style=for-the-badge)](#-hackathon)
 
 [Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Getting Started](#-getting-started) • [Security](#-security) • [Roadmap](#%EF%B8%8F-roadmap)
@@ -75,6 +76,10 @@ They expose `copyOnly: true` and `sent: false`; Inb0x has no send route or Gmail
 See [SECURITY.md](SECURITY.md) for the vulnerability disclosure policy and security model.
 
 ## 🏗️ Architecture
+
+Frontend decisions are documented in [DESIGN_RULES.md](DESIGN_RULES.md) and
+[docs/FRONTEND_ARCHITECTURE.md](docs/FRONTEND_ARCHITECTURE.md). The product is dark-first, uses no
+green-family UI colors, and avoids textual pillboxes.
 
 ```mermaid
 flowchart LR

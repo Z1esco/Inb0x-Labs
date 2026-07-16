@@ -37,6 +37,9 @@ attachments are never downloaded, and logs must use an allowlist.
 | Unbounded analytics or N+1 abuse        | Seven parallel capped queries, seven-day windows, bounded outputs                                 |
 | Timezone and score misuse               | Validated IANA zones, transparent clamped formula, insufficient-data state                        |
 | Demo/production or quota leakage        | Explicit demo adapter and per-user usage without reservation internals                            |
+| Misleading frontend action state        | Copy-only reply labels, no Send control, explicit task acceptance, and read-only Gmail copy       |
+| Unsafe client rendering                 | Plain-text email contracts and no `dangerouslySetInnerHTML`                                       |
+| Destructive UI confusion                | Explicit reset/delete hierarchy, safe messages, and keyboard-visible confirmation paths           |
 
 Task action items are untrusted suggestions until a user explicitly accepts them. The browser may
 submit only an analysis ID and action index; title, evidence, source message, ownership, source type,

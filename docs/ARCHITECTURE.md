@@ -72,6 +72,13 @@ The dashboard uses seven bounded, parallel, user-scoped metadata queries. Mappin
 timezone-aware focus, trends, and activity composition are pure server logic. No bodies, provider
 calls, or mutations occur during dashboard loading.
 
+## Frontend composition
+
+The App Router composes a stable shell around domain views. `AppNav` and the page primitives provide
+the shared visual grammar; Dashboard, Inbox, Thread, Drafts, Tasks, Insights, and Settings views consume
+the existing typed API client. Demo fixtures may seed first paint, but real mode retains explicit loading,
+empty, and error states. See `DESIGN_RULES.md` and `docs/FRONTEND_ARCHITECTURE.md`.
+
 ## Data deletion
 
 Disconnect attempts Google revocation, then deletes local encrypted tokens even if revocation
