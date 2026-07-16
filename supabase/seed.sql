@@ -1,0 +1,2 @@
+-- Demo mode uses fictional TypeScript fixtures and requires no database seed.
+-- Real-mode test data should be inserted through authenticated application APIs so RLS applies.
