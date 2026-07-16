@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a focused improvement.
+title: "feat: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Which user problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Smallest useful solution
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: MVP boundaries
+      options:
+        - label: This preserves read-only Gmail access.
+          required: true
+        - label: This does not send or automatically modify email.
+          required: true
