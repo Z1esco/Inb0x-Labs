@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/logo/inb0x-labs-logo.png" alt="Inb0x Labs logo" width="720" />
+
 # 📬 Inb0x
 
 ### Turn inbox overload into a clear action plan.
