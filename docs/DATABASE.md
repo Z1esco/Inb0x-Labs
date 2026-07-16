@@ -17,6 +17,16 @@ cache uniqueness covers thread, content hash, prompt version, schema version, an
 count and reserve one real model call per authenticated user and UTC day. Browser roles cannot call
 that function. Cache hits and demo responses do not create usage events.
 
+`tasks` supports manual and explicitly accepted email actions. Email-derived rows preserve the
+owning thread, analysis, source message, and a maximum-300-character evidence excerpt. A unique
+`user_id + source_action_key` constraint prevents concurrent duplicates while allowing unlimited
+manual tasks because their key is null. Checks bound titles/descriptions/evidence, validate source
+shapes, and require `completed_at` exactly when status is completed. A trigger rejects cross-user
+thread or analysis links independently of repository queries. Authenticated browser roles receive
+read-only table access through RLS; mutations use the server-only service role because protected source
+fields must never be writable through the Data API. Every privileged mutation still filters or assigns
+the authenticated user explicitly. User/status, due-date, source, and priority indexes support filters.
+
 All user-owned tables enable Row Level Security. SELECT, INSERT, UPDATE, and DELETE policies
 combine `TO authenticated` with `(select auth.uid()) = user_id` (or profile `id`). UPDATE uses
 both `USING` and `WITH CHECK`. Explicit Data API grants are present because table exposure and

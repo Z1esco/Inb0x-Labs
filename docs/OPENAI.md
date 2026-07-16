@@ -4,6 +4,9 @@ The analysis engine is an explicit, read-only operation over an owned, normalize
 does not modify Gmail, generate replies, create tasks, run background agents, or fetch links. Demo
 mode returns deterministic stored analyses without an API key or external request.
 
+Extracted action items are suggestions only. The analysis engine never creates tasks; an authenticated
+user must explicitly accept an item through the task API, which reloads the stored validated output.
+
 ## Configuration
 
 Create an OpenAI API project and server-side key, configure billing and a low project budget, then

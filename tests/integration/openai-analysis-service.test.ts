@@ -71,6 +71,7 @@ const thread = {
 
 function cacheRow(value = analysis) {
   return {
+    id: "analysis-cached",
     summary: value.summary,
     category: value.category,
     priority_score: value.priorityScore,
@@ -125,10 +126,12 @@ function database(state: DatabaseState) {
               : null,
         error: null,
       }),
-      upsert: async (value: unknown) => {
+      upsert: (value: unknown) => {
         state.upserts.push(value);
-        return { error: null };
+        response = { data: { id: "analysis-created" }, error: null };
+        return builder;
       },
+      single: async () => response,
       update: (value: unknown) => {
         state.updates.push(value);
         return builder;
@@ -181,6 +184,7 @@ describe("analysis cache, ownership, and quota", () => {
     });
     const result = await analyzeRealThread("user-1", "thread-1", false);
     expect(result.cached).toBe(true);
+    expect(result.analysisId).toBe("analysis-cached");
     expect(result.usage).toEqual({ used: 4, limit: 20, remaining: 16 });
     expect(client.rpc).not.toHaveBeenCalled();
     expect(mocks.analyzeWithOpenAI).not.toHaveBeenCalled();
@@ -200,6 +204,7 @@ describe("analysis cache, ownership, and quota", () => {
     const { state, client } = setupDatabase({ cache: cacheRow() });
     const result = await analyzeRealThread("user-1", "thread-1", true);
     expect(result.cached).toBe(false);
+    expect(result.analysisId).toBe("analysis-created");
     expect(client.rpc).toHaveBeenCalledTimes(1);
     expect(mocks.analyzeWithOpenAI).toHaveBeenCalledTimes(1);
     expect(state.upserts).toHaveLength(1);

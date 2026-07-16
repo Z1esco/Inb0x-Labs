@@ -1,12 +1,17 @@
 import { randomUUID } from "node:crypto";
 import { AppError } from "@/lib/errors";
 import { demoThreads } from "@/mock/emails";
-import { initialDemoTasks } from "@/mock/tasks";
+import {
+  createDemoManualTask,
+  deleteDemoTaskRecord,
+  listAllDemoTasks,
+  resetDemoTasks,
+  updateDemoTaskRecord,
+} from "@/server/tasks/demo-task-repository";
 import type {
   DashboardSummary,
   EmailThreadDetail,
   ReplyDraft,
-  Task,
   UserSettings,
 } from "@/types/contracts";
 
@@ -20,18 +25,16 @@ const defaultSettings: UserSettings = {
   preferredReplyLength: "medium",
 };
 interface DemoState {
-  tasks: Task[];
   settings: UserSettings;
   analysisCount: number;
 }
 const state: DemoState = {
-  tasks: structuredClone(initialDemoTasks),
   settings: { ...defaultSettings },
   analysisCount: 0,
 };
 
 export function resetDemo(): void {
-  state.tasks = structuredClone(initialDemoTasks);
+  resetDemoTasks();
   state.settings = { ...defaultSettings };
   state.analysisCount = 0;
 }
@@ -86,44 +89,10 @@ export function listDemoThreadsPage(input: {
 export function getDemoThread(id: string): EmailThreadDetail | undefined {
   return demoThreads.find((thread) => thread.id === id);
 }
-export function listDemoTasks(): Task[] {
-  return state.tasks.map((task) => ({ ...task }));
-}
-export function createDemoTask(
-  input: Pick<Task, "title" | "priority"> &
-    Partial<Pick<Task, "threadId" | "description" | "dueAt">>,
-): Task {
-  const task: Task = {
-    id: randomUUID(),
-    threadId: input.threadId ?? null,
-    title: input.title,
-    description: input.description ?? null,
-    source: input.threadId ? "email" : "manual",
-    status: "open",
-    priority: input.priority,
-    dueAt: input.dueAt ?? null,
-    completedAt: null,
-    createdAt: new Date().toISOString(),
-  };
-  state.tasks.unshift(task);
-  return { ...task };
-}
-export function updateDemoTask(
-  id: string,
-  patch: { [Key in keyof Task]?: Task[Key] | undefined },
-): Task | undefined {
-  const task = state.tasks.find((item) => item.id === id);
-  if (!task) return undefined;
-  Object.assign(task, patch);
-  task.completedAt =
-    task.status === "completed" ? new Date().toISOString() : null;
-  return { ...task };
-}
-export function deleteDemoTask(id: string): boolean {
-  const before = state.tasks.length;
-  state.tasks = state.tasks.filter((task) => task.id !== id);
-  return state.tasks.length < before;
-}
+export const listDemoTasks = listAllDemoTasks;
+export const createDemoTask = createDemoManualTask;
+export const updateDemoTask = updateDemoTaskRecord;
+export const deleteDemoTask = deleteDemoTaskRecord;
 export function getDemoSettings(): UserSettings {
   return { ...state.settings };
 }
@@ -172,6 +141,7 @@ export function createDemoDraft(
   };
 }
 export function getDashboardSummary(): DashboardSummary {
+  const tasks = listAllDemoTasks();
   const priorityEmails = demoThreads
     .filter((thread) => thread.analysis && thread.analysis.priorityScore >= 75)
     .map((thread) => ({ ...thread, analysis: thread.analysis! }));
@@ -180,7 +150,7 @@ export function getDashboardSummary(): DashboardSummary {
     needsReply: demoThreads.filter((t) => t.analysis?.needsReply).length,
     urgent: demoThreads.filter((t) => t.analysis?.priorityLevel === "critical")
       .length,
-    openTasks: state.tasks.filter((t) => t.status !== "completed").length,
+    openTasks: tasks.filter((t) => t.status !== "completed").length,
     priorityEmails,
     insights: [
       {
@@ -201,7 +171,7 @@ export function getDashboardSummary(): DashboardSummary {
       },
       {
         label: "Open tasks",
-        value: state.tasks.filter((t) => t.status !== "completed").length,
+        value: tasks.filter((t) => t.status !== "completed").length,
         unit: "count",
         trend: "up",
       },

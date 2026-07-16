@@ -58,10 +58,18 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
+          email_thread_id: string | null;
+          email_analysis_id: string | null;
+          source_message_id: string | null;
+          source_action_key: string | null;
+          source_evidence: string | null;
           title: string;
+          description: string | null;
+          source: string;
           status: string;
           priority: string;
           due_at: string | null;
+          completed_at: string | null;
           created_at: string;
           updated_at: string;
         };

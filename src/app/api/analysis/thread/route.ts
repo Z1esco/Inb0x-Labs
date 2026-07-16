@@ -21,6 +21,7 @@ export async function POST(request: Request) {
         );
       }
       return ok(thread.analysis, {
+        analysisId: thread.analysisId,
         demo: true,
         cached: true,
         usage: { used: 0, limit: 20, remaining: 20 },
@@ -32,6 +33,7 @@ export async function POST(request: Request) {
       input.force,
     );
     return ok(result.analysis, {
+      analysisId: result.analysisId,
       cached: result.cached,
       usage: result.usage,
     });

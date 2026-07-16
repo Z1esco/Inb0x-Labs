@@ -24,6 +24,15 @@ attachments are never downloaded, and logs must use an allowlist.
 | Encrypted-token exposure              | Token and OAuth-state tables revoked from browser Data API roles                                  |
 | SQL injection                         | Typed Supabase query builder and validated values                                                 |
 | Sync races / duplicate tasks          | Unique upsert constraints; task IDs and ownership checks                                          |
+| Forged task source                    | Strict bodies, stored-analysis lookup, ownership trigger, bounded evidence                        |
+| Concurrent extracted-task creation    | Stable SHA-256 source key plus user-scoped database uniqueness                                    |
+
+Task action items are untrusted suggestions until a user explicitly accepts them. The browser may
+submit only an analysis ID and action index; title, evidence, source message, ownership, source type,
+and completion timestamps come from validated server-side state. Task responses omit the internal
+source-action key and user ID. Authenticated browser roles have read-only task table grants; strict
+server routes perform explicitly user-scoped mutations. Missing and cross-user identifiers share the
+same not-found response.
 
 Before production, replace the lightweight request-burst limiter with a distributed implementation,
 run Supabase advisors, verify every policy and the atomic usage reservation with two real test users,

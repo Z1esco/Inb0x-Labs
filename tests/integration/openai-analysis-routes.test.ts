@@ -48,6 +48,7 @@ beforeEach(() => {
   clearRateLimits();
   mocks.requireCurrentUser.mockResolvedValue({ id: "auth-user", demo: false });
   mocks.analyzeRealThread.mockResolvedValue({
+    analysisId: "analysis-real",
     analysis,
     cached: false,
     usage: { used: 1, limit: 20, remaining: 19 },
@@ -63,6 +64,7 @@ beforeEach(() => {
     results: [{ threadId: "thread-1", status: "analyzed", errorCode: null }],
   });
   mocks.getCurrentAnalysis.mockResolvedValue({
+    analysisId: "analysis-real",
     analysis,
     cached: true,
     usage: { used: 1, limit: 20, remaining: 19 },
@@ -133,6 +135,7 @@ describe("POST /api/analysis/thread", () => {
       true,
     );
     expect((await response.json()).meta).toMatchObject({
+      analysisId: "analysis-real",
       cached: false,
       usage: { used: 1, limit: 20, remaining: 19 },
     });
@@ -152,14 +155,21 @@ describe("POST /api/analysis/thread", () => {
 
   it("returns deterministic demo analysis without the real service", async () => {
     mocks.requireCurrentUser.mockResolvedValue({ id: "demo", demo: true });
-    mocks.getDemoThread.mockReturnValue({ analysis });
+    mocks.getDemoThread.mockReturnValue({
+      analysisId: "00000000-0000-4000-8000-000000000001",
+      analysis,
+    });
     const response = await analyzeThread(
       jsonRequest("http://localhost/api/analysis/thread", {
         threadId: "demo-thread",
       }),
     );
     const body = await response.json();
-    expect(body.meta).toMatchObject({ demo: true, cached: true });
+    expect(body.meta).toMatchObject({
+      analysisId: "00000000-0000-4000-8000-000000000001",
+      demo: true,
+      cached: true,
+    });
     expect(body.meta.usage.used).toBe(0);
     expect(mocks.analyzeRealThread).not.toHaveBeenCalled();
   });
