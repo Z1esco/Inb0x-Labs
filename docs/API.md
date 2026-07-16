@@ -9,6 +9,7 @@ fictional user. No route accepts a client-supplied user ID.
 | Method           | Route                          | Purpose                                                        |
 | ---------------- | ------------------------------ | -------------------------------------------------------------- |
 | GET              | `/api/health`                  | Safe configuration health                                      |
+| POST             | `/api/auth/logout`             | Clear the current local Supabase session                       |
 | GET              | `/api/dashboard`               | Read-only persisted dashboard aggregation                      |
 | GET              | `/api/gmail/connect`           | Start read-only Gmail OAuth                                    |
 | GET              | `/api/gmail/callback`          | Validate OAuth callback                                        |
@@ -149,3 +150,5 @@ relies on existing foreign-key cascades, while demo mode resets the fixed fictio
 `POST /api/gmail/disconnect` remains idempotent: remote revocation is attempted, local encrypted
 credentials are removed even if revocation fails, and no provider error body is exposed.
 `POST /api/demo/reset` is authenticated, demo-only, rate-limited, and restores deterministic data.
+`POST /api/auth/logout` is idempotent, clears only the current local Supabase session in real mode,
+and exits to the landing page through the frontend. It never revokes Gmail authorization or deletes data.

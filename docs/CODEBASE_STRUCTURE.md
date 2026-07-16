@@ -17,6 +17,7 @@ architecture, security, Git workflow, verification, and reporting requirements.
 | `src/schemas`                                                              | Strict Zod request and model-output schemas                                   | Backend lead                        |
 | `src/types`                                                                | Shared public contracts and database type surface                             | Shared; backend coordinates changes |
 | `src/lib`                                                                  | Shared API, validation, encryption, hashing, and Supabase utilities           | Backend lead                        |
+| `src/proxy.ts`                                                             | Supabase SSR session-cookie refresh before protected server rendering         | Backend lead                        |
 | `src/mock`                                                                 | Deterministic fictional fixtures matching public contracts                    | Shared                              |
 | `supabase/migrations`                                                      | Additive PostgreSQL schema, constraints, indexes, triggers, grants, and RLS   | Backend lead                        |
 | `tests/unit`                                                               | Pure schemas, hashing, mapping, and security assertions                       | Backend lead                        |
