@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/icons";
 import {
   EmptyState,
@@ -24,16 +24,38 @@ export function InboxView() {
   >("priority");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      setThreads(await apiClient.listThreads());
+    } catch (value) {
+      setError(
+        value instanceof Error ? value.message : "Inbox could not load.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
   useEffect(() => {
+    let mounted = true;
     void apiClient
       .listThreads()
-      .then(setThreads)
-      .catch((value) =>
-        setError(
-          value instanceof Error ? value.message : "Inbox could not load.",
-        ),
-      )
-      .finally(() => setLoading(false));
+      .then((items) => {
+        if (mounted) setThreads(items);
+      })
+      .catch((value: unknown) => {
+        if (mounted)
+          setError(
+            value instanceof Error ? value.message : "Inbox could not load.",
+          );
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
   const visible = useMemo(
     () =>
@@ -119,7 +141,7 @@ export function InboxView() {
         {loading ? (
           <LoadingGrid />
         ) : error ? (
-          <ErrorState message={error} />
+          <ErrorState message={error} onRetry={() => void load()} />
         ) : visible.length ? (
           <div className="thread-list">
             {visible.map((thread) => (

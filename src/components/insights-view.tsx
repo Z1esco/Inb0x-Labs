@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 import {
   ErrorState,
@@ -15,20 +15,37 @@ import type { DashboardData } from "@/types/contracts";
 export function InsightsView() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const load = useCallback(async () => {
+    setError(null);
+    try {
+      setData(await apiClient.getDashboard({ timezone: "UTC" }));
+    } catch (value) {
+      setError(
+        value instanceof Error ? value.message : "Insights could not load.",
+      );
+    }
+  }, []);
   useEffect(() => {
+    let mounted = true;
     void apiClient
       .getDashboard({ timezone: "UTC" })
-      .then(setData)
-      .catch((value) =>
-        setError(
-          value instanceof Error ? value.message : "Insights could not load.",
-        ),
-      );
+      .then((value) => {
+        if (mounted) setData(value);
+      })
+      .catch((value: unknown) => {
+        if (mounted)
+          setError(
+            value instanceof Error ? value.message : "Insights could not load.",
+          );
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
   if (error)
     return (
       <PageShell eyebrow="Signal room / insights" title="Insights">
-        <ErrorState message={error} />
+        <ErrorState message={error} onRetry={() => void load()} />
       </PageShell>
     );
   if (!data)

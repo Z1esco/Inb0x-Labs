@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 import { apiClient } from "@/lib/api-client";
 import type {
@@ -20,11 +20,21 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function loadSettings() {
-    const value = await apiClient.getSettings();
-    setSettings(value);
-    setDisplayName(value.profile.displayName ?? "");
-  }
+  const loadSettings = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const value = await apiClient.getSettings();
+      setSettings(value);
+      setDisplayName(value.profile.displayName ?? "");
+    } catch (value) {
+      setError(
+        value instanceof Error ? value.message : "Settings could not load.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -143,6 +153,13 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
     return (
       <div className="danger-box" role="alert">
         <Icon name="warning" /> {error ?? "Settings are unavailable."}
+        <button
+          className="button secondary"
+          type="button"
+          onClick={() => void loadSettings()}
+        >
+          Retry
+        </button>
       </div>
     );
 

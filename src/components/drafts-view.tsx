@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 import {
   EmptyState,
@@ -21,19 +21,42 @@ export function DraftsView() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const items = await apiClient.listDrafts();
+      setDrafts(items);
+      setSelectedDraft(items[0] ?? null);
+    } catch (value) {
+      setError(
+        value instanceof Error ? value.message : "Drafts could not load.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
   useEffect(() => {
+    let mounted = true;
     void apiClient
       .listDrafts()
       .then((items) => {
+        if (!mounted) return;
         setDrafts(items);
         setSelectedDraft(items[0] ?? null);
       })
-      .catch((value) =>
-        setError(
-          value instanceof Error ? value.message : "Drafts could not load.",
-        ),
-      )
-      .finally(() => setLoading(false));
+      .catch((value: unknown) => {
+        if (mounted)
+          setError(
+            value instanceof Error ? value.message : "Drafts could not load.",
+          );
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   async function remove(id: string) {
@@ -77,7 +100,7 @@ export function DraftsView() {
       {loading ? (
         <LoadingGrid />
       ) : error ? (
-        <ErrorState message={error} />
+        <ErrorState message={error} onRetry={() => void load()} />
       ) : (
         <Surface className="drafts-surface">
           {drafts.length && selectedDraft ? (
