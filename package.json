@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "db:types": "supabase gen types typescript --local > src/types/database.generated.ts",
+    "verify:supabase-hosted": "node scripts/verify-hosted-supabase-security.mjs",
     "demo:reset": "node scripts/demo-reset.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build"
   },
