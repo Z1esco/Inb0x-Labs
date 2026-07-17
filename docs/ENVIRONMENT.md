@@ -34,7 +34,9 @@ Never commit values, paste privileged values into issues or logs, or prefix a se
 
 Demo mode requires no Supabase, Google, or OpenAI credentials. A deployed demo should still set
 `NEXT_PUBLIC_APP_URL=https://YOUR_PRODUCTION_DOMAIN` so fixed redirects use the deployed origin.
-Real mode fails environment validation when a required provider value is absent.
+Real mode globally requires the three Supabase values. Gmail and OpenAI configuration is validated
+only when those optional provider-backed features are used, allowing application Auth to be rolled
+out and verified independently.
 
 ## Exact callback formats
 

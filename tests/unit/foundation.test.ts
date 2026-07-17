@@ -35,6 +35,18 @@ describe("environment validation", () => {
       /required when DEMO_MODE=false/,
     );
   });
+  it("allows Supabase Auth before optional providers are configured", () => {
+    const env = parseEnvironment({
+      DEMO_MODE: "false",
+      NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
+      SUPABASE_SERVICE_ROLE_KEY: "server-key",
+    });
+
+    expect(env.DEMO_MODE).toBe(false);
+    expect(env.GOOGLE_CLIENT_ID).toBeUndefined();
+    expect(env.OPENAI_API_KEY).toBeUndefined();
+  });
 });
 describe("authenticated token encryption", () => {
   const key = Buffer.alloc(32, 7).toString("base64");

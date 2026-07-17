@@ -149,7 +149,8 @@ DEMO_MODE=true
 
 ### 🔌 Real mode
 
-Real mode requires a Supabase project, Google OAuth credentials, and an OpenAI API key:
+Real mode requires a Supabase project. Gmail and OpenAI features require their provider credentials
+only when those features are enabled:
 
 ```env
 DEMO_MODE=false
