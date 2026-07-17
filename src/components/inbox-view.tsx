@@ -19,7 +19,9 @@ import type { EmailThreadListItem } from "@/types/contracts";
 export function InboxView() {
   const [threads, setThreads] = useState<EmailThreadListItem[]>([]);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"all" | "reply" | "critical">("all");
+  const [filter, setFilter] = useState<
+    "all" | "reply" | "priority" | "deadline"
+  >("priority");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -43,10 +45,11 @@ export function InboxView() {
         const matchesFilter =
           filter === "all" ||
           (filter === "reply" && thread.analysis?.needsReply) ||
-          (filter === "critical" &&
+          (filter === "priority" &&
             ["critical", "high"].includes(
               thread.analysis?.priorityLevel ?? "",
-            ));
+            )) ||
+          (filter === "deadline" && Boolean(thread.analysis?.deadlines.length));
         return matchesQuery && matchesFilter;
       }),
     [filter, query, threads],
@@ -54,8 +57,8 @@ export function InboxView() {
   return (
     <PageShell
       eyebrow="Signal room / inbox"
-      title="Inbox"
-      description="Scan the threads that need a decision, not every thread in the mailbox."
+      title="Priority inbox"
+      description="Signals first: reply requests, deadlines, and threads with a material next step."
       actions={
         <Link className="button primary" href="/settings">
           <Icon name="settings" />
@@ -63,17 +66,10 @@ export function InboxView() {
         </Link>
       }
     >
-      <Surface>
-        <div className="control-row" style={{ marginBottom: 22 }}>
-          <div style={{ minWidth: 240, flex: 1, position: "relative" }}>
-            <span
-              style={{
-                position: "absolute",
-                top: 12,
-                left: 12,
-                color: "var(--text-muted)",
-              }}
-            >
+      <Surface className="inbox-surface">
+        <div className="inbox-command">
+          <div className="inbox-search">
+            <span>
               <Icon name="search" />
             </span>
             <input
@@ -85,18 +81,13 @@ export function InboxView() {
               onChange={(event) => setQuery(event.target.value)}
             />
           </div>
-          <div
-            className="segmented-control"
-            style={{ minWidth: 260 }}
-            role="group"
-            aria-label="Inbox filters"
-          >
+          <div className="inbox-tabs" role="group" aria-label="Inbox filters">
             <button
               type="button"
-              aria-pressed={filter === "all"}
-              onClick={() => setFilter("all")}
+              aria-pressed={filter === "priority"}
+              onClick={() => setFilter("priority")}
             >
-              All threads
+              Priority
             </button>
             <button
               type="button"
@@ -107,16 +98,23 @@ export function InboxView() {
             </button>
             <button
               type="button"
-              aria-pressed={filter === "critical"}
-              onClick={() => setFilter("critical")}
+              aria-pressed={filter === "deadline"}
+              onClick={() => setFilter("deadline")}
             >
-              Priority
+              Deadlines
+            </button>
+            <button
+              type="button"
+              aria-pressed={filter === "all"}
+              onClick={() => setFilter("all")}
+            >
+              All mail
             </button>
           </div>
         </div>
         <SurfaceHeader
-          title={`${visible.length} threads`}
-          description="Normalized, read-only message data."
+          title={`${visible.length} visible threads`}
+          description="Normalized, read-only message data. Priority never mutates your mailbox."
         />
         {loading ? (
           <LoadingGrid />
@@ -143,9 +141,14 @@ export function InboxView() {
                   </p>
                 </span>
                 <span className="list-meta">{thread.messageCount} msg</span>
-                {thread.analysis?.needsReply && (
-                  <span className="status-label critical">Reply</span>
-                )}
+                <span className="thread-statuses">
+                  {thread.analysis?.needsReply && (
+                    <span className="status-label critical">Reply</span>
+                  )}
+                  {thread.analysis?.deadlines.length ? (
+                    <span className="status-label medium">Deadline</span>
+                  ) : null}
+                </span>
                 <PriorityLabel
                   value={thread.analysis?.priorityLevel ?? "unscored"}
                 />
