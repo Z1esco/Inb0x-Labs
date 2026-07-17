@@ -17,18 +17,18 @@ No provider secret, token, email content, prompt, or draft is recorded here.
 
 | Requirement                                                                          | Status                   | Evidence or next action                                                                                                                   |
 | ------------------------------------------------------------------------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Rotate every previously exposed Supabase privileged secret and revoke the old value  | **Blocked**              | Rotation cannot be proven from the repository or CLI. Rotate in Supabase before any privileged hosted operation.                          |
+| Rotate every previously exposed Supabase privileged secret and revoke the old value  | **Passed**               | The exposed modern secret is absent from hosted inventory; the rotated replacement is used locally and in branch-scoped Preview config.   |
 | Confirm local environment files, `.vercel/`, OAuth downloads, and logs are untracked | **Passed**               | Ignore rules and tracked-file scan passed; `.env.local` is untracked.                                                                     |
-| Configure production variables and keep server secrets non-public                    | **Blocked**              | Preview was inspected and contains only `DEMO_MODE` plus `NEXT_PUBLIC_APP_URL`; Production is not configured.                             |
+| Configure production variables and keep server secrets non-public                    | **Passed (Preview)**     | Supabase values are branch-scoped; the service key is sensitive and server-only. Production remains intentionally unset.                  |
 | Run install, full checks, E2E, and dependency audit                                  | **Passed**               | Install, 222 unit/integration tests, production build, 2 Playwright tests, and audit passed.                                              |
 | Run secret, Gmail-write, dangerous-HTML, no-green, and pillbox scans                 | **Passed**               | Relevant matches were reviewed; no runtime Gmail write call, secret exposure, raw HTML rendering, green UI, or textual pillbox was found. |
 | Link the intended Supabase project and inspect migrations                            | **Passed**               | Project `dsohdhwjzsxuppjbynxs` is linked and healthy; remote migration history was inspected.                                             |
-| Apply migrations in filename order                                                   | **Failed**               | Hosted project has migrations 1–2 only. Reply drafts, settings, and server-table hardening migrations are missing.                        |
-| Run linked database lint and Advisors                                                | **Blocked**              | Both returned no issues, but only against the incomplete hosted schema. Repeat after applying all migrations.                             |
-| Confirm RLS and revoke browser mutation grants on server-managed tables              | **Failed**               | RLS is enabled, but the missing hardening migration leaves excessive authenticated mutation grants.                                       |
-| Run two-user isolation checks                                                        | **Blocked**              | Requires the complete hosted schema, rotated server secret, and two disposable users.                                                     |
-| Set the Supabase production Site URL                                                 | **Blocked**              | No production domain or Vercel deployment exists.                                                                                         |
-| Add the production auth callback allowlist entry                                     | **Blocked**              | No production domain exists.                                                                                                              |
+| Apply migrations in filename order                                                   | **Passed**               | All repository migrations, including the least-privilege follow-up, are present in hosted history.                                        |
+| Run linked database lint and Advisors                                                | **Passed**               | Linked lint reported no schema errors and hosted Advisors reported no issues after all migrations.                                        |
+| Confirm RLS and revoke browser mutation grants on server-managed tables              | **Passed**               | All 10 app tables have RLS; authenticated has only `SELECT` on eight safe tables and no credential-table access.                          |
+| Run two-user isolation checks                                                        | **Passed**               | Two disposable users passed bidirectional isolation across eight data classes; fixtures and users were deleted.                           |
+| Set the Supabase production Site URL                                                 | **Passed (Preview)**     | Site URL is the exact branch Preview alias; a custom production domain is not yet known.                                                  |
+| Add the production auth callback allowlist entry                                     | **Passed (Preview)**     | Exact Preview and localhost `/auth/callback` destinations are allowlisted; no wildcard was added.                                         |
 | Configure the Supabase Google provider callback                                      | **Requires credentials** | Must be verified in Google Cloud and Supabase using a dedicated test account.                                                             |
 | Enable Gmail API and configure a dedicated Gmail OAuth client                        | **Requires credentials** | Configuration was not inspected live in this pass.                                                                                        |
 | Register the production Gmail callback URI                                           | **Blocked**              | No production domain exists.                                                                                                              |
@@ -64,21 +64,19 @@ No provider secret, token, email content, prompt, or draft is recorded here.
 
 ## Two-user isolation checklist
 
-All two-user cases are **Blocked** until secret rotation is confirmed and the three missing hosted
-migrations are applied. This includes Gmail/OAuth state, threads, analyses, tasks, reply drafts,
-dashboard/usage, profile/settings/export, safe not-found behavior, and concurrent quota isolation.
+Hosted isolation **passed** on 2026-07-17 through the browser-safe anon-key client with two synthetic,
+disposable authenticated users. Profiles, settings, threads, analyses, tasks, reply drafts, usage,
+and rate limits were visible only to their owner in both directions. Anonymous and invalid-session
+reads, guessed IDs, malformed IDs, direct mutations, privileged RPC execution, and Gmail/OAuth table
+access were blocked. The test deleted both Auth users and cascaded fixtures on completion.
 
-The local PostgreSQL 17 reset applied all five migrations successfully. Local schema lint passed and
-the pgTAP production-security suite passed all 18 assertions. These local checks do not replace the
-required hosted two-user test.
+The local PostgreSQL 17 reset applied the first five migrations successfully. Local schema lint passed
+and the pgTAP production-security suite passed all 18 assertions. The sixth grant-narrowing migration
+was applied and linted directly on the hosted PostgreSQL 17 project.
 
 ## Release decision
 
-PR #10 must remain a Draft and must not be merged into `develop` yet. The minimum unblock sequence is:
-
-1. Rotate and revoke the previously disclosed Supabase privileged secret, then update secret stores.
-2. Apply the three missing forward-only migrations to the linked non-production project.
-3. Repeat migration inspection, linked lint, Advisors, grant review, and two-user isolation testing.
-4. Complete the remaining browser-console, responsive, keyboard, and screen-reader checks against the protected Preview.
-5. Run HTTPS demo, auth, Gmail, and OpenAI smoke tests with disposable provider accounts.
-6. Record the deployment URL and evidence, then mark PR #10 ready only if every release blocker passes.
+PR #10 must remain a Draft and must not be merged into `develop` yet. Supabase database blockers are
+resolved. Next, rotate the Supabase Auth Google client secret, complete the hosted Google sign-in and
+session smoke test, then finish the remaining browser/accessibility checks. Gmail and OpenAI provider
+tests remain separate later release gates.

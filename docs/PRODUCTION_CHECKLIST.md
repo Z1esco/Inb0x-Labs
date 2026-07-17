@@ -6,16 +6,16 @@ or logs.
 
 ## Pre-deployment
 
-- [ ] Rotate every previously exposed Supabase privileged secret and revoke the old value.
-- [ ] Confirm `.env`, `.env.local`, `.env.*.local`, `.vercel/`, OAuth client downloads, and logs are untracked.
+- [x] Rotate every previously exposed Supabase privileged secret and revoke the old value.
+- [x] Confirm `.env`, `.env.local`, `.env.*.local`, `.vercel/`, OAuth client downloads, and logs are untracked.
 - [ ] Configure the variables in `docs/ENVIRONMENT.md`; verify server secrets have no `NEXT_PUBLIC_` prefix.
 - [ ] Run `npm ci`, `npm run check`, `npm run test:e2e`, and `npm audit --omit=dev --audit-level=high`.
 - [ ] Run the repository secret, Gmail-write, dangerous-HTML, no-green, and textual-pillbox scans.
-- [ ] Link the intended non-production Supabase project and review `npx supabase migration list` before pushing.
-- [ ] Apply migrations in filename order with `npx supabase db push`; do not edit an applied migration.
-- [ ] Run `npx supabase db lint --linked --fail-on error` and Supabase Database Advisors.
-- [ ] Confirm RLS is enabled and browser mutation grants are revoked for every server-managed table.
-- [ ] Run the two-user isolation checks below before using real email data.
+- [x] Link the intended non-production Supabase project and review `npx supabase migration list` before pushing.
+- [x] Apply migrations in filename order with `npx supabase db push`; do not edit an applied migration.
+- [x] Run `npx supabase db lint --linked --fail-on error` and Supabase Database Advisors.
+- [x] Confirm RLS is enabled and browser mutation grants are revoked for every server-managed table.
+- [x] Run the two-user isolation checks below before using real email data.
 - [ ] Set Supabase Site URL to `https://YOUR_PRODUCTION_DOMAIN`.
 - [ ] Add `https://YOUR_PRODUCTION_DOMAIN/auth/callback` to the Supabase redirect allowlist.
 - [ ] Configure the Supabase Google provider callback in Google Cloud:
@@ -55,12 +55,12 @@ or logs.
 Use two disposable authenticated users in a non-production project. Create distinct owned records for
 each user, then repeat every read with user A using user B's opaque ID and vice versa.
 
-- [ ] User A cannot read or mutate user B's Gmail connection or OAuth state.
-- [ ] User A cannot see user B's threads or normalized content.
-- [ ] User A cannot see user B's analyses or cache entries.
-- [ ] User A cannot see, link, update, complete, or delete user B's tasks.
-- [ ] User A cannot see or delete user B's reply drafts.
-- [ ] User A cannot see user B's dashboard aggregates, usage, or activity.
+- [x] User A cannot read or mutate user B's Gmail connection or OAuth state.
+- [x] User A cannot see user B's threads or normalized content.
+- [x] User A cannot see user B's analyses or cache entries.
+- [x] User A cannot see, link, update, complete, or delete user B's tasks.
+- [x] User A cannot see or delete user B's reply drafts.
+- [x] User A cannot see user B's dashboard aggregates, usage, or activity.
 - [ ] User A cannot read or update user B's profile/settings or export user B's account.
 - [ ] Cross-user identifiers return the same safe not-found response as missing identifiers.
 - [ ] Atomic analysis and reply reservations stop exactly at each user's UTC-day limit under concurrency.
