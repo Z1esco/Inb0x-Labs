@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getEnvironment } from "@/lib/env";
+import { getSupabaseCookieOptions } from "@/lib/supabase/cookie-options";
 
 export async function refreshSupabaseSession(request: NextRequest) {
   const env = getEnvironment();
@@ -14,6 +15,7 @@ export async function refreshSupabaseSession(request: NextRequest) {
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
+      cookieOptions: getSupabaseCookieOptions(env.NEXT_PUBLIC_APP_URL),
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (items) => {

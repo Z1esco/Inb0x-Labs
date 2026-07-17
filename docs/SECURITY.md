@@ -44,7 +44,7 @@ attachments are never downloaded, and logs must use an allowlist.
 | Accidental destructive account action   | Exact confirmation phrase, per-user rate limit, server-only Auth Admin call, FK cascades           |
 | Credential leakage through export       | Gmail export allowlist excludes provider tokens, encrypted payloads, secrets, and OAuth state      |
 | Browser bypass of route validation      | Authenticated mutation grants revoked from server-managed tables; RLS remains defense in depth     |
-| Stale Supabase session cookies          | Request proxy verifies the session and propagates refreshed SSR cookies; protected layouts recheck |
+| Stale Supabase session cookies          | Verified refresh, `HttpOnly`, `SameSite=Lax`, HTTPS-only secure cookies; protected layouts recheck |
 
 Task action items are untrusted suggestions until a user explicitly accepts them. The browser may
 submit only an analysis ID and action index; title, evidence, source message, ownership, source type,

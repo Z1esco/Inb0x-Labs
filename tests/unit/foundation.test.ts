@@ -7,6 +7,7 @@ import {
 } from "@/lib/encryption";
 import { parseEnvironment } from "@/lib/env";
 import { mapUnknownError } from "@/lib/errors";
+import { getSupabaseCookieOptions } from "@/lib/supabase/cookie-options";
 import { ANALYZE_THREAD_SYSTEM_PROMPT } from "@/prompts/analyze-thread";
 import { emailAnalysisSchema } from "@/schemas/email-analysis";
 import { replyDraftOutputSchema } from "@/schemas/reply-draft";
@@ -46,6 +47,19 @@ describe("environment validation", () => {
     expect(env.DEMO_MODE).toBe(false);
     expect(env.GOOGLE_CLIENT_ID).toBeUndefined();
     expect(env.OPENAI_API_KEY).toBeUndefined();
+  });
+});
+describe("Supabase SSR cookies", () => {
+  it("uses server-only secure cookies for deployed authentication", () => {
+    expect(getSupabaseCookieOptions("https://app.example.test")).toEqual({
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      secure: true,
+    });
+    expect(getSupabaseCookieOptions("http://localhost:3000").secure).toBe(
+      false,
+    );
   });
 });
 describe("authenticated token encryption", () => {
