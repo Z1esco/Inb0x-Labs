@@ -50,6 +50,7 @@ export function AppNav({
   userEmail: string | null;
 }) {
   const [open, setOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const pathname = usePathname();
   const userLabel = demo ? "Demo Judge" : (userEmail ?? "Inb0x user");
@@ -137,6 +138,17 @@ export function AppNav({
             <span>Signal room</span>
           </div>
           <div className="topbar-actions">
+            <Link
+              className="topbar-search"
+              href="/inbox"
+              aria-label="Search inbox"
+            >
+              <Icon name="search" />
+              <span>Search</span>
+            </Link>
+            <Link className="button primary topbar-analyze" href="/inbox">
+              Analyze inbox
+            </Link>
             <span className="status-label connected">
               <span className="status-dot connected" />
               {demo ? "Demo mode" : "Live workspace"}
@@ -148,9 +160,41 @@ export function AppNav({
             >
               <Icon name="settings" />
             </Link>
-            <span className="avatar" aria-label={userLabel}>
-              {initials(userLabel)}
-            </span>
+            <div className="user-menu-wrap">
+              <button
+                className="avatar"
+                type="button"
+                aria-label="Open user menu"
+                aria-expanded={userMenuOpen}
+                aria-controls="user-menu"
+                onClick={() => setUserMenuOpen((value) => !value)}
+              >
+                {initials(userLabel)}
+              </button>
+              {userMenuOpen && (
+                <div id="user-menu" className="user-menu" role="menu">
+                  <Link
+                    className="nav-link"
+                    href="/settings"
+                    role="menuitem"
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <Icon name="settings" />
+                    <span>Settings</span>
+                  </Link>
+                  <button
+                    className="nav-link sign-out-button"
+                    type="button"
+                    role="menuitem"
+                    disabled={signingOut}
+                    onClick={() => void signOut()}
+                  >
+                    <Icon name="close" />
+                    <span>{demo ? "Exit demo" : "Sign out"}</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
@@ -170,7 +214,7 @@ export function AppNav({
             );
           })}
         </nav>
-        {children}
+        <div className="app-content">{children}</div>
       </div>
     </div>
   );

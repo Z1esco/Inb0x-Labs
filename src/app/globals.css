@@ -2,7 +2,15 @@
 
 :root {
   color-scheme: dark;
-  --canvas: #080b10;
+  /* Semantic foundations. Green is intentionally absent; cyan is the safe-state colour. */
+  --bg-canvas: #080b10;
+  --bg-sidebar: #0b1017;
+  --bg-surface: #0e131a;
+  --bg-surface-raised: #131a23;
+  --bg-surface-hover: #19222e;
+  --bg-surface-active: #202c3a;
+  --bg-overlay: rgb(8 11 16 / 0.78);
+  --canvas: var(--bg-canvas);
   --surface-1: #0e131a;
   --surface-2: #131a23;
   --surface-3: #19222e;
@@ -10,23 +18,87 @@
   --text-primary: #f5f7fa;
   --text-secondary: #a8b3c2;
   --text-muted: #8997ab;
+  --text-disabled: #5d6a7b;
+  --text-inverse: #080b10;
   --border-subtle: #202b38;
+  --border-default: #2a3747;
   --border-strong: #344354;
+  --border-focus: #93e7f1;
   --signal-red: #ff4d5e;
   --signal-red-dim: #702735;
+  --signal-red-soft: rgb(255 77 94 / 0.12);
+  --signal-red-glow: rgb(255 77 94 / 0.24);
   --signal-cyan: #65d9e8;
   --signal-blue: #6f9bff;
+  --signal-blue-soft: rgb(111 155 255 / 0.14);
   --warning: #f4b860;
+  --signal-amber: var(--warning);
   --critical: #ff6874;
+  --status-critical: var(--signal-red);
+  --status-high: #ff6874;
+  --status-medium: var(--signal-amber);
+  --status-low: var(--signal-cyan);
+  --status-success: var(--signal-cyan);
+  --status-warning: var(--signal-amber);
+  --status-danger: var(--signal-red);
+  --status-neutral: var(--text-muted);
   --focus: #93e7f1;
   --success-alternative: #65d9e8;
   --shadow: 0 18px 60px rgb(0 0 0 / 0.28);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-cinematic: 30px;
   --font-display: var(--font-sora), "Avenir Next", "Segoe UI", sans-serif;
   --font-body: var(--font-manrope), "Avenir Next", "Segoe UI", sans-serif;
   --font-data: var(--font-space-grotesk), "SFMono-Regular", Consolas, monospace;
+}
+
+/* Tailwind v4 semantic aliases keep utility classes aligned with the CSS token system. */
+@theme inline {
+  --color-bg-canvas: var(--bg-canvas);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-surface-raised: var(--bg-surface-raised);
+  --color-bg-surface-hover: var(--bg-surface-hover);
+  --color-bg-surface-active: var(--bg-surface-active);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-signal-red: var(--signal-red);
+  --color-signal-blue: var(--signal-blue);
+  --color-signal-cyan: var(--signal-cyan);
+  --color-signal-amber: var(--signal-amber);
+  --spacing-layout-1: var(--space-1);
+  --spacing-layout-2: var(--space-2);
+  --spacing-layout-3: var(--space-3);
+  --spacing-layout-4: var(--space-4);
+  --spacing-layout-6: var(--space-6);
+  --spacing-layout-8: var(--space-8);
+  --spacing-layout-12: var(--space-12);
+  --spacing-layout-16: var(--space-16);
+  --radius-ui-xs: var(--radius-xs);
+  --radius-ui-sm: var(--radius-sm);
+  --radius-ui-md: var(--radius-md);
+  --radius-ui-lg: var(--radius-lg);
+  --radius-ui-xl: var(--radius-xl);
 }
 
 * {
@@ -426,6 +498,62 @@ p {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.topbar-search {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0 11px;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.topbar-search:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+
+.topbar-analyze {
+  min-height: 38px;
+  padding: 0 11px;
+  font-size: 0.72rem;
+}
+
+.user-menu-wrap {
+  position: relative;
+}
+
+.user-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  min-width: 174px;
+  gap: 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+}
+
+.user-menu .nav-link {
+  width: 100%;
+  min-height: 38px;
+}
+
+.app-content {
+  min-width: 0;
 }
 
 .icon-button.mobile-menu-button {
@@ -1343,6 +1471,11 @@ p {
 
   .topbar {
     padding: 0 18px;
+  }
+
+  .topbar-search span,
+  .topbar-analyze {
+    display: none;
   }
 
   .mobile-bottom-nav {
