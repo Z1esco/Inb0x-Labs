@@ -122,7 +122,7 @@ export function TaskBoard() {
       </Surface>
       {error && <ErrorState message={error} />}
       {!error && (
-        <Surface>
+        <Surface className="task-sequence-surface">
           <div className="control-row" style={{ marginBottom: 20 }}>
             <div className="segmented-control" style={{ minWidth: 250 }}>
               <button
@@ -164,9 +164,10 @@ export function TaskBoard() {
             </select>
           </div>
           {visible.length ? (
-            <div className="task-list">
+            <div className="task-list task-sequence">
               {visible.map((task) => (
-                <div className="task-row" key={task.id}>
+                <div className="task-row task-sequence-item" key={task.id}>
+                  <span className="task-timeline" aria-hidden="true" />
                   <button
                     className="icon-button"
                     type="button"

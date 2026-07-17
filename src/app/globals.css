@@ -907,6 +907,113 @@ p {
   gap: 5px;
 }
 
+.drafts-surface {
+  min-height: 560px;
+}
+.drafts-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  gap: 18px;
+}
+.draft-list {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  border-right: 1px solid var(--border-subtle);
+  padding-right: 16px;
+}
+.draft-list-item {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 12px 9px;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+}
+.draft-list-item:hover,
+.draft-list-item[aria-pressed="true"] {
+  border-color: rgb(101 217 232 / 0.2);
+  background: var(--surface-active);
+}
+.draft-list-item[aria-pressed="true"] {
+  box-shadow: inset 2px 0 var(--signal-cyan);
+}
+.draft-detail {
+  min-width: 0;
+  padding: 6px 4px;
+}
+.draft-detail h2 {
+  max-width: 620px;
+  margin-bottom: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.85rem);
+}
+.draft-meta {
+  color: var(--text-muted);
+  font-family: var(--font-data);
+  font-size: 0.68rem;
+}
+.draft-detail .message-body {
+  min-height: 180px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 18px 0;
+}
+.draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.task-sequence-surface {
+  overflow: visible;
+}
+.task-sequence {
+  gap: 0;
+}
+.task-sequence-item {
+  position: relative;
+  padding-left: 27px;
+}
+.task-sequence-item:first-child {
+  padding-top: 8px;
+}
+.task-timeline {
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: 7px;
+  width: 1px;
+  background: var(--border-strong);
+}
+.task-timeline::before {
+  position: absolute;
+  top: 24px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--signal-cyan);
+  border-radius: 50%;
+  background: var(--surface-1);
+  content: "";
+}
+
+@media (max-width: 820px) {
+  .drafts-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .draft-list {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0 0 14px;
+  }
+}
+
 .focus-item,
 .priority-item,
 .activity-item,
