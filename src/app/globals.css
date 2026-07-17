@@ -836,6 +836,61 @@ p {
   font-weight: 500;
 }
 
+.insights-metrics .metric-card strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.insights-grid .surface {
+  min-height: 260px;
+}
+
+.insight-health-surface {
+  border-color: rgb(101 217 232 / 0.22);
+}
+
+.insight-health-content {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.insight-factor-list {
+  display: grid;
+  flex: 1;
+  gap: 8px;
+}
+
+.connection-ledger {
+  border-color: rgb(101 217 232 / 0.3);
+}
+
+.permission-ledger {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  margin: 18px 0;
+  padding: 16px 0;
+}
+
+.permission-ledger > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.permission-ledger span {
+  display: grid;
+  gap: 2px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.permission-ledger strong {
+  color: var(--text-primary);
+  font-size: 0.8rem;
+}
+
 .focus-list,
 .priority-list,
 .activity-list,
@@ -1011,6 +1066,11 @@ p {
     border-right: 0;
     border-bottom: 1px solid var(--border-subtle);
     padding: 0 0 14px;
+  }
+
+  .insight-health-content {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 

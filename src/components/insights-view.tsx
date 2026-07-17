@@ -47,7 +47,7 @@ export function InsightsView() {
       title="Insights"
       description="Measured patterns from persisted workspace data. Estimates are transparent, not judgments."
     >
-      <div className="metric-grid">
+      <div className="metric-grid insights-metrics">
         <article className="surface metric-card">
           <div className="metric-label">
             <span>Time saved</span>
@@ -81,7 +81,26 @@ export function InsightsView() {
           <small>Threads currently asking for a response</small>
         </article>
       </div>
-      <div className="data-grid">
+      <div className="data-grid insights-grid">
+        <Surface className="insight-health-surface">
+          <SurfaceHeader
+            title="Inbox health"
+            description="A transparent view of current workload, not a judgment."
+          />
+          <div className="insight-health-content">
+            <div className="ring">
+              <strong>{data.inboxHealth.score}</strong>
+            </div>
+            <div className="insight-factor-list">
+              {data.inboxHealth.factors.map((factor) => (
+                <div className="setting-line" key={factor.key}>
+                  <span>{factor.label}</span>
+                  <strong>{factor.value}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Surface>
         <Surface>
           <SurfaceHeader
             title="Thread volume"
