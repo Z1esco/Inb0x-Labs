@@ -19,7 +19,7 @@ No provider secret, token, email content, prompt, or draft is recorded here.
 | ------------------------------------------------------------------------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Rotate every previously exposed Supabase privileged secret and revoke the old value  | **Blocked**              | Rotation cannot be proven from the repository or CLI. Rotate in Supabase before any privileged hosted operation.                          |
 | Confirm local environment files, `.vercel/`, OAuth downloads, and logs are untracked | **Passed**               | Ignore rules and tracked-file scan passed; `.env.local` is untracked.                                                                     |
-| Configure production variables and keep server secrets non-public                    | **Blocked**              | Local demo configuration exists, but no Vercel project or production environment exists.                                                  |
+| Configure production variables and keep server secrets non-public                    | **Blocked**              | Local demo configuration exists, but Preview/Production values were not inspected and production is not configured.                       |
 | Run install, full checks, E2E, and dependency audit                                  | **Passed**               | Install, 222 unit/integration tests, production build, 2 Playwright tests, and audit passed.                                              |
 | Run secret, Gmail-write, dangerous-HTML, no-green, and pillbox scans                 | **Passed**               | Relevant matches were reviewed; no runtime Gmail write call, secret exposure, raw HTML rendering, green UI, or textual pillbox was found. |
 | Link the intended Supabase project and inspect migrations                            | **Passed**               | Project `dsohdhwjzsxuppjbynxs` is linked and healthy; remote migration history was inspected.                                             |
@@ -34,14 +34,14 @@ No provider secret, token, email content, prompt, or draft is recorded here.
 | Register the production Gmail callback URI                                           | **Blocked**              | No production domain exists.                                                                                                              |
 | Confirm the four allowed Google scopes only                                          | **Passed**               | Static scope assertions and deny-list tests passed; live consent verification still requires credentials.                                 |
 | Configure OpenAI budget, model, key, and limits                                      | **Blocked**              | Demo mode intentionally has no OpenAI key/model.                                                                                          |
-| Import the repository into Vercel and configure its runtime                          | **Failed**               | No `.vercel/project.json`, deployment record, or Preview deployment was found.                                                            |
-| Deploy and inspect a Vercel Preview                                                  | **Blocked**              | Vercel import and environment setup are not complete.                                                                                     |
+| Import the repository into Vercel and configure its runtime                          | **Passed**               | The Vercel integration built commit `e071917`; the GitHub deployment check passed. Production runtime configuration remains pending.      |
+| Deploy and inspect a Vercel Preview                                                  | **Blocked**              | The Preview deployed successfully but is protected by Vercel SSO, so unauthenticated HTTPS smoke tests redirect to the access gate.       |
 
 ## Post-deployment checklist
 
 | Requirement                                                                    | Status                   | Evidence or next action                                                                                                |
 | ------------------------------------------------------------------------------ | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| Landing page and logo load over HTTPS without console errors                   | **Blocked**              | Local automated coverage passed; no HTTPS Preview exists.                                                              |
+| Landing page and logo load over HTTPS without console errors                   | **Blocked**              | Local automated coverage passed; the HTTPS Preview is protected by Vercel SSO and could not be inspected anonymously.  |
 | Credential-free demo opens and resets deterministically without provider calls | **Passed**               | Demo E2E and the full automated suite passed in `DEMO_MODE=true`.                                                      |
 | Supabase Google sign-in and protected callback session                         | **Requires credentials** | Needs a deployed callback and disposable Google account.                                                               |
 | Signed-out dashboard redirect and logout                                       | **Passed**               | Automated auth and middleware tests passed; repeat in Preview.                                                         |
@@ -79,6 +79,6 @@ PR #10 must remain a Draft and must not be merged into `develop` yet. The minimu
 1. Rotate and revoke the previously disclosed Supabase privileged secret, then update secret stores.
 2. Apply the three missing forward-only migrations to the linked non-production project.
 3. Repeat migration inspection, linked lint, Advisors, grant review, and two-user isolation testing.
-4. Import the repository into Vercel, configure Preview variables with `DEMO_MODE=true`, and deploy.
+4. Confirm Preview variables use `DEMO_MODE=true` and provide authorized access to the protected deployment.
 5. Run HTTPS demo, auth, Gmail, and OpenAI smoke tests with disposable provider accounts.
 6. Record the deployment URL and evidence, then mark PR #10 ready only if every release blocker passes.
