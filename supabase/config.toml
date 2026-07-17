@@ -11,7 +11,7 @@ max_rows = 1000
 port = 55322
 shadow_port = 55320
 # This must match the linked hosted project before a local reset comparison.
-major_version = 15
+major_version = 17
 
 [auth]
 enabled = true

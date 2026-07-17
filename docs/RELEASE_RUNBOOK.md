@@ -63,3 +63,5 @@ connections unreadable; disconnect/reconnect users or provide a reviewed re-encr
 For each release record: Git SHA, PR, Vercel deployment URL, environment, migration versions, test counts,
 database lint/Advisor status, two-user isolation result, OAuth callback checks, smoke tester, and rollback
 deployment. A static code review is not a substitute for live Supabase, Google, OpenAI, or production tests.
+
+The current PR #10 verification record is in `docs/RELEASE_VERIFICATION_2026-07-17.md`.
