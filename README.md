@@ -35,11 +35,9 @@ reading every message.
 
 ## 🖼️ Preview
 
-<!-- Replace this block with the final product screenshot or demo GIF. -->
-
 <div align="center">
 
-> 🚧 Product preview coming soon — the final interface is currently in development.
+> The complete credential-free demo is available locally with `DEMO_MODE=true`.
 
 </div>
 
@@ -151,7 +149,8 @@ DEMO_MODE=true
 
 ### 🔌 Real mode
 
-Real mode requires a Supabase project, Google OAuth credentials, and an OpenAI API key:
+Real mode requires a Supabase project. Gmail and OpenAI features require their provider credentials
+only when those features are enabled:
 
 ```env
 DEMO_MODE=false
@@ -161,7 +160,8 @@ Never commit `.env.local`, provider secrets, encryption keys, or service-role ke
 
 ## ⚙️ Environment variables
 
-The complete, documented list will live in `.env.example`. Key configuration groups are:
+The authoritative inventory is [.env.example](.env.example), with exposure and deployment guidance
+in [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Key configuration groups are:
 
 | Group        | Variables                                                                                 |
 | ------------ | ----------------------------------------------------------------------------------------- |
@@ -174,9 +174,9 @@ The complete, documented list will live in `.env.example`. Key configuration gro
 
 ## 🗄️ Database and external services
 
-- Database migrations and RLS policies will be documented in `docs/DATABASE.md`.
-- Google OAuth setup and callback URLs will be documented in `docs/GOOGLE_OAUTH.md`.
-- OpenAI model and cost configuration will be documented in `docs/OPENAI.md`.
+- Database migrations and RLS policies are documented in `docs/DATABASE.md`.
+- Google OAuth setup and callback URLs are documented in `docs/GOOGLE_OAUTH.md`.
+- OpenAI model and cost configuration is documented in `docs/OPENAI.md`.
 - Task acceptance, deduplication, lifecycle, and demo behavior are documented in `docs/TASKS.md`.
 - Full local and production setup will be documented in `docs/SETUP.md`.
 
@@ -188,6 +188,7 @@ npm run lint
 npm run typecheck
 npm test
 npm run build
+npx supabase test db supabase/tests/production_security.sql
 ```
 
 Run the complete verification pipeline with:
@@ -200,11 +201,12 @@ Tests mock Gmail and OpenAI integrations; automated tests must never call real u
 mailboxes or consume paid AI requests.
 
 `GET /api/dashboard` returns deterministic demo or user-owned persisted metrics without calling
-Gmail/OpenAI or triggering mutations. Final dashboard visuals remain frontend-partner work.
+Gmail/OpenAI or triggering mutations. The merged interface includes responsive Dashboard, Inbox,
+Thread, Tasks, Drafts, Insights, and Settings screens.
 
 ## 🚢 Deployment
 
-Inb0x is being prepared for deployment on Vercel. Production deployment requires:
+Inb0x is Vercel-ready but has not been deployed by this repository task. Production deployment requires:
 
 1. Supabase migrations and RLS policies applied.
 2. Server-side environment variables configured in Vercel.
@@ -212,6 +214,26 @@ Inb0x is being prepared for deployment on Vercel. Production deployment requires
 4. Demo mode verified before testing with a dedicated Gmail account.
 
 No deployment is performed automatically from this documentation.
+Follow [docs/PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md) and
+[docs/RELEASE_RUNBOOK.md](docs/RELEASE_RUNBOOK.md); do not enable real mode until the previously
+exposed Supabase privileged secret has been rotated.
+
+Apply the forward-only migrations in filename order:
+
+1. `20260716084341_initial_schema.sql`
+2. `20260716140053_task_management.sql`
+3. `20260716163436_reply_drafts.sql`
+4. `20260716185440_settings_preferences.sql`
+5. `20260717120000_harden_server_managed_tables.sql`
+
+### Known limitations
+
+- Real Supabase, Google, Gmail, OpenAI, and Vercel flows require dedicated-account live verification.
+- The lightweight burst limiter is process-local; daily AI quotas are database-atomic, but production
+  burst limiting should use a shared store before broad public traffic.
+- Retention cleanup is opportunistic/manual; this MVP has no scheduler or background job system.
+- Demo mutations are in memory and reset when the server process restarts.
+- Google testing-mode and restricted-scope verification rules can limit refresh-token lifetime and users.
 
 ## 💸 Cost controls
 
@@ -261,15 +283,16 @@ overload into clear, safe, and manageable next steps.
 - [x] Add read-only Gmail OAuth and synchronization
 - [x] Add structured AI analysis and reply drafting
 - [x] Ship deterministic demo mode and seeded inbox data
-- [ ] Complete the frontend experience and responsive visual polish
+- [x] Complete the frontend experience and responsive visual polish
 - [x] Add integration, browser, and security regression coverage
 - [ ] Prepare the Vercel demo deployment
 
 ## 📍 Project status
 
-> **Functional hackathon foundation.** Credential-free demo mode, APIs, migrations,
-> tests, CI, and the minimal partner handoff shell are implemented. Provider-backed
-> real mode requires the external setup in `docs/SETUP.md` and dedicated-account testing.
+> **Production-ready candidate, pending live-provider verification.** The credential-free demo,
+> responsive interface, APIs, migrations, tests, and CI are implemented. Provider-backed real mode
+> requires secret rotation, external setup, migration application, two-user isolation testing, and
+> the manual deployment checks in `docs/PRODUCTION_CHECKLIST.md`.
 
 ## 📄 License
 

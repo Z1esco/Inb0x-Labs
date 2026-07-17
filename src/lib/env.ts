@@ -72,13 +72,6 @@ const environmentSchema = z
       "NEXT_PUBLIC_SUPABASE_URL",
       "NEXT_PUBLIC_SUPABASE_ANON_KEY",
       "SUPABASE_SERVICE_ROLE_KEY",
-      "GOOGLE_CLIENT_ID",
-      "GOOGLE_CLIENT_SECRET",
-      "GOOGLE_REDIRECT_URI",
-      "OAUTH_STATE_SECRET",
-      "TOKEN_ENCRYPTION_KEY",
-      "OPENAI_API_KEY",
-      "OPENAI_MODEL",
     ] as const;
     for (const key of required)
       if (!env[key])

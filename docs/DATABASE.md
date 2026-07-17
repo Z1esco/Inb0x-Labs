@@ -47,7 +47,19 @@ analyses whose content hash matches the current thread as current.
 All user-owned tables enable Row Level Security. SELECT, INSERT, UPDATE, and DELETE policies
 combine `TO authenticated` with `(select auth.uid()) = user_id` (or profile `id`). UPDATE uses
 both `USING` and `WITH CHECK`. Explicit Data API grants are present because table exposure and
-RLS are separate controls. `anon` receives no table privileges.
+RLS are separate controls. The hardening migrations revoke all browser grants, then restore only
+`SELECT` for authenticated users on approved RLS-protected product tables. Gmail credential and
+OAuth-state tables have no browser access. `anon` receives no table privileges.
+
+Migration order is chronological and forward-only:
+
+1. `20260716084341_initial_schema.sql` — foundation, Gmail, sync, analysis, base RLS, quotas.
+2. `20260716140053_task_management.sql` — task sources, ownership trigger, deduplication.
+3. `20260716163436_reply_drafts.sql` — reply cache, ownership trigger, atomic reply quota.
+4. `20260716185440_settings_preferences.sql` — validated profile/dashboard preferences.
+5. `20260717120000_harden_server_managed_tables.sql` — direct browser mutation-grant removal.
+
+6. `20260717134000_narrow_browser_table_grants.sql` — explicit authenticated read-only grants.
 
 Apply migrations:
 
@@ -57,5 +69,17 @@ npx supabase db push
 npx supabase db advisors
 ```
 
+`supabase/config.toml` provides a secret-free local CLI baseline. Before comparing local and hosted
+schemas, run `show server_version;` on the linked project and align `db.major_version`; do not assume
+the checked-in local default matches an existing hosted project.
+
 Generate exact project types after linking with `npm run db:types`. The checked-in
 `src/types/database.ts` is a small development surface, not a substitute for regenerated types.
+
+The production-readiness review completed a Docker-backed zero-state reset across the first five migrations,
+local database lint with no schema errors, and 18 pgTAP checks in
+`supabase/tests/production_security.sql`. The test uses two disposable users to verify safe-row RLS
+isolation, server-only mutations, hidden Gmail/OAuth tables, ownership triggers, dedup/cache
+constraints, and analysis/reply quota boundaries. On 2026-07-17, the linked hosted project applied
+all six migrations, passed linked lint and Advisors, and passed the disposable two-user browser-client
+suite in `scripts/verify-hosted-supabase-security.mjs`. Never use a previously exposed privileged key.

@@ -49,3 +49,8 @@ Use the first output for `TOKEN_ENCRYPTION_KEY`; use independent second outputs 
 Import the GitHub repository, add environment variables, deploy in demo mode first, register the
 production Google and Supabase callback URLs, then test real mode with a dedicated account. No
 deployment or cloud-resource creation is performed by this repository setup.
+
+Use `docs/ENVIRONMENT.md` for the exact variable inventory, `docs/PRODUCTION_CHECKLIST.md` for
+pre/post-deployment verification, and `docs/RELEASE_RUNBOOK.md` for deployment, rollback, rotation,
+and incident response. Rotate the previously exposed Supabase privileged secret before linking a
+live project or configuring Vercel.

@@ -326,7 +326,7 @@ export function DashboardView({
                     <strong>{task.title}</strong>
                     <p>
                       {task.dueAt
-                        ? `Due ${new Date(task.dueAt).toLocaleDateString()}`
+                        ? `Due ${new Date(task.dueAt).toLocaleDateString("en-US")}`
                         : "No due date"}
                     </p>
                   </span>

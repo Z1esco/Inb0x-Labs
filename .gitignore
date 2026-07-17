@@ -13,4 +13,5 @@ artifacts-*.png
 !.env.example
 .vercel/
 supabase/.temp/
+supabase/.branches/
 client_secret_*.json

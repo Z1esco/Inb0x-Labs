@@ -40,9 +40,29 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-export function AppNav({ children }: { children: ReactNode }) {
+export function AppNav({
+  children,
+  demo,
+  userEmail,
+}: {
+  children: ReactNode;
+  demo: boolean;
+  userEmail: string | null;
+}) {
   const [open, setOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const pathname = usePathname();
+  const userLabel = demo ? "Demo Judge" : (userEmail ?? "Inb0x user");
+  async function signOut() {
+    setSigningOut(true);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (response.ok) window.location.assign("/");
+      else setSigningOut(false);
+    } catch {
+      setSigningOut(false);
+    }
+  }
   const active = links.find(
     ([, href]) => pathname === href || pathname.startsWith(`${href}/`),
   );
@@ -57,13 +77,15 @@ export function AppNav({ children }: { children: ReactNode }) {
           href="/dashboard"
           onClick={() => setOpen(false)}
         >
-          <Image
-            src="/logo/inb0x-labs-logo.png"
-            alt="Inb0x Labs"
-            width={32}
-            height={32}
-            priority
-          />
+          <span className="brand-mark" aria-hidden="true">
+            <Image
+              src="/logo/inb0x-labs-logo.png"
+              alt=""
+              width={154}
+              height={154}
+              priority
+            />
+          </span>
           <span className="brand-wordmark">
             inb<span>0</span>x
           </span>
@@ -76,12 +98,25 @@ export function AppNav({ children }: { children: ReactNode }) {
             <span>Read-only workspace</span>
           </div>
           <div className="user-mini">
-            <span className="avatar">JD</span>
+            <span className="avatar">{initials(userLabel)}</span>
             <div>
-              <strong>Demo Judge</strong>
-              <span>Inb0x Labs</span>
+              <strong>{userLabel}</strong>
+              <span>
+                {demo ? "Credential-free demo" : "Authenticated workspace"}
+              </span>
             </div>
           </div>
+          <button
+            className="nav-link sign-out-button"
+            type="button"
+            disabled={signingOut}
+            onClick={() => void signOut()}
+          >
+            <Icon name="close" />
+            <span>
+              {demo ? "Exit demo" : signingOut ? "Signing out..." : "Sign out"}
+            </span>
+          </button>
         </div>
       </aside>
       <div className="app-main">
@@ -103,7 +138,8 @@ export function AppNav({ children }: { children: ReactNode }) {
           </div>
           <div className="topbar-actions">
             <span className="status-label connected">
-              <span className="status-dot connected" /> Demo mode
+              <span className="status-dot connected" />
+              {demo ? "Demo mode" : "Live workspace"}
             </span>
             <Link
               className="icon-button"
@@ -112,8 +148,8 @@ export function AppNav({ children }: { children: ReactNode }) {
             >
               <Icon name="settings" />
             </Link>
-            <span className="avatar" aria-label="Demo Judge">
-              {initials("Demo Judge")}
+            <span className="avatar" aria-label={userLabel}>
+              {initials(userLabel)}
             </span>
           </div>
         </header>

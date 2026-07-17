@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "db:types": "supabase gen types typescript --local > src/types/database.generated.ts",
+    "verify:supabase-hosted": "node scripts/verify-hosted-supabase-security.mjs",
     "demo:reset": "node scripts/demo-reset.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build"
   },
@@ -48,7 +49,7 @@
     "eslint-config-next": "16.2.10",
     "jsdom": "27.2.0",
     "prettier": "3.9.5",
-    "supabase": "2.81.3",
+    "supabase": "2.109.1",
     "tailwindcss": "4.3.2",
     "typescript": "5.9.3",
     "vitest": "4.1.10"

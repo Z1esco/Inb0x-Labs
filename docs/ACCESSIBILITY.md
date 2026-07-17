@@ -11,3 +11,7 @@ also described in text, never communicated by color alone.
 
 Before release, test keyboard traversal, focus visibility, screen-reader headings, browser zoom, and
 reduced-motion behavior at the responsive sizes documented in `DESIGN_RULES.md`.
+
+The shared loading skeleton announces `Loading` and retryable error surfaces use an alert landmark so
+status changes are available to assistive technology without relying on color or motion. The responsive
+navigation regression coverage also verifies that the mobile menu trigger is not exposed at desktop widths.
