@@ -77,13 +77,15 @@ export function AppNav({
           href="/dashboard"
           onClick={() => setOpen(false)}
         >
-          <Image
-            src="/logo/inb0x-labs-logo.png"
-            alt="Inb0x Labs"
-            width={32}
-            height={32}
-            priority
-          />
+          <span className="brand-mark" aria-hidden="true">
+            <Image
+              src="/logo/inb0x-labs-logo.png"
+              alt=""
+              width={154}
+              height={154}
+              priority
+            />
+          </span>
           <span className="brand-wordmark">
             inb<span>0</span>x
           </span>
