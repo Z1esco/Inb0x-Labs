@@ -9,7 +9,7 @@ or logs.
 - [x] Rotate every previously exposed Supabase privileged secret and revoke the old value.
 - [x] Confirm `.env`, `.env.local`, `.env.*.local`, `.vercel/`, OAuth client downloads, and logs are untracked.
 - [ ] Configure the variables in `docs/ENVIRONMENT.md`; verify server secrets have no `NEXT_PUBLIC_` prefix.
-- [ ] Run `npm ci`, `npm run check`, `npm run test:e2e`, and `npm audit --omit=dev --audit-level=high`.
+- [x] Run `npm ci`, `npm run check`, `npm run test:e2e`, and `npm audit --omit=dev --audit-level=high`.
 - [ ] Run the repository secret, Gmail-write, dangerous-HTML, no-green, and textual-pillbox scans.
 - [x] Link the intended non-production Supabase project and review `npx supabase migration list` before pushing.
 - [x] Apply migrations in filename order with `npx supabase db push`; do not edit an applied migration.
@@ -49,6 +49,21 @@ or logs.
 - [ ] Inspect Vercel and Supabase logs using metadata only; verify no email body, token, prompt, or draft appears.
 - [ ] Smoke test 360x800, 390x844, 768x1024, 1024x768, 1280x800, 1440x900, and 1920x1080.
 - [ ] Verify keyboard navigation, visible focus, skip link, labels, mobile navigation, and reduced motion.
+
+### Hosted Auth verification — 2026-07-17
+
+- [x] Confirm the rotated Google client secret is active in Supabase (operator confirmation).
+- [x] Confirm the Vercel Preview reaches Google's account chooser without a browser console error.
+- [x] Confirm the OAuth state cookie uses `HttpOnly`, `Secure`, and `SameSite=Lax`.
+- [ ] Complete Google callback with disposable User A.
+- [ ] Complete Google callback with disposable User B.
+- [ ] Confirm both sessions survive refresh and load protected routes.
+- [ ] Confirm logout and signed-out redirects for both users.
+- [ ] Confirm bidirectional application-data isolation and safe 403/404 API responses.
+- [ ] Inspect the resulting Vercel and Supabase Auth logs without recording identifiers or credentials.
+
+Do not select a personal Google account by assumption. PR #10 remains Draft until every unchecked hosted
+Auth item above passes.
 
 ## Two-user isolation
 
