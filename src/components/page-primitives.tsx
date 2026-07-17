@@ -34,13 +34,18 @@ export function Surface({
   children,
   className,
   pad = true,
+  role,
 }: {
   children: ReactNode;
   className?: string;
   pad?: boolean;
+  role?: "alert" | "status";
 }) {
   return (
-    <section className={classNames("surface", pad && "surface-pad", className)}>
+    <section
+      className={classNames("surface", pad && "surface-pad", className)}
+      role={role}
+    >
       {children}
     </section>
   );
@@ -95,7 +100,7 @@ export function MetricCard({
 
 export function LoadingGrid() {
   return (
-    <div className="metric-grid">
+    <div className="metric-grid" role="status" aria-label="Loading">
       <div className="skeleton" />
       <div className="skeleton" />
       <div className="skeleton" />
@@ -112,7 +117,7 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <Surface className="empty-state error-state">
+    <Surface className="empty-state error-state" role="alert">
       <Icon name="warning" label="Error" />
       <h3>Signal interrupted</h3>
       <p>{message}</p>

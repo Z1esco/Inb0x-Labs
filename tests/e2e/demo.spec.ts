@@ -110,6 +110,11 @@ test("dashboard shell remains usable at release viewports", async ({
     await expect(
       page.getByRole("heading", { name: "Inbox focus" }),
     ).toBeVisible();
+    if (viewport.width >= 821) {
+      await expect(
+        page.getByRole("button", { name: "Open navigation" }),
+      ).toBeHidden();
+    }
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,
     );
