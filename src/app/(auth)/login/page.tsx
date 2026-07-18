@@ -42,7 +42,7 @@ export default function LoginPage() {
               <Icon name="arrow" /> Continue with Google
             </a>
             <Link className="button secondary" href="/dashboard">
-              <Icon name="spark" /> Enter credential-free demo
+              <Icon name="arrow" /> Enter credential-free demo
             </Link>
           </div>
           <div className="success-box" style={{ marginTop: 22 }}>

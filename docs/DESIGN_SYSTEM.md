@@ -1,7 +1,9 @@
 # Inb0x design system
 
-The first implementation is tokenized in `src/app/globals.css`. The semantic palette is intentionally
-small so the interface remains signal-led instead of decorative.
+The frontend is tokenized in `src/app/globals.css`. The visual system is intentionally compact and
+signal-led: a near-black canvas, blue/cyan connective states, red urgency, and amber uncertainty.
+The redesign adds an editorial composition layer over the same public contracts and shared primitives,
+so every domain screen feels like one product rather than a set of dashboard cards.
 
 | Token              | Value     | Use                           |
 | ------------------ | --------- | ----------------------------- |
@@ -20,5 +22,6 @@ small so the interface remains signal-led instead of decorative.
 | `--warning`        | `#F4B860` | warning/uncertain state       |
 
 No green-family color is part of the UI palette. Priority uses red, amber, cyan, and slate. Charts use
-red and cyan series with labelled text summaries. Geometry uses `--radius-sm` (6px), `--radius-md` (10px),
-and `--radius-lg` (16px); pill-shaped text controls are prohibited.
+red and cyan series with labelled text summaries. Geometry uses `--radius-sm` (5px), `--radius-md` (9px),
+and `--radius-lg` (14px); pill-shaped text controls are prohibited. Editorial rules use a single strong
+page-header rule, thin signal rails, restrained borders, and selective depth instead of a wall of cards.
