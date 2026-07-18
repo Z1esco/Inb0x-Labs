@@ -109,7 +109,7 @@ export function DashboardView({
         </>
       }
     >
-      <div className="metric-grid">
+      <div className="metric-grid dashboard-metrics">
         <MetricCard
           label="Threads"
           value={data.overview.threads}

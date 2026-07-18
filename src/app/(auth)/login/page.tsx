@@ -24,31 +24,37 @@ export default function LoginPage() {
           Back to home
         </Link>
       </header>
-      <section
-        style={{ display: "grid", minHeight: "70vh", placeItems: "center" }}
-      >
-        <div
-          className="surface surface-pad"
-          style={{ width: "min(100%, 520px)" }}
-        >
+      <section className="login-layout">
+        <div className="login-statement">
           <p className="eyebrow">Secure workspace access</p>
           <h1>Make room for signal.</h1>
-          <p className="muted">
-            Your Inb0x session and Gmail connection are separate permissions.
-            Signing in alone never grants mailbox access.
+          <p>
+            A private attention desk for people whose inbox has become a second
+            workplace.
           </p>
-          <div className="stack" style={{ marginTop: 26 }}>
+          <div className="login-assurances" aria-label="Privacy assurances">
+            <span>01</span>
+            <p>Signing in never grants mailbox access.</p>
+            <span>02</span>
+            <p>Gmail authorization is separate and read-only.</p>
+            <span>03</span>
+            <p>Nothing is sent, modified, or acted on without you.</p>
+          </div>
+        </div>
+        <div className="login-action">
+          <div>
+            <p className="login-action-label">Enter your workspace</p>
             <a className="button primary" href="/api/auth/google">
-              <Icon name="arrow" /> Continue with Google
+              Continue with Google <Icon name="arrow" />
             </a>
             <Link className="button secondary" href="/dashboard">
-              <Icon name="arrow" /> Enter credential-free demo
+              Explore the credential-free demo
             </Link>
           </div>
-          <div className="success-box" style={{ marginTop: 22 }}>
-            <Icon name="check" /> Gmail access is read-only. Replies stay
-            copy-only and are never sent by Inb0x.
-          </div>
+          <p className="login-footnote">
+            <Icon name="check" /> Your Inb0x session and Gmail connection are
+            separate permissions.
+          </p>
         </div>
       </section>
     </main>

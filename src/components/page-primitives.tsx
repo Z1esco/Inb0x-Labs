@@ -18,10 +18,12 @@ export function PageShell({
   return (
     <main id="main-content" className="page" tabIndex={-1}>
       <header className="page-header">
-        <div className="page-header-copy">
-          {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-          <h1>{title}</h1>
-          {description && <p>{description}</p>}
+        <div className="page-header-grid">
+          {eyebrow && <p className="page-context">{eyebrow}</p>}
+          <div className="page-header-copy">
+            <h1>{title}</h1>
+            {description && <p>{description}</p>}
+          </div>
         </div>
         {actions && <div className="header-actions">{actions}</div>}
       </header>

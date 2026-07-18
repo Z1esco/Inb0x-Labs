@@ -47,7 +47,7 @@ export function InsightsView() {
       title="Insights"
       description="Measured patterns from persisted workspace data. Estimates are transparent, not judgments."
     >
-      <div className="metric-grid">
+      <div className="metric-grid insight-metrics">
         <article className="surface metric-card">
           <div className="metric-label">
             <span>Time saved</span>

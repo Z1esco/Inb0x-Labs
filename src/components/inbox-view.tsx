@@ -63,7 +63,7 @@ export function InboxView() {
         </Link>
       }
     >
-      <Surface>
+      <Surface className="inbox-workspace">
         <div className="control-row" style={{ marginBottom: 22 }}>
           <div style={{ minWidth: 240, flex: 1, position: "relative" }}>
             <span

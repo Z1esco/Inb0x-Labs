@@ -31,13 +31,13 @@ export default function LandingPage() {
       </header>
       <div className="hero-grid">
         <section className="hero-copy">
-          <p className="eyebrow">Inb0x Labs / read-only intelligence</p>
+          <p className="eyebrow">A calm intelligence desk for email</p>
           <h1>
-            Noise becomes <em>signal.</em>
+            Know what <em>deserves you.</em>
           </h1>
           <p>
-            Inb0x turns a crowded Gmail into a deliberate action plan: what
-            matters, what can wait, and what deserves your next ten minutes.
+            Inb0x reads the shape of a crowded inbox and returns a clear order
+            of attention—without changing a single message.
           </p>
           <div className="hero-actions">
             <Link className="button primary" href="/dashboard">
@@ -55,33 +55,51 @@ export default function LandingPage() {
         <section className="hero-preview" aria-label="Inb0x product preview">
           <div className="preview-window">
             <div className="preview-sidebar">
-              <div />
-              <div />
-              <div />
-              <div />
-              <div />
-              <div />
+              <span className="preview-brand">i0</span>
+              {["01", "02", "03", "04", "05"].map((item) => (
+                <span key={item}>{item}</span>
+              ))}
             </div>
             <div className="preview-body">
-              <div className="preview-kicker" />
-              <div className="preview-title" />
-              <div className="preview-metrics">
-                <div />
-                <div />
-                <div />
+              <div className="preview-heading">
+                <div>
+                  <span>Friday, 18 July</span>
+                  <strong>Your attention, ordered.</strong>
+                </div>
+                <span className="preview-mode">Read-only</span>
               </div>
-              <div className="preview-chart" />
-              <div className="preview-row" />
-              <div className="preview-row" />
+              <div className="preview-focus">
+                <span className="preview-rank">01</span>
+                <div>
+                  <small>Needs a decision today</small>
+                  <strong>Approve the launch proposal</strong>
+                  <p>Budget confirmation requested before 4:00 PM.</p>
+                </div>
+                <span className="preview-time">12 min</span>
+              </div>
+              <div className="preview-list">
+                <div>
+                  <span>02</span>
+                  <strong>Confirm interview schedule</strong>
+                  <small>Reply expected</small>
+                </div>
+                <div>
+                  <span>03</span>
+                  <strong>Invoice reaches deadline</strong>
+                  <small>Finance · Monday</small>
+                </div>
+                <div>
+                  <span>04</span>
+                  <strong>Review security alert</strong>
+                  <small>Account activity</small>
+                </div>
+              </div>
             </div>
           </div>
         </section>
       </div>
-      <section
-        className="data-grid"
-        style={{ maxWidth: 1440, margin: "0 auto" }}
-      >
-        <article className="surface surface-pad">
+      <section className="landing-principles">
+        <article>
           <p className="eyebrow">01 / Prioritize</p>
           <h2>Attention, ordered.</h2>
           <p className="muted">
@@ -89,7 +107,7 @@ export default function LandingPage() {
             noise.
           </p>
         </article>
-        <article className="surface surface-pad">
+        <article>
           <p className="eyebrow">02 / Decide</p>
           <h2>Context, intact.</h2>
           <p className="muted">
@@ -97,7 +115,7 @@ export default function LandingPage() {
             reviewable.
           </p>
         </article>
-        <article className="surface surface-pad">
+        <article>
           <p className="eyebrow">03 / Act</p>
           <h2>Control, preserved.</h2>
           <p className="muted">
