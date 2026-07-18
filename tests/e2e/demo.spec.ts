@@ -86,7 +86,7 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
   await expect(page.getByRole("status")).toContainText("Demo restored");
   await page.getByRole("button", { name: "Exit demo" }).click();
   await expect(
-    page.getByRole("heading", { name: /Noise becomes signal/i }),
+    page.getByRole("heading", { name: /Know what deserves you/i }),
   ).toBeVisible();
 });
 

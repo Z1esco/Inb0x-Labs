@@ -97,3 +97,24 @@ read-only and Reply Studio remains copy-only.
 - Keyboard-only review of destructive confirmations and provider redirects.
 - Production-font rendering on Safari and high-DPI Windows displays.
 - Hosted OAuth states with dedicated disposable accounts.
+
+## Visual QA evidence
+
+Baseline and redesigned captures are stored in `docs/screenshots/redesign/before` and
+`docs/screenshots/redesign/after`. The after set covers Landing, Login, Dashboard, Inbox, thread
+detail with Reply Studio, Tasks, Drafts, Insights, and Settings at 1440px; primary workflows were
+also captured at 390px. Representative baseline captures preserve the earlier Landing, Dashboard,
+Inbox, thread-detail, and Settings compositions for comparison.
+
+The rendered pass found and fixed three P0 responsive defects:
+
+1. Mobile inbox text was hidden by an over-broad metadata selector.
+2. The mobile navigation icon inherited a rule intended only for toolbar context text.
+3. Thread detail and Settings re-applied desktop-specific grids after the shared responsive rule,
+   causing their inspectors to overlap primary content.
+
+All three were re-captured after correction. Desktop route captures showed no horizontal overlap or
+clipped primary actions. The fixed bottom navigation intentionally remains visible while scrolling;
+page padding preserves access to the final content. A browser-extension caret style produced a local
+development hydration warning during one controlled browser run; the mismatch originated from the
+extension's injected inline style and was not present in the application source.
