@@ -15,6 +15,7 @@ export function DraftStudio({ threadId }: { threadId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+
   async function generate() {
     setLoading(true);
     setError(null);
@@ -27,6 +28,7 @@ export function DraftStudio({ threadId }: { threadId: string }) {
       setLoading(false);
     }
   }
+
   async function copyDraft() {
     if (!draft) return;
     try {
@@ -36,21 +38,21 @@ export function DraftStudio({ threadId }: { threadId: string }) {
       setError("Copy is unavailable in this browser.");
     }
   }
+
   return (
-    <div className="surface surface-pad">
-      <div className="surface-header">
-        <div>
-          <h2>Reply studio</h2>
-          <p>Reviewable plain text. Never sent from Inb0x.</p>
-        </div>
-        <span className="status-label connected">Copy only</span>
-      </div>
-      <div className="stack">
-        <div className="field">
-          <label htmlFor="reply-tone">Tone</label>
+    <section className="thread-writing-studio">
+      <header>
+        <span>Writing room</span>
+        <strong>Copy only</strong>
+      </header>
+      <h2>Prepare a reply</h2>
+      <p>
+        Choose the shape of the response. You will review and copy it manually.
+      </p>
+      <div className="studio-controls">
+        <label>
+          Tone
           <select
-            id="reply-tone"
-            className="form-select"
             value={tone}
             onChange={(event) => setTone(event.target.value as ReplyTone)}
           >
@@ -60,12 +62,10 @@ export function DraftStudio({ threadId }: { threadId: string }) {
               </option>
             ))}
           </select>
-        </div>
-        <div className="field">
-          <label htmlFor="reply-length">Length</label>
+        </label>
+        <label>
+          Length
           <select
-            id="reply-length"
-            className="form-select"
             value={length}
             onChange={(event) => setLength(event.target.value as ReplyLength)}
           >
@@ -75,60 +75,57 @@ export function DraftStudio({ threadId }: { threadId: string }) {
               </option>
             ))}
           </select>
-        </div>
-        <button
-          className="button primary"
-          type="button"
-          onClick={() => void generate()}
-          disabled={loading}
-        >
-          {loading ? (
-            "Generating..."
-          ) : (
-            <>
-              <Icon name="spark" /> Generate draft
-            </>
-          )}
-        </button>
-        {error && (
-          <div className="danger-box" role="alert">
-            <Icon name="warning" /> {error}
-          </div>
-        )}
-        {draft && (
-          <div className="stack">
-            <div className="success-box">
-              <Icon name="check" /> Draft ready for human review.
-            </div>
-            <div className="surface-deep surface-pad">
-              <p className="eyebrow">Subject</p>
-              <strong>{draft.subject}</strong>
-              <p className="eyebrow" style={{ marginTop: 24 }}>
-                Body
-              </p>
-              <p className="message-body">{draft.body}</p>
-            </div>
-            {draft.warnings.length > 0 && (
-              <div className="warning-box">
-                <strong>Review before copying</strong>
-                <ul>
-                  {draft.warnings.map((warning) => (
-                    <li key={warning}>{warning}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <button
-              className="button secondary"
-              type="button"
-              onClick={() => void copyDraft()}
-            >
-              <Icon name="copy" />{" "}
-              {copied ? "Copied to clipboard" : "Copy reply"}
-            </button>
-          </div>
-        )}
+        </label>
       </div>
-    </div>
+      <button
+        className="desk-button desk-button-ink"
+        type="button"
+        onClick={() => void generate()}
+        disabled={loading}
+      >
+        {loading ? (
+          "Preparing reply…"
+        ) : (
+          <>
+            Prepare reply <Icon name="arrow" />
+          </>
+        )}
+      </button>
+      {error && (
+        <p className="inline-warning" role="alert">
+          <Icon name="warning" />
+          {error}
+        </p>
+      )}
+      {draft && (
+        <div className="studio-result">
+          <p className="inline-confirmation" role="status">
+            Draft ready for review.
+          </p>
+          <span>Subject</span>
+          <strong>{draft.subject}</strong>
+          <span>Body</span>
+          <p>{draft.body}</p>
+          {draft.warnings.length > 0 && (
+            <aside className="editorial-warning">
+              <strong>Review before copying</strong>
+              <ul>
+                {draft.warnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </aside>
+          )}
+          <button
+            className="desk-button desk-button-outline"
+            type="button"
+            onClick={() => void copyDraft()}
+          >
+            <Icon name="copy" />
+            {copied ? "Copied to clipboard" : "Copy reply"}
+          </button>
+        </div>
+      )}
+    </section>
   );
 }

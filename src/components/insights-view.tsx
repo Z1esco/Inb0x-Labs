@@ -1,13 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Icon } from "@/components/icons";
 import {
   ErrorState,
   LoadingGrid,
   PageShell,
-  Surface,
-  SurfaceHeader,
 } from "@/components/page-primitives";
 import { apiClient } from "@/lib/api-client";
 import type { DashboardData } from "@/types/contracts";
@@ -25,176 +22,149 @@ export function InsightsView() {
       );
     }
   }, []);
+
   useEffect(() => {
     let mounted = true;
     void apiClient
       .getDashboard({ timezone: "UTC" })
-      .then((value) => {
-        if (mounted) setData(value);
-      })
-      .catch((value: unknown) => {
-        if (mounted)
+      .then((value) => mounted && setData(value))
+      .catch(
+        (value: unknown) =>
+          mounted &&
           setError(
             value instanceof Error ? value.message : "Insights could not load.",
-          );
-      });
+          ),
+      );
     return () => {
       mounted = false;
     };
   }, []);
+
   if (error)
     return (
-      <PageShell eyebrow="Signal room / insights" title="Insights">
+      <PageShell title="Patterns unavailable">
         <ErrorState message={error} onRetry={() => void load()} />
       </PageShell>
     );
   if (!data)
     return (
-      <PageShell eyebrow="Signal room / insights" title="Insights">
+      <PageShell title="Reading the pattern">
         <LoadingGrid />
       </PageShell>
     );
+
   const max = Math.max(
     1,
     ...data.analytics.weeklyThreads.map((item) => item.count),
   );
   return (
     <PageShell
-      eyebrow="Signal room / insights"
-      title="Insights"
-      description="Measured patterns from persisted workspace data. Estimates are transparent, not judgments."
+      eyebrow="Measured patterns · persisted workspace only"
+      title="Patterns, not scores."
+      description="A transparent reading of what entered the desk and what you chose to resolve."
     >
-      <div className="metric-grid insights-metrics">
-        <article className="surface metric-card">
-          <div className="metric-label">
-            <span>Time saved</span>
-            <Icon name="clock" />
-          </div>
-          <strong>{data.analytics.estimatedTimeSavedMinutes}m</strong>
-          <small>Heuristic from explicit analysis, tasks, and drafts</small>
-        </article>
-        <article className="surface metric-card">
-          <div className="metric-label">
-            <span>Confidence</span>
-            <Icon name="activity" />
-          </div>
-          <strong>{Math.round(data.analytics.averageConfidence * 100)}%</strong>
-          <small>Average validated analysis confidence</small>
-        </article>
-        <article className="surface metric-card">
-          <div className="metric-label">
-            <span>Tasks completed</span>
-            <Icon name="check" />
-          </div>
-          <strong>{data.tasks.completed}</strong>
-          <small>Accepted work closed by you</small>
-        </article>
-        <article className="surface metric-card accent">
-          <div className="metric-label">
-            <span>Reply pressure</span>
-            <Icon name="arrow" />
-          </div>
-          <strong>{data.overview.needsReply}</strong>
-          <small>Threads currently asking for a response</small>
-        </article>
-      </div>
-      <div className="data-grid insights-grid">
-        <Surface className="insight-health-surface">
-          <SurfaceHeader
-            title="Inbox health"
-            description="A transparent view of current workload, not a judgment."
-          />
-          <div className="insight-health-content">
-            <div className="ring">
-              <strong>{data.inboxHealth.score}</strong>
-            </div>
-            <div className="insight-factor-list">
-              {data.inboxHealth.factors.map((factor) => (
-                <div className="setting-line" key={factor.key}>
-                  <span>{factor.label}</span>
-                  <strong>{factor.value}</strong>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Surface>
-        <Surface>
-          <SurfaceHeader
-            title="Thread volume"
-            description="Seven-day normalized thread count."
-          />
-          <div className="bar-chart">
-            {data.analytics.weeklyThreads.map((point) => (
-              <div className="bar-column" key={point.date}>
-                <span
-                  style={{
-                    height: `${Math.max(8, (point.count / max) * 100)}%`,
-                  }}
-                />
-                <small>{point.date.slice(-2)}</small>
-              </div>
-            ))}
-          </div>
-        </Surface>
-        <Surface>
-          <SurfaceHeader
-            title="Categories"
-            description="Supported categories from current analysis."
-          />
-          <div className="stack">
-            {data.analytics.categoryDistribution.map((item) => (
-              <div className="setting-line" key={item.key}>
-                <div style={{ flex: 1 }}>
-                  <strong>{item.key}</strong>
-                  <span
-                    style={{
-                      display: "block",
-                      height: 5,
-                      marginTop: 8,
-                      borderRadius: 3,
-                      background: `linear-gradient(90deg, var(--signal-cyan) ${item.percentage}%, var(--surface-3) ${item.percentage}%)`,
-                    }}
-                  />
-                </div>
-                <strong>{item.count}</strong>
-              </div>
-            ))}
-          </div>
-        </Surface>
-        <Surface>
-          <SurfaceHeader
-            title="Priority mix"
-            description="Urgency distribution without a rainbow palette."
-          />
-          <div className="stack">
-            {data.analytics.priorityDistribution.map((item) => (
-              <div className="setting-line" key={item.key}>
-                <div>
-                  <strong>{item.key}</strong>
-                  <span>{item.percentage}% of analyzed threads</span>
-                </div>
-                <strong>{item.count}</strong>
-              </div>
-            ))}
-          </div>
-        </Surface>
-        <Surface>
-          <SurfaceHeader
-            title="Method note"
-            description="How to read this page."
-          />
-          <p className="muted">
-            Insights are bounded to the dashboard API window. Time saved is an
-            estimate based on explicit actions; it does not claim a guaranteed
-            productivity outcome. No raw email, reply body, or provider
-            credential is exposed here.
+      <section className="insight-opening">
+        <div>
+          <span>The clearest reading</span>
+          <h2>{data.overview.needsReply} conversations are waiting on you.</h2>
+          <p>
+            The pressure is concentrated, not universal. Most recent
+            correspondence does not require an immediate response.
           </p>
-          <div className="success-box">
-            <Icon name="check" /> Read-only data boundary verified by the
-            dashboard contract.
+        </div>
+        <dl>
+          <div>
+            <dt>Estimated time reclaimed</dt>
+            <dd>
+              {data.analytics.estimatedTimeSavedMinutes}
+              <small>minutes</small>
+            </dd>
           </div>
-        </Surface>
+          <div>
+            <dt>Grounded confidence</dt>
+            <dd>
+              {Math.round(data.analytics.averageConfidence * 100)}
+              <small>percent</small>
+            </dd>
+          </div>
+          <div>
+            <dt>Tasks completed</dt>
+            <dd>
+              {data.tasks.completed}
+              <small>accepted actions</small>
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="pattern-question">
+        <header>
+          <span>Question 01</span>
+          <h2>When did correspondence arrive?</h2>
+          <p>Seven-day normalized thread volume.</p>
+        </header>
+        <div className="editorial-chart" aria-label="Seven-day thread volume">
+          {data.analytics.weeklyThreads.map((point) => (
+            <div key={point.date}>
+              <span>{point.count}</span>
+              <i
+                style={{
+                  height: `${Math.max(10, (point.count / max) * 100)}%`,
+                }}
+              />
+              <small>{point.date.slice(-2)}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="pattern-columns">
+        <section className="pattern-question compact-pattern">
+          <header>
+            <span>Question 02</span>
+            <h2>What competed for attention?</h2>
+          </header>
+          <ol>
+            {data.analytics.categoryDistribution.map((item, index) => (
+              <li key={item.key}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{item.key.replaceAll("_", " ")}</strong>
+                <i>
+                  <b style={{ width: `${item.percentage}%` }} />
+                </i>
+                <small>{item.percentage}%</small>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section className="pattern-question compact-pattern">
+          <header>
+            <span>Question 03</span>
+            <h2>How urgent was it?</h2>
+          </header>
+          <ol>
+            {data.analytics.priorityDistribution.map((item, index) => (
+              <li key={item.key}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{item.key}</strong>
+                <i>
+                  <b style={{ width: `${item.percentage}%` }} />
+                </i>
+                <small>{item.count}</small>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
+
+      <aside className="method-footnote">
+        <span>Method note</span>
+        <p>
+          Time saved is a bounded estimate based on explicit actions. No raw
+          email body, reply text, or provider credential is included in this
+          page.
+        </p>
+      </aside>
     </PageShell>
   );
 }

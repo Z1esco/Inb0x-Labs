@@ -5,7 +5,7 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Open demo" }).click();
   await expect(
-    page.getByRole("heading", { name: "Inbox focus" }),
+    page.getByRole("heading", { name: "Today, edited." }),
   ).toBeVisible();
   const dashboardResponse = await page.request.get(
     "/api/dashboard?timezone=UTC",
@@ -27,11 +27,13 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
   });
   await page
     .getByRole("complementary", { name: "Primary navigation" })
-    .getByRole("link", { name: "Inbox", exact: true })
+    .getByRole("link", { name: "Correspondence", exact: true })
     .click();
   await page.locator('a[href="/inbox/proposal-approval"]').first().click();
-  await expect(page.getByRole("heading", { name: "Analysis" })).toBeVisible();
-  await page.getByRole("button", { name: "Generate draft" }).click();
+  await expect(
+    page.getByRole("heading", { name: "What this thread means" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Prepare reply" }).click();
   await expect(page.getByText("Copy only")).toBeVisible();
   await expect(
     page.getByText("Re: Approval needed: Aurora proposal"),
@@ -65,7 +67,7 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
     .getByRole("link", { name: "Tasks", exact: true })
     .click();
   await page.getByLabel("Task title").fill("Prepare judging notes");
-  await page.getByRole("button", { name: "Create task" }).click();
+  await page.getByRole("button", { name: "Add to the ledger" }).click();
   await expect(page.getByText("Prepare judging notes")).toBeVisible();
   await page
     .getByRole("button", { name: "Complete Prepare judging notes" })
@@ -75,18 +77,21 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
   ).toBeVisible();
   await page
     .getByRole("complementary", { name: "Primary navigation" })
-    .getByRole("link", { name: "Insights", exact: true })
+    .getByRole("link", { name: "Patterns", exact: true })
     .click();
-  await expect(page.getByRole("heading", { name: "Insights" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Patterns, not scores." }),
+  ).toBeVisible();
   await page
     .getByRole("complementary", { name: "Primary navigation" })
-    .getByRole("link", { name: "Settings", exact: true })
+    .getByRole("link", { name: "Preferences", exact: true })
     .click();
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByRole("status")).toContainText("Demo restored");
+  await page.getByRole("button", { name: "Open user menu" }).click();
   await page.getByRole("button", { name: "Exit demo" }).click();
   await expect(
-    page.getByRole("heading", { name: /Noise becomes signal/i }),
+    page.getByRole("heading", { name: /Email, edited into decisions/i }),
   ).toBeVisible();
 });
 
@@ -108,7 +113,7 @@ test("dashboard shell remains usable at release viewports", async ({
     await page.setViewportSize(viewport);
     await page.goto("/dashboard");
     await expect(
-      page.getByRole("heading", { name: "Inbox focus" }),
+      page.getByRole("heading", { name: "Today, edited." }),
     ).toBeVisible();
     if (viewport.width >= 821) {
       await expect(

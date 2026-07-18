@@ -9,7 +9,6 @@ import {
   LoadingGrid,
   PageShell,
   RelativeTime,
-  Surface,
 } from "@/components/page-primitives";
 import { apiClient } from "@/lib/api-client";
 import type { ReplyDraft } from "@/types/contracts";
@@ -36,24 +35,25 @@ export function DraftsView() {
       setLoading(false);
     }
   }, []);
+
   useEffect(() => {
     let mounted = true;
     void apiClient
       .listDrafts()
       .then((items) => {
-        if (!mounted) return;
-        setDrafts(items);
-        setSelectedDraft(items[0] ?? null);
+        if (mounted) {
+          setDrafts(items);
+          setSelectedDraft(items[0] ?? null);
+        }
       })
-      .catch((value: unknown) => {
-        if (mounted)
+      .catch(
+        (value: unknown) =>
+          mounted &&
           setError(
             value instanceof Error ? value.message : "Drafts could not load.",
-          );
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
+          ),
+      )
+      .finally(() => mounted && setLoading(false));
     return () => {
       mounted = false;
     };
@@ -88,12 +88,12 @@ export function DraftsView() {
 
   return (
     <PageShell
-      eyebrow="Signal room / reply studio"
-      title="Reply studio"
-      description="Grounded, plain-text suggestions for your review and manual copy."
+      eyebrow="Reply studio · manual copy only"
+      title="The writing room"
+      description="Grounded reply suggestions held here for review. Inb0x never sends them."
       actions={
-        <span className="status-label connected">
-          <Icon name="check" /> Nothing is sent
+        <span className="copy-boundary">
+          <Icon name="check" /> Nothing leaves this desk
         </span>
       }
     >
@@ -101,101 +101,97 @@ export function DraftsView() {
         <LoadingGrid />
       ) : error ? (
         <ErrorState message={error} onRetry={() => void load()} />
-      ) : (
-        <Surface className="drafts-surface">
-          {drafts.length && selectedDraft ? (
-            <div className="drafts-layout">
-              <div className="draft-list" aria-label="Reply drafts">
-                {drafts.map((draft) => (
-                  <button
-                    className="draft-list-item"
-                    type="button"
-                    key={draft.id}
-                    aria-pressed={selectedDraft.id === draft.id}
-                    onClick={() => {
-                      setSelectedDraft(draft);
-                      setCopied(false);
-                    }}
-                  >
-                    <span className="list-leading">
-                      <Icon name="copy" />
-                    </span>
-                    <span className="list-copy">
-                      <strong>{draft.subject}</strong>
-                      <p>
-                        {draft.tone} · {draft.length} ·{" "}
-                        <RelativeTime value={draft.createdAt} />
-                      </p>
-                    </span>
-                    <span className="status-label">
-                      {Math.round(draft.confidence * 100)}%
-                    </span>
-                  </button>
-                ))}
+      ) : drafts.length && selectedDraft ? (
+        <div className="writing-room">
+          <aside className="draft-index" aria-label="Reply drafts">
+            <header>
+              <span>Saved replies</span>
+              <strong>{drafts.length}</strong>
+            </header>
+            {drafts.map((draft, index) => (
+              <button
+                key={draft.id}
+                type="button"
+                aria-pressed={selectedDraft.id === draft.id}
+                onClick={() => {
+                  setSelectedDraft(draft);
+                  setCopied(false);
+                }}
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <strong>{draft.subject}</strong>
+                  <p>
+                    {draft.tone} · {draft.length} ·{" "}
+                    <RelativeTime value={draft.createdAt} />
+                  </p>
+                </div>
+              </button>
+            ))}
+          </aside>
+
+          <article className="writing-sheet">
+            <header>
+              <div>
+                <span>Copy-only reply</span>
+                <h2>{selectedDraft.subject}</h2>
               </div>
-              <article className="draft-detail">
-                <div className="surface-header">
-                  <div>
-                    <p className="eyebrow">Copy-only reply</p>
-                    <h2>{selectedDraft.subject}</h2>
-                  </div>
-                  <span className="status-label connected">
-                    Review required
-                  </span>
-                </div>
-                <p className="draft-meta">
-                  {selectedDraft.tone} tone · {selectedDraft.length} length ·{" "}
-                  {Math.round(selectedDraft.confidence * 100)}% grounded
-                  confidence
-                </p>
-                <p className="message-body">{selectedDraft.body}</p>
-                {selectedDraft.warnings.length > 0 && (
-                  <div className="warning-box">
-                    <strong>Review before copying</strong>
-                    <ul>
-                      {selectedDraft.warnings.map((warning) => (
-                        <li key={warning}>{warning}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <div className="draft-actions">
-                  <button
-                    className="button primary"
-                    type="button"
-                    onClick={() => void copyDraft()}
-                  >
-                    <Icon name="copy" />
-                    {copied ? "Copied to clipboard" : "Copy draft"}
-                  </button>
-                  <Link
-                    className="button secondary"
-                    href={`/inbox/${selectedDraft.threadId}`}
-                  >
-                    Review thread <Icon name="arrow" />
-                  </Link>
-                  <button
-                    className="button ghost"
-                    type="button"
-                    onClick={() => void remove(selectedDraft.id)}
-                  >
-                    Delete draft
-                  </button>
-                </div>
-              </article>
+              <strong>
+                {Math.round(selectedDraft.confidence * 100)}% grounded
+              </strong>
+            </header>
+            <p className="writing-meta">
+              {selectedDraft.tone} tone · {selectedDraft.length} length · human
+              review required
+            </p>
+            <div className="draft-paper">
+              <p>{selectedDraft.body}</p>
             </div>
-          ) : (
-            <EmptyState
-              title="No drafts yet"
-              message="Open a priority thread and create a copy-only reply when you are ready."
-              action={
-                <Link className="button secondary" href="/inbox">
-                  Open inbox <Icon name="arrow" />
-                </Link>
-              }
-            />
-          )}
-        </Surface>
+            {selectedDraft.warnings.length > 0 && (
+              <aside className="editorial-warning">
+                <strong>Review before copying</strong>
+                <ul>
+                  {selectedDraft.warnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </aside>
+            )}
+            <footer>
+              <button
+                className="desk-button desk-button-ink"
+                type="button"
+                onClick={() => void copyDraft()}
+              >
+                <Icon name="copy" />
+                {copied ? "Copied to clipboard" : "Copy reply"}
+              </button>
+              <Link
+                className="desk-button desk-button-outline"
+                href={`/inbox/${selectedDraft.threadId}`}
+              >
+                Read source thread
+              </Link>
+              <button
+                className="text-action destructive-text"
+                type="button"
+                onClick={() => void remove(selectedDraft.id)}
+              >
+                Delete this draft
+              </button>
+            </footer>
+          </article>
+        </div>
+      ) : (
+        <EmptyState
+          title="The writing room is quiet"
+          message="Open a priority thread and request a copy-only reply when you need one."
+          action={
+            <Link className="desk-button desk-button-outline" href="/inbox">
+              Open correspondence
+            </Link>
+          }
+        />
       )}
     </PageShell>
   );
