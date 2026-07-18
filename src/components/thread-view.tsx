@@ -53,6 +53,13 @@ export function ThreadView({
     );
   const currentThread = thread;
   const analysis = currentThread.analysis;
+  const confidenceLabel = analysis
+    ? analysis.confidence >= 0.85
+      ? "High confidence"
+      : analysis.confidence >= 0.65
+        ? "Needs review"
+        : "Low confidence"
+    : null;
   async function createTask(actionIndex: number) {
     if (!currentThread.analysisId) return;
     setTaskMessage(null);
@@ -113,19 +120,23 @@ export function ThreadView({
           ))}
         </Surface>
         <aside className="stack">
-          <Surface>
+          <Surface className="analysis-surface">
             <SurfaceHeader
               title="Analysis"
               description="Assistive interpretation, grounded in this thread."
             />
             {analysis ? (
-              <div className="stack">
-                <p>{analysis.summary}</p>
-                <div className="control-row">
+              <div className="stack analysis-stack">
+                <div className="analysis-summary">
+                  <span>Thread signal</span>
+                  <p>{analysis.summary}</p>
+                </div>
+                <div className="control-row analysis-statuses">
                   <PriorityLabel value={analysis.priorityLevel} />
                   <span className="status-label">
                     {analysis.priorityScore}/100
                   </span>
+                  <span className="status-label">{confidenceLabel}</span>
                   {analysis.needsReply && (
                     <span className="status-label critical">Reply needed</span>
                   )}
@@ -186,6 +197,26 @@ export function ThreadView({
                     ))}
                   </div>
                 )}
+                <div className="settings-section">
+                  <h3>Source evidence</h3>
+                  {analysis.evidence.length ? (
+                    <div className="evidence-list">
+                      {analysis.evidence.map((evidence) => (
+                        <blockquote
+                          key={`${evidence.sourceMessageId}-${evidence.claim}`}
+                        >
+                          <p>{evidence.claim}</p>
+                          <cite>“{evidence.excerpt}”</cite>
+                        </blockquote>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="muted">
+                      No additional source excerpts are available for this
+                      signal.
+                    </p>
+                  )}
+                </div>
               </div>
             ) : (
               <EmptyState

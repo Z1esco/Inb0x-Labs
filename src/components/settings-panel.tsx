@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 import { apiClient } from "@/lib/api-client";
 import type {
@@ -20,11 +20,21 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function loadSettings() {
-    const value = await apiClient.getSettings();
-    setSettings(value);
-    setDisplayName(value.profile.displayName ?? "");
-  }
+  const loadSettings = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const value = await apiClient.getSettings();
+      setSettings(value);
+      setDisplayName(value.profile.displayName ?? "");
+    } catch (value) {
+      setError(
+        value instanceof Error ? value.message : "Settings could not load.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -143,13 +153,20 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
     return (
       <div className="danger-box" role="alert">
         <Icon name="warning" /> {error ?? "Settings are unavailable."}
+        <button
+          className="button secondary"
+          type="button"
+          onClick={() => void loadSettings()}
+        >
+          Retry
+        </button>
       </div>
     );
 
   return (
     <div className="settings-grid">
       <div className="stack">
-        <section className="surface surface-pad">
+        <section className="surface surface-pad connection-ledger">
           <div className="surface-header">
             <div>
               <h2>Workspace preferences</h2>
@@ -383,12 +400,34 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
               <span
                 className={`status-dot ${settings.gmail.connected ? "connected" : ""}`}
               />{" "}
-              {settings.gmail.connected ? "Connected" : "Disconnected"}
+              {settings.gmail.connected
+                ? "Read-only connected"
+                : "Disconnected"}
             </span>
           </div>
           <p className="muted">
             {settings.gmail.gmailAddress ?? "No Gmail account connected"}
           </p>
+          <div
+            className="permission-ledger"
+            aria-label="Gmail permission ledger"
+          >
+            <div>
+              <Icon name="check" label="Allowed" />
+              <span>
+                <strong>Read messages</strong>
+                Normalize and display owned inbox data for review.
+              </span>
+            </div>
+            <div>
+              <Icon name="close" label="Not allowed" />
+              <span>
+                <strong>No mailbox changes</strong>
+                Inb0x cannot send, archive, delete, label, or mark messages
+                read.
+              </span>
+            </div>
+          </div>
           <div className="control-row">
             {!settings.gmail.connected && !demo && (
               <a className="button secondary" href="/api/gmail/connect">

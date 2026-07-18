@@ -4,8 +4,8 @@ export default function TasksPage() {
   return (
     <PageShell
       eyebrow="Signal room / tasks"
-      title="Tasks"
-      description="Work you explicitly chose to own, with the source context kept close."
+      title="Task sequence"
+      description="Work you explicitly chose to own, arranged around the next deadline and source context."
     >
       <TaskBoard />
     </PageShell>

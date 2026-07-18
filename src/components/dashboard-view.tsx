@@ -137,16 +137,31 @@ export function DashboardView({
         />
       </div>
       <div className="dashboard-grid">
-        <Surface>
+        <Surface className="focus-signal">
           <SurfaceHeader
-            title="Today’s focus"
-            description="The shortest path to a clearer inbox."
+            title="Focus signal"
+            description="The next actions with the clearest time pressure."
             action={
               <Link className="button ghost" href="/inbox">
                 View all <Icon name="arrow" />
               </Link>
             }
           />
+          <div className="focus-signal-summary">
+            <div>
+              <span>Requires attention</span>
+              <strong>{data.today.items.length}</strong>
+              <small>
+                {data.overview.criticalThreads} critical threads ·{" "}
+                {data.overview.needsReply} awaiting a reply
+              </small>
+            </div>
+            <div className="focus-beam" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </div>
+          </div>
           {data.today.items.length ? (
             <div className="focus-list">
               {data.today.items.map((item) => (
@@ -197,11 +212,11 @@ export function DashboardView({
             title="Inbox health"
             description="Transparent workload triage."
           />
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <div className="health-overview">
             <div className="ring">
               <strong>{data.inboxHealth.score}</strong>
             </div>
-            <div className="stack" style={{ flex: 1, gap: 9 }}>
+            <div className="health-factors">
               {data.inboxHealth.factors.slice(0, 4).map((factor) => (
                 <div key={factor.key} className="setting-line">
                   <span>{factor.label}</span>
@@ -279,6 +294,30 @@ export function DashboardView({
               sent automatically.
             </div>
           </div>
+        </Surface>
+        <Surface>
+          <SurfaceHeader
+            title="Category mix"
+            description="What has been competing for attention."
+          />
+          {data.analytics.categoryDistribution.length ? (
+            <div className="category-list">
+              {data.analytics.categoryDistribution.map((category) => (
+                <div className="category-row" key={category.key}>
+                  <span>{category.key.replaceAll("_", " ")}</span>
+                  <div aria-hidden="true">
+                    <i style={{ width: `${category.percentage}%` }} />
+                  </div>
+                  <strong>{category.percentage}%</strong>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No category signal yet"
+              message="Categories appear after your inbox has been analyzed."
+            />
+          )}
         </Surface>
         <Surface className="dashboard-wide">
           <SurfaceHeader
