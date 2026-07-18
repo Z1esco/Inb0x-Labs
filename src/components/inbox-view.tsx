@@ -143,16 +143,18 @@ export function InboxView() {
                   </p>
                 </span>
                 <span className="list-meta">{thread.messageCount} msg</span>
-                {thread.analysis?.needsReply && (
-                  <span className="status-label critical">Reply</span>
-                )}
-                <PriorityLabel
-                  value={thread.analysis?.priorityLevel ?? "unscored"}
-                />
-                <span className="list-meta">
-                  <RelativeTime value={thread.latestMessageAt} />
+                <span className="thread-signals">
+                  {thread.analysis?.needsReply && (
+                    <span className="status-label critical">Reply</span>
+                  )}
+                  <PriorityLabel
+                    value={thread.analysis?.priorityLevel ?? "unscored"}
+                  />
+                  <span className="list-meta">
+                    <RelativeTime value={thread.latestMessageAt} />
+                  </span>
+                  <Icon name="arrow" />
                 </span>
-                <Icon name="arrow" />
               </Link>
             ))}
           </div>

@@ -86,7 +86,7 @@ export function DraftStudio({ threadId }: { threadId: string }) {
             "Generating..."
           ) : (
             <>
-              <Icon name="spark" /> Generate draft
+              <Icon name="arrow" /> Generate draft
             </>
           )}
         </button>
