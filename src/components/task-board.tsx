@@ -97,7 +97,7 @@ export function TaskBoard() {
   }
   if (loading) return <LoadingGrid />;
   return (
-    <div className="stack">
+    <div className="stack task-workspace">
       <Surface>
         <div className="control-row">
           <input

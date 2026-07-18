@@ -87,8 +87,8 @@ export function ThreadView({
         </>
       }
     >
-      <div className="thread-layout">
-        <Surface>
+      <div className="thread-layout thread-reader">
+        <Surface className="conversation-surface">
           <SurfaceHeader
             title="Conversation"
             description="Chronological normalized content. Raw HTML and attachments stay out of the browser."

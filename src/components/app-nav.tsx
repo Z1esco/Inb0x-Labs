@@ -21,7 +21,7 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
     <div className="sidebar-nav">
-      {links.map(([label, href, icon]) => {
+      {links.map(([label, href, icon], index) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link
@@ -31,8 +31,11 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
             aria-current={active ? "page" : undefined}
             {...(onNavigate ? { onClick: onNavigate } : {})}
           >
+            <span className="nav-index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
             <Icon name={icon} />
-            <span>{label}</span>
+            <span className="nav-label">{label}</span>
           </Link>
         );
       })}
@@ -90,13 +93,12 @@ export function AppNav({
             inb<span>0</span>x
           </span>
         </Link>
-        <p className="sidebar-section-label">Workspace</p>
+        <div className="rail-intro">
+          <p className="sidebar-section-label">Attention index</p>
+          <span>Read. decide. act.</span>
+        </div>
         <Navigation onNavigate={() => setOpen(false)} />
         <div className="sidebar-footer">
-          <div className="connection-line">
-            <span className="status-dot connected" />
-            <span>Read-only workspace</span>
-          </div>
           <div className="user-mini">
             <span className="avatar">{initials(userLabel)}</span>
             <div>
@@ -105,6 +107,10 @@ export function AppNav({
                 {demo ? "Credential-free demo" : "Authenticated workspace"}
               </span>
             </div>
+          </div>
+          <div className="connection-line">
+            <span className="status-dot connected" />
+            <span>Mailbox stays read-only</span>
           </div>
           <button
             className="nav-link sign-out-button"
@@ -131,10 +137,9 @@ export function AppNav({
             >
               <Icon name={open ? "close" : "menu"} />
             </button>
-            <span className="status-dot connected" />
             <strong>{active?.[0] ?? "Workspace"}</strong>
             <span>/</span>
-            <span>Signal room</span>
+            <span>Attention desk</span>
           </div>
           <div className="topbar-actions">
             <span className="status-label connected">

@@ -147,7 +147,7 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
     );
 
   return (
-    <div className="settings-grid">
+    <div className="settings-grid settings-workspace">
       <div className="stack">
         <section className="surface surface-pad">
           <div className="surface-header">

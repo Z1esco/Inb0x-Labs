@@ -63,7 +63,7 @@ export function InboxView() {
         </Link>
       }
     >
-      <Surface>
+      <Surface className="inbox-workspace">
         <div className="control-row" style={{ marginBottom: 22 }}>
           <div style={{ minWidth: 240, flex: 1, position: "relative" }}>
             <span
@@ -143,16 +143,18 @@ export function InboxView() {
                   </p>
                 </span>
                 <span className="list-meta">{thread.messageCount} msg</span>
-                {thread.analysis?.needsReply && (
-                  <span className="status-label critical">Reply</span>
-                )}
-                <PriorityLabel
-                  value={thread.analysis?.priorityLevel ?? "unscored"}
-                />
-                <span className="list-meta">
-                  <RelativeTime value={thread.latestMessageAt} />
+                <span className="thread-signals">
+                  {thread.analysis?.needsReply && (
+                    <span className="status-label critical">Reply</span>
+                  )}
+                  <PriorityLabel
+                    value={thread.analysis?.priorityLevel ?? "unscored"}
+                  />
+                  <span className="list-meta">
+                    <RelativeTime value={thread.latestMessageAt} />
+                  </span>
+                  <Icon name="arrow" />
                 </span>
-                <Icon name="arrow" />
               </Link>
             ))}
           </div>
