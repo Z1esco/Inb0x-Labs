@@ -4,81 +4,78 @@ import { Icon } from "@/components/icons";
 
 export default function LoginPage() {
   return (
-    <main className="auth-page">
-      <header className="auth-header">
-        <Link className="brand-lockup" href="/">
-          <span className="brand-mark" aria-hidden="true">
-            <Image
-              src="/logo/inb0x-labs-logo.png"
-              alt=""
-              width={154}
-              height={154}
-              priority
-            />
-          </span>
-          <span className="brand-wordmark">
-            inb<span>0</span>x
-          </span>
+    <main className="entry-page">
+      <header className="entry-header">
+        <Link className="landing-brand" href="/" aria-label="Inb0x home">
+          <Image
+            src="/logo/inb0x-labs-logo.png"
+            alt=""
+            width={44}
+            height={44}
+            priority
+          />
+          <span>INB0X</span>
         </Link>
-        <Link className="button ghost" href="/">
-          Back to home
+        <Link className="text-action" href="/">
+          Return to the front page
         </Link>
       </header>
-      <section className="auth-layout" aria-labelledby="auth-title">
-        <div className="auth-intro">
-          <p className="eyebrow">A considered connection</p>
-          <h1 id="auth-title">
-            Make room for <em>signal.</em>
+
+      <section className="entry-stage">
+        <div className="entry-statement">
+          <span>Workspace access</span>
+          <h1>
+            One sign-in.
+            <br />
+            Two separate
+            <br />
+            <em>permissions.</em>
           </h1>
           <p>
-            Your Inb0x session and Gmail connection are distinct. Sign in first;
-            decide about mailbox access with the full context in view.
+            Your Inb0x session identifies you. Gmail access is requested
+            separately, remains read-only, and can be disconnected at any time.
           </p>
-          <div className="auth-line" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
         </div>
-        <div className="auth-card">
-          <p className="eyebrow">Sign in to Inb0x</p>
-          <h2>Continue with Google</h2>
-          <p>
-            We use Google to establish your application session. Gmail access is
-            requested separately and only after you choose to connect it.
-          </p>
-          <a className="button primary auth-google" href="/api/auth/google">
-            <Icon name="arrow" /> Continue with Google
-          </a>
-          <div
-            className="consent-list"
-            aria-label="Read-only permission details"
-          >
-            <div>
-              <Icon name="check" label="Read-only" />
-              <span>
-                <strong>Read-only by default</strong>Inb0x never sends email or
-                changes your Gmail mailbox.
-              </span>
-            </div>
-            <div>
-              <Icon name="check" label="Review required" />
-              <span>
-                <strong>Review stays with you</strong>Reply drafts are copy-only
-                and require your approval.
-              </span>
-            </div>
-            <div>
-              <Icon name="check" label="Separate connection" />
-              <span>
-                <strong>Disconnect anytime</strong>Gmail permission remains
-                separate from your Inb0x account.
-              </span>
-            </div>
+
+        <div className="entry-form">
+          <header>
+            <span>Private attention desk</span>
+            <strong>Sign in</strong>
+          </header>
+          <div className="entry-actions">
+            <a className="desk-button desk-button-ink" href="/api/auth/google">
+              Continue with Google <Icon name="arrow" />
+            </a>
+            <Link className="desk-button desk-button-outline" href="/dashboard">
+              Enter the fictional demo
+            </Link>
           </div>
-          <Link className="button secondary auth-demo" href="/dashboard">
-            <Icon name="spark" /> Enter credential-free demo
-          </Link>
+          <ol className="entry-permissions">
+            <li>
+              <span>01</span>
+              <p>
+                <strong>Sign-in</strong> creates only your private Inb0x
+                session.
+              </p>
+            </li>
+            <li>
+              <span>02</span>
+              <p>
+                <strong>Gmail</strong> is connected later with read-only
+                authorization.
+              </p>
+            </li>
+            <li>
+              <span>03</span>
+              <p>
+                <strong>Replies</strong> remain copy-only. Nothing is sent from
+                Inb0x.
+              </p>
+            </li>
+          </ol>
+          <p className="entry-note">
+            <Icon name="check" /> No mailbox action happens on this screen.
+          </p>
         </div>
       </section>
     </main>

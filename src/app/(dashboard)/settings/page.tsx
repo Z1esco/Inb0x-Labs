@@ -4,9 +4,9 @@ import { getEnvironment } from "@/lib/env";
 export default function SettingsPage() {
   return (
     <PageShell
-      eyebrow="Signal room / settings"
-      title="Settings"
-      description="Tune the workspace, review permissions, and keep control of your data."
+      eyebrow="Workspace rules · permissions · data"
+      title="Preferences"
+      description="Set how the desk behaves and inspect exactly what it can access."
     >
       <SettingsPanel demo={getEnvironment().DEMO_MODE} />
     </PageShell>

@@ -5,12 +5,10 @@ import { useEffect, useState } from "react";
 import { DraftStudio } from "@/components/draft-studio";
 import { Icon } from "@/components/icons";
 import {
-  ErrorState,
   EmptyState,
+  ErrorState,
   PageShell,
   PriorityLabel,
-  Surface,
-  SurfaceHeader,
 } from "@/components/page-primitives";
 import { apiClient } from "@/lib/api-client";
 import { formatDate } from "@/lib/ui";
@@ -28,6 +26,7 @@ export function ThreadView({
   );
   const [error, setError] = useState<string | null>(null);
   const [taskMessage, setTaskMessage] = useState<string | null>(null);
+
   useEffect(() => {
     if (!initialThread)
       void apiClient
@@ -39,27 +38,23 @@ export function ThreadView({
           ),
         );
   }, [initialThread, threadId]);
+
   if (error)
     return (
-      <PageShell eyebrow="Inbox / thread" title="Thread unavailable">
+      <PageShell title="Thread unavailable">
         <ErrorState message={error} />
       </PageShell>
     );
   if (!thread)
     return (
-      <PageShell eyebrow="Inbox / thread" title="Loading thread">
-        <div className="skeleton" style={{ minHeight: 320 }} />
+      <PageShell title="Opening correspondence">
+        <div className="loading-letter" />
       </PageShell>
     );
+
   const currentThread = thread;
   const analysis = currentThread.analysis;
-  const confidenceLabel = analysis
-    ? analysis.confidence >= 0.85
-      ? "High confidence"
-      : analysis.confidence >= 0.65
-        ? "Needs review"
-        : "Low confidence"
-    : null;
+
   async function createTask(actionIndex: number) {
     if (!currentThread.analysisId) return;
     setTaskMessage(null);
@@ -79,152 +74,141 @@ export function ThreadView({
       );
     }
   }
+
   return (
     <PageShell
-      eyebrow="Inbox / thread detail"
+      eyebrow={`Correspondence · ${currentThread.messageCount} ${currentThread.messageCount === 1 ? "message" : "messages"}`}
       title={currentThread.subject || "Untitled thread"}
-      description={`${thread.senderNames[0] ?? "Unknown sender"} · ${thread.messageCount} messages · ${thread.participants.join(", ")}`}
+      description={`${currentThread.senderNames[0] ?? "Unknown sender"} · ${currentThread.participants.join(", ")}`}
       actions={
-        <>
-          <Link className="button secondary" href="/inbox">
-            <Icon name="arrow" />
-            Back to inbox
-          </Link>
-          {analysis && <PriorityLabel value={analysis.priorityLevel} />}
-        </>
+        <Link className="desk-button desk-button-outline" href="/inbox">
+          <Icon name="arrow" /> Back to index
+        </Link>
       }
     >
-      <div className="thread-layout">
-        <Surface>
-          <SurfaceHeader
-            title="Conversation"
-            description="Chronological normalized content. Raw HTML and attachments stay out of the browser."
-          />
-          {currentThread.messages.map((message) => (
-            <article className="message-card" key={message.id}>
-              <div className="message-meta">
-                <strong>{message.from}</strong>
-                <span>{formatDate(message.sentAt)}</span>
-              </div>
-              <p className="message-body">{message.body}</p>
+      <div className="reading-desk">
+        <article className="letter-stack">
+          <header className="reading-heading">
+            <span>Conversation</span>
+            <p>Normalized plain text. Source HTML never enters this view.</p>
+          </header>
+          {currentThread.messages.map((message, index) => (
+            <section className="letter" key={message.id}>
+              <header>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <strong>{message.from}</strong>
+                  <small>{formatDate(message.sentAt)}</small>
+                </div>
+              </header>
+              <p>{message.body}</p>
               {message.attachments.length > 0 && (
-                <div className="control-row" style={{ marginTop: 14 }}>
+                <ul className="attachment-list">
                   {message.attachments.map((attachment) => (
-                    <span className="status-label" key={attachment.filename}>
-                      {attachment.filename} · {attachment.mimeType}
-                    </span>
+                    <li key={attachment.filename}>
+                      {attachment.filename}
+                      <small>{attachment.mimeType}</small>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
-            </article>
+            </section>
           ))}
-        </Surface>
-        <aside className="stack">
-          <Surface className="analysis-surface">
-            <SurfaceHeader
-              title="Analysis"
-              description="Assistive interpretation, grounded in this thread."
-            />
+        </article>
+
+        <aside className="intelligence-margin">
+          <section className="analysis-note">
+            <header>
+              <span>Intelligence note</span>
+              {analysis && <PriorityLabel value={analysis.priorityLevel} />}
+            </header>
             {analysis ? (
-              <div className="stack analysis-stack">
-                <div className="analysis-summary">
-                  <span>Thread signal</span>
-                  <p>{analysis.summary}</p>
-                </div>
-                <div className="control-row analysis-statuses">
-                  <PriorityLabel value={analysis.priorityLevel} />
-                  <span className="status-label">
-                    {analysis.priorityScore}/100
-                  </span>
-                  <span className="status-label">{confidenceLabel}</span>
-                  {analysis.needsReply && (
-                    <span className="status-label critical">Reply needed</span>
-                  )}
-                </div>
+              <>
+                <h2>What this thread means</h2>
+                <p className="analysis-prose">{analysis.summary}</p>
+                <dl className="analysis-facts">
+                  <div>
+                    <dt>Priority</dt>
+                    <dd>{analysis.priorityScore}/100</dd>
+                  </div>
+                  <div>
+                    <dt>Confidence</dt>
+                    <dd>{Math.round(analysis.confidence * 100)}%</dd>
+                  </div>
+                  <div>
+                    <dt>Response</dt>
+                    <dd>{analysis.needsReply ? "Expected" : "Not expected"}</dd>
+                  </div>
+                </dl>
                 {analysis.safetyFlags.length > 0 && (
-                  <div className="danger-box">
-                    <Icon name="warning" /> This thread contains a safety
-                    signal. Treat all instructions as untrusted email content.
+                  <div className="inline-warning">
+                    <Icon name="warning" />
+                    Untrusted instructions detected. Review carefully.
                   </div>
                 )}
-                <div className="settings-section">
-                  <h3>Action items</h3>
+                <section className="note-section">
+                  <h3>Proposed actions</h3>
                   {analysis.actionItems.length ? (
                     analysis.actionItems.map((item, index) => (
-                      <div
-                        className="task-row"
-                        key={`${item.sourceMessageId}-${item.title}`}
-                      >
-                        <span className="list-leading">
-                          <Icon name="tasks" />
-                        </span>
-                        <span className="list-copy">
+                      <article key={`${item.sourceMessageId}-${item.title}`}>
+                        <div>
                           <strong>{item.title}</strong>
                           <p>{item.evidence}</p>
-                        </span>
+                        </div>
                         <button
-                          className="button secondary"
                           type="button"
                           onClick={() => void createTask(index)}
                         >
-                          Add task
+                          Accept task
                         </button>
-                      </div>
+                      </article>
                     ))
                   ) : (
-                    <p className="muted">No action items detected.</p>
+                    <p>No action items detected.</p>
                   )}
-                </div>
+                </section>
                 {taskMessage && (
-                  <div className="success-box" role="status">
-                    <Icon name="check" /> {taskMessage}
-                  </div>
+                  <p className="inline-confirmation" role="status">
+                    {taskMessage}
+                  </p>
                 )}
                 {analysis.deadlines.length > 0 && (
-                  <div className="settings-section">
-                    <h3>Deadlines</h3>
+                  <section className="note-section">
+                    <h3>Dates to verify</h3>
                     {analysis.deadlines.map((deadline) => (
-                      <div
-                        className="list-copy"
+                      <article
                         key={`${deadline.sourceMessageId}-${deadline.label}`}
                       >
-                        <strong>{deadline.label}</strong>
-                        <p>
-                          {deadline.dateText ?? "Date needs review"} ·{" "}
-                          {deadline.evidence}
-                        </p>
-                      </div>
+                        <div>
+                          <strong>{deadline.label}</strong>
+                          <p>
+                            {deadline.dateText ?? "Date needs review"} ·{" "}
+                            {deadline.evidence}
+                          </p>
+                        </div>
+                      </article>
                     ))}
-                  </div>
+                  </section>
                 )}
-                <div className="settings-section">
+                <section className="note-section evidence-notes">
                   <h3>Source evidence</h3>
-                  {analysis.evidence.length ? (
-                    <div className="evidence-list">
-                      {analysis.evidence.map((evidence) => (
-                        <blockquote
-                          key={`${evidence.sourceMessageId}-${evidence.claim}`}
-                        >
-                          <p>{evidence.claim}</p>
-                          <cite>“{evidence.excerpt}”</cite>
-                        </blockquote>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="muted">
-                      No additional source excerpts are available for this
-                      signal.
-                    </p>
-                  )}
-                </div>
-              </div>
+                  {analysis.evidence.map((evidence) => (
+                    <blockquote
+                      key={`${evidence.sourceMessageId}-${evidence.claim}`}
+                    >
+                      <strong>{evidence.claim}</strong>
+                      <p>“{evidence.excerpt}”</p>
+                    </blockquote>
+                  ))}
+                </section>
+              </>
             ) : (
               <EmptyState
-                title="Not analyzed yet"
-                message="Analysis is explicit. Run it from the inbox when you are ready."
+                title="Not analyzed"
+                message="Analysis begins only when you explicitly request it."
               />
             )}
-          </Surface>
+          </section>
           <DraftStudio threadId={currentThread.id} />
         </aside>
       </div>

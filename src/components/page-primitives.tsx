@@ -16,16 +16,21 @@ export function PageShell({
   children: ReactNode;
 }) {
   return (
-    <main id="main-content" className="page" tabIndex={-1}>
-      <header className="page-header">
-        <div className="page-header-copy">
-          {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-          <h1>{title}</h1>
-          {description && <p>{description}</p>}
+    <main id="main-content" className="folio-page" tabIndex={-1}>
+      <header className="folio-heading">
+        <div className="folio-context">
+          <span>{eyebrow ?? "Inb0x attention desk"}</span>
+          <i aria-hidden="true" />
         </div>
-        {actions && <div className="header-actions">{actions}</div>}
+        <div className="folio-title-row">
+          <div>
+            <h1>{title}</h1>
+            {description && <p>{description}</p>}
+          </div>
+          {actions && <div className="folio-actions">{actions}</div>}
+        </div>
       </header>
-      {children}
+      <div className="folio-body">{children}</div>
     </main>
   );
 }
@@ -43,7 +48,11 @@ export function Surface({
 }) {
   return (
     <section
-      className={classNames("surface", pad && "surface-pad", className)}
+      className={classNames(
+        "desk-section",
+        pad && "desk-section-pad",
+        className,
+      )}
       role={role}
     >
       {children}
@@ -61,13 +70,13 @@ export function SurfaceHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="surface-header">
+    <header className="section-heading">
       <div>
         <h2>{title}</h2>
         {description && <p>{description}</p>}
       </div>
       {action}
-    </div>
+    </header>
   );
 }
 
@@ -85,26 +94,22 @@ export function MetricCard({
   accent?: boolean;
 }) {
   return (
-    <article
-      className={classNames("surface", "metric-card", accent && "accent")}
-    >
-      <div className="metric-label">
-        <span>{label}</span>
-        {icon && <Icon name={icon} />}
-      </div>
+    <article className={classNames("ledger-metric", accent && "is-accent")}>
+      <span>{label}</span>
       <strong>{value}</strong>
       <small>{detail}</small>
+      {icon && <Icon name={icon} />}
     </article>
   );
 }
 
 export function LoadingGrid() {
   return (
-    <div className="metric-grid" role="status" aria-label="Loading">
-      <div className="skeleton" />
-      <div className="skeleton" />
-      <div className="skeleton" />
-      <div className="skeleton" />
+    <div className="loading-ledger" role="status" aria-label="Loading">
+      <span />
+      <span />
+      <span />
+      <span />
     </div>
   );
 }
@@ -117,16 +122,22 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <Surface className="empty-state error-state" role="alert">
-      <Icon name="warning" label="Error" />
-      <h3>Signal interrupted</h3>
-      <p>{message}</p>
+    <section className="state-sheet state-sheet-error" role="alert">
+      <span aria-hidden="true">!</span>
+      <div>
+        <h3>We lost the thread.</h3>
+        <p>{message}</p>
+      </div>
       {onRetry && (
-        <button className="button secondary" type="button" onClick={onRetry}>
-          Retry
+        <button
+          className="desk-button desk-button-outline"
+          type="button"
+          onClick={onRetry}
+        >
+          Try again
         </button>
       )}
-    </Surface>
+    </section>
   );
 }
 
@@ -140,17 +151,19 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <Surface className="empty-state">
-      <Icon name="inbox" label="Empty" />
-      <h3>{title}</h3>
-      <p>{message}</p>
+    <section className="state-sheet">
+      <span aria-hidden="true">—</span>
+      <div>
+        <h3>{title}</h3>
+        <p>{message}</p>
+      </div>
       {action}
-    </Surface>
+    </section>
   );
 }
 
 export function PriorityLabel({ value }: { value: string }) {
-  return <span className={classNames("status-label", value)}>{value}</span>;
+  return <span className={classNames("priority-word", value)}>{value}</span>;
 }
 
 export function RelativeTime({ value }: { value: string | null }) {

@@ -4,39 +4,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "@/components/icons";
 import { classNames, initials } from "@/lib/ui";
 
-const links: Array<[string, string, IconName]> = [
-  ["Dashboard", "/dashboard", "dashboard"],
-  ["Inbox", "/inbox", "inbox"],
-  ["Tasks", "/tasks", "tasks"],
-  ["Drafts", "/drafts", "copy"],
-  ["Insights", "/insights", "trend"],
-  ["Settings", "/settings", "settings"],
+const routes: Array<{
+  label: string;
+  href: string;
+  icon: IconName;
+  key: string;
+}> = [
+  { label: "Briefing", href: "/dashboard", icon: "dashboard", key: "01" },
+  { label: "Correspondence", href: "/inbox", icon: "inbox", key: "02" },
+  { label: "Tasks", href: "/tasks", icon: "tasks", key: "03" },
+  { label: "Replies", href: "/drafts", icon: "copy", key: "04" },
+  { label: "Patterns", href: "/insights", icon: "trend", key: "05" },
+  { label: "Preferences", href: "/settings", icon: "settings", key: "06" },
 ];
 
-function Navigation({ onNavigate }: { onNavigate?: () => void }) {
+function RouteIndex({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
-    <div className="sidebar-nav">
-      {links.map(([label, href, icon]) => {
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+    <nav className="route-index" aria-label="Workspace routes">
+      {routes.map((route) => {
+        const active =
+          pathname === route.href || pathname.startsWith(`${route.href}/`);
         return (
           <Link
-            key={href}
-            className="nav-link"
-            href={href}
+            key={route.href}
+            href={route.href}
+            className="route-index-link"
+            aria-label={route.label}
             aria-current={active ? "page" : undefined}
             {...(onNavigate ? { onClick: onNavigate } : {})}
           >
-            <Icon name={icon} />
-            <span>{label}</span>
+            <span aria-hidden="true">{route.key}</span>
+            <strong>{route.label}</strong>
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }
 
@@ -49,11 +56,31 @@ export function AppNav({
   demo: boolean;
   userEmail: string | null;
 }) {
-  const [open, setOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [signingOut, setSigningOut] = useState(false);
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const menuCloseRef = useRef<HTMLButtonElement>(null);
   const userLabel = demo ? "Demo Judge" : (userEmail ?? "Inb0x user");
+  const currentRoute = routes.find(
+    (route) => pathname === route.href || pathname.startsWith(`${route.href}/`),
+  );
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    menuCloseRef.current?.focus();
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+      requestAnimationFrame(() => menuTriggerRef.current?.focus());
+    }
+
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
   async function signOut() {
     setSigningOut(true);
     try {
@@ -64,158 +91,137 @@ export function AppNav({
       setSigningOut(false);
     }
   }
-  const active = links.find(
-    ([, href]) => pathname === href || pathname.startsWith(`${href}/`),
-  );
+
   return (
-    <div className="app-shell">
-      <aside
-        className={classNames("app-sidebar", open && "open")}
-        aria-label="Primary navigation"
-      >
-        <Link
-          className="brand-lockup"
-          href="/dashboard"
-          onClick={() => setOpen(false)}
-        >
-          <span className="brand-mark" aria-hidden="true">
+    <div className="desk-shell">
+      <header className="desk-header">
+        <div className="desk-header-primary">
+          <Link
+            className="desk-brand"
+            href="/dashboard"
+            aria-label="Inb0x home"
+          >
             <Image
               src="/logo/inb0x-labs-logo.png"
               alt=""
-              width={154}
-              height={154}
+              width={42}
+              height={42}
               priority
             />
-          </span>
-          <span className="brand-wordmark">
-            inb<span>0</span>x
-          </span>
-        </Link>
-        <p className="sidebar-section-label">Workspace</p>
-        <Navigation onNavigate={() => setOpen(false)} />
-        <div className="sidebar-footer">
-          <div className="connection-line">
-            <span className="status-dot connected" />
-            <span>Read-only workspace</span>
-          </div>
-          <div className="user-mini">
-            <span className="avatar">{initials(userLabel)}</span>
-            <div>
-              <strong>{userLabel}</strong>
-              <span>
-                {demo ? "Credential-free demo" : "Authenticated workspace"}
-              </span>
-            </div>
-          </div>
-          <button
-            className="nav-link sign-out-button"
-            type="button"
-            disabled={signingOut}
-            onClick={() => void signOut()}
+            <span>INB0X</span>
+            <small>attention desk</small>
+          </Link>
+
+          <aside
+            className={classNames("route-drawer", menuOpen && "is-open")}
+            aria-label="Primary navigation"
           >
-            <Icon name="close" />
-            <span>
-              {demo ? "Exit demo" : signingOut ? "Signing out..." : "Sign out"}
-            </span>
-          </button>
-        </div>
-      </aside>
-      <div className="app-main">
-        <header className="topbar">
-          <div className="topbar-context">
-            <button
-              className="icon-button mobile-menu-button"
-              type="button"
-              aria-label={open ? "Close navigation" : "Open navigation"}
-              aria-expanded={open}
-              onClick={() => setOpen((value) => !value)}
-            >
-              <Icon name={open ? "close" : "menu"} />
-            </button>
-            <span className="status-dot connected" />
-            <strong>{active?.[0] ?? "Workspace"}</strong>
-            <span>/</span>
-            <span>Signal room</span>
-          </div>
-          <div className="topbar-actions">
-            <Link
-              className="topbar-search"
-              href="/inbox"
-              aria-label="Search inbox"
-            >
-              <Icon name="search" />
-              <span>Search</span>
-            </Link>
-            <Link className="button primary topbar-analyze" href="/inbox">
-              Analyze inbox
-            </Link>
-            <span className="status-label connected">
-              <span className="status-dot connected" />
-              {demo ? "Demo mode" : "Live workspace"}
-            </span>
-            <Link
-              className="icon-button"
-              href="/settings"
-              aria-label="Open settings"
-            >
-              <Icon name="settings" />
-            </Link>
-            <div className="user-menu-wrap">
+            <div className="route-drawer-title">
+              <span>Index</span>
               <button
-                className="avatar"
+                ref={menuCloseRef}
                 type="button"
-                aria-label="Open user menu"
-                aria-expanded={userMenuOpen}
-                aria-controls="user-menu"
-                onClick={() => setUserMenuOpen((value) => !value)}
+                className="plain-icon-button"
+                aria-label="Close navigation"
+                onClick={() => setMenuOpen(false)}
               >
-                {initials(userLabel)}
+                <Icon name="close" />
               </button>
-              {userMenuOpen && (
-                <div id="user-menu" className="user-menu" role="menu">
-                  <Link
-                    className="nav-link"
-                    href="/settings"
-                    role="menuitem"
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <Icon name="settings" />
-                    <span>Settings</span>
-                  </Link>
-                  <button
-                    className="nav-link sign-out-button"
-                    type="button"
-                    role="menuitem"
-                    disabled={signingOut}
-                    onClick={() => void signOut()}
-                  >
-                    <Icon name="close" />
-                    <span>{demo ? "Exit demo" : "Sign out"}</span>
-                  </button>
-                </div>
-              )}
             </div>
+            <RouteIndex onNavigate={() => setMenuOpen(false)} />
+            <div className="drawer-account">
+              <span>{initials(userLabel)}</span>
+              <div>
+                <strong>{userLabel}</strong>
+                <small>
+                  {demo ? "Fictional workspace" : "Private workspace"}
+                </small>
+              </div>
+            </div>
+          </aside>
+
+          <div className="desk-account">
+            <span className="workspace-state">
+              <i aria-hidden="true" /> {demo ? "Demo desk" : "Private desk"}
+            </span>
+            <button
+              className="account-trigger"
+              type="button"
+              aria-label="Open user menu"
+              aria-expanded={accountOpen}
+              onClick={() => setAccountOpen((value) => !value)}
+            >
+              <span>{initials(userLabel)}</span>
+              <strong>{userLabel}</strong>
+              <Icon name="chevron" />
+            </button>
+            {accountOpen && (
+              <div className="account-popover" role="menu">
+                <Link
+                  href="/settings"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                >
+                  Preferences
+                </Link>
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={signingOut}
+                  onClick={() => void signOut()}
+                >
+                  {demo
+                    ? "Exit demo"
+                    : signingOut
+                      ? "Signing out…"
+                      : "Sign out"}
+                </button>
+              </div>
+            )}
+            <button
+              ref={menuTriggerRef}
+              type="button"
+              className="plain-icon-button mobile-index-trigger"
+              aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((value) => !value)}
+            >
+              <Icon name={menuOpen ? "close" : "menu"} />
+            </button>
           </div>
-        </header>
-        <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {links.slice(0, 4).map(([label, href, icon]) => {
-            const selected =
-              pathname === href || pathname.startsWith(`${href}/`);
-            return (
-              <Link
-                key={href}
-                className="nav-link"
-                href={href}
-                aria-current={selected ? "page" : undefined}
-              >
-                <Icon name={icon} />
-                <span>{label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="app-content">{children}</div>
-      </div>
+        </div>
+
+        <div className="desk-header-secondary">
+          <div>
+            <span>{currentRoute?.key ?? "00"}</span>
+            <strong>{currentRoute?.label ?? "Workspace"}</strong>
+          </div>
+          <RouteIndex />
+          <div className="permission-note">
+            <Icon name="check" /> Gmail remains read-only
+          </div>
+        </div>
+      </header>
+
+      <div className="desk-canvas">{children}</div>
+
+      <nav className="mobile-desk-nav" aria-label="Mobile navigation">
+        {routes.slice(0, 4).map((route) => {
+          const active =
+            pathname === route.href || pathname.startsWith(`${route.href}/`);
+          return (
+            <Link
+              key={route.href}
+              href={route.href}
+              aria-label={route.label}
+              aria-current={active ? "page" : undefined}
+            >
+              <Icon name={route.icon} />
+              <span>{route.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

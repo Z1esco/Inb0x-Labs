@@ -3,9 +3,9 @@ import { PageShell } from "@/components/page-primitives";
 export default function TasksPage() {
   return (
     <PageShell
-      eyebrow="Signal room / tasks"
-      title="Task sequence"
-      description="Work you explicitly chose to own, arranged around the next deadline and source context."
+      eyebrow="Owned work · explicit commitments"
+      title="The task ledger"
+      description="A deliberate record of the work you accepted—not another automated to-do list."
     >
       <TaskBoard />
     </PageShell>

@@ -1,13 +1,24 @@
 # Motion system
 
-The current frontend uses CSS transitions and keyframes, avoiding a second animation dependency. Motion
-is a product signal: it confirms hierarchy and state without competing with inbox content.
+Motion is reserved for continuity and confirmation. Most reading surfaces, metrics, correspondence rows,
+and charts stay still so the desk remains calm.
 
-- Micro interaction: 120–180ms.
-- Standard state transition: 180–280ms.
-- Panels: 240–360ms.
-- Use opacity and transform; avoid continuous layout, shadow, blur, or background-position animation.
-- The shell remains stable between routes; only content reveals move.
-- Skeleton shimmer is subtle and replaced by an instant static state under reduced motion.
-- `prefers-reduced-motion: reduce` removes large movement and repeated animation while retaining focus and
-  state changes.
+## Animate
+
+- active navigation rule and control feedback: 140ms;
+- hover, press, focus, and copy confirmation: 140–220ms;
+- mobile index entrance and dismiss: 220–300ms;
+- loading-to-content and empty/error appearance: a short opacity transition;
+- task completion and reopening: a local state transition only.
+
+## Keep still
+
+- large page headings and metric values;
+- dense inbox and task ledgers;
+- email body content and evidence;
+- charts after initial presentation;
+- decorative background layers.
+
+Use opacity and small transforms, never fake progress, looping decoration, expensive blur, or animation
+that delays interaction. `prefers-reduced-motion: reduce` disables nonessential movement and smooth
+scrolling while preserving visible state changes.

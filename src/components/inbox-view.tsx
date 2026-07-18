@@ -10,20 +10,19 @@ import {
   PageShell,
   PriorityLabel,
   RelativeTime,
-  Surface,
-  SurfaceHeader,
 } from "@/components/page-primitives";
 import { apiClient } from "@/lib/api-client";
 import type { EmailThreadListItem } from "@/types/contracts";
 
+type InboxFilter = "all" | "reply" | "priority" | "deadline";
+
 export function InboxView() {
   const [threads, setThreads] = useState<EmailThreadListItem[]>([]);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<
-    "all" | "reply" | "priority" | "deadline"
-  >("priority");
+  const [filter, setFilter] = useState<InboxFilter>("priority");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -37,26 +36,25 @@ export function InboxView() {
       setLoading(false);
     }
   }, []);
+
   useEffect(() => {
     let mounted = true;
     void apiClient
       .listThreads()
-      .then((items) => {
-        if (mounted) setThreads(items);
-      })
-      .catch((value: unknown) => {
-        if (mounted)
+      .then((items) => mounted && setThreads(items))
+      .catch(
+        (value: unknown) =>
+          mounted &&
           setError(
             value instanceof Error ? value.message : "Inbox could not load.",
-          );
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
+          ),
+      )
+      .finally(() => mounted && setLoading(false));
     return () => {
       mounted = false;
     };
   }, []);
+
   const visible = useMemo(
     () =>
       threads.filter((thread) => {
@@ -76,133 +74,122 @@ export function InboxView() {
       }),
     [filter, query, threads],
   );
+
   return (
     <PageShell
-      eyebrow="Signal room / inbox"
-      title="Priority inbox"
-      description="Signals first: reply requests, deadlines, and threads with a material next step."
+      eyebrow="Correspondence · recent and read-only"
+      title="The correspondence"
+      description="A working index of messages with a decision, deadline, or expected response."
       actions={
-        <Link className="button primary" href="/settings">
-          <Icon name="settings" />
-          Connection settings
+        <Link className="desk-button desk-button-outline" href="/settings">
+          Connection details
         </Link>
       }
     >
-      <Surface className="inbox-surface">
-        <div className="inbox-command">
-          <div className="inbox-search">
-            <span>
-              <Icon name="search" />
-            </span>
-            <input
-              className="search-field"
-              style={{ paddingLeft: 42 }}
-              aria-label="Search inbox"
-              placeholder="Search subjects, people, and snippets"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-          </div>
-          <div className="inbox-tabs" role="group" aria-label="Inbox filters">
+      <section className="correspondence-toolbar">
+        <label>
+          <Icon name="search" />
+          <input
+            aria-label="Search inbox"
+            placeholder="Search people, subjects, or message text"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </label>
+        <div role="group" aria-label="Inbox filters">
+          {(["priority", "reply", "deadline", "all"] as const).map((value) => (
             <button
+              key={value}
               type="button"
-              aria-pressed={filter === "priority"}
-              onClick={() => setFilter("priority")}
+              aria-pressed={filter === value}
+              onClick={() => setFilter(value)}
             >
-              Priority
+              {value === "reply"
+                ? "Needs reply"
+                : value === "all"
+                  ? "Everything"
+                  : value.charAt(0).toUpperCase() + value.slice(1)}
             </button>
-            <button
-              type="button"
-              aria-pressed={filter === "reply"}
-              onClick={() => setFilter("reply")}
-            >
-              Needs reply
-            </button>
-            <button
-              type="button"
-              aria-pressed={filter === "deadline"}
-              onClick={() => setFilter("deadline")}
-            >
-              Deadlines
-            </button>
-            <button
-              type="button"
-              aria-pressed={filter === "all"}
-              onClick={() => setFilter("all")}
-            >
-              All mail
-            </button>
-          </div>
+          ))}
         </div>
-        <SurfaceHeader
-          title={`${visible.length} visible threads`}
-          description="Normalized, read-only message data. Priority never mutates your mailbox."
-        />
+      </section>
+
+      <section className="mail-index">
+        <header>
+          <span>{visible.length} shown</span>
+          <span>Sender / Subject</span>
+          <span>Signal</span>
+          <span>Received</span>
+        </header>
         {loading ? (
           <LoadingGrid />
         ) : error ? (
           <ErrorState message={error} onRetry={() => void load()} />
         ) : visible.length ? (
-          <div className="thread-list">
-            {visible.map((thread) => (
-              <Link
-                className="thread-row"
-                key={thread.id}
-                href={`/inbox/${thread.id}`}
-              >
-                <span
-                  className={`priority-rail ${thread.analysis?.priorityLevel ?? "low"}`}
-                />
-                <span className="list-copy">
-                  <strong>{thread.subject || "Untitled thread"}</strong>
-                  <p>
-                    {thread.senderNames[0] ??
-                      thread.participants[0] ??
-                      "Unknown sender"}{" "}
-                    · {thread.snippet}
-                  </p>
-                </span>
-                <span className="list-meta">{thread.messageCount} msg</span>
-                <span className="thread-statuses">
-                  {thread.analysis?.needsReply && (
-                    <span className="status-label critical">Reply</span>
-                  )}
-                  {thread.analysis?.deadlines.length ? (
-                    <span className="status-label medium">Deadline</span>
-                  ) : null}
-                </span>
-                <PriorityLabel
-                  value={thread.analysis?.priorityLevel ?? "unscored"}
-                />
-                <span className="list-meta">
-                  <RelativeTime value={thread.latestMessageAt} />
-                </span>
-                <Icon name="arrow" />
-              </Link>
+          <ol>
+            {visible.map((thread, index) => (
+              <li key={thread.id}>
+                <Link href={`/inbox/${thread.id}`}>
+                  <span className="mail-sequence">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="mail-sender">
+                    <strong>
+                      {thread.senderNames[0] ??
+                        thread.participants[0] ??
+                        "Unknown sender"}
+                    </strong>
+                    <small>
+                      {thread.messageCount}{" "}
+                      {thread.messageCount === 1 ? "message" : "messages"}
+                    </small>
+                  </div>
+                  <div className="mail-subject">
+                    <strong>{thread.subject || "Untitled thread"}</strong>
+                    <p>{thread.snippet}</p>
+                  </div>
+                  <div className="mail-signal">
+                    <PriorityLabel
+                      value={thread.analysis?.priorityLevel ?? "unscored"}
+                    />
+                    {thread.analysis?.needsReply && <span>Reply expected</span>}
+                    {thread.analysis?.deadlines.length ? (
+                      <span>Deadline</span>
+                    ) : null}
+                  </div>
+                  <span className="mail-time">
+                    <RelativeTime value={thread.latestMessageAt} />
+                  </span>
+                  <Icon name="arrow" />
+                </Link>
+              </li>
             ))}
-          </div>
+          </ol>
         ) : (
           <EmptyState
             title={
               threads.length
-                ? "No matching threads"
-                : "Your signal room is empty"
+                ? "Nothing matches this view"
+                : "No correspondence yet"
             }
             message={
               threads.length
-                ? "Try a different search or filter."
-                : "Connect and synchronize Gmail to build your read-only inbox."
+                ? "Change the filter or search wording."
+                : "Connect Gmail to build a private, read-only index."
             }
             action={
               !threads.length ? (
-                <Link className="button secondary" href="/settings">
+                <Link
+                  className="desk-button desk-button-outline"
+                  href="/settings"
+                >
                   Review connection
                 </Link>
               ) : undefined
             }
           />
         )}
-      </Surface>
+      </section>
     </PageShell>
   );
 }

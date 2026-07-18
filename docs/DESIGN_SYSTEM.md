@@ -1,24 +1,42 @@
-# Inb0x design system
+# Inb0x visual system
 
-The first implementation is tokenized in `src/app/globals.css`. The semantic palette is intentionally
-small so the interface remains signal-led instead of decorative.
+The July 2026 rebuild uses an editorial **attention desk** rather than an app-dashboard metaphor. The
+interface should feel like a prepared daily brief: one dominant question, strong rules, dense ledgers,
+and clear margins for supporting intelligence.
 
-| Token              | Value     | Use                           |
-| ------------------ | --------- | ----------------------------- |
-| `--canvas`         | `#080B10` | page canvas                   |
-| `--surface-1`      | `#0E131A` | base panel                    |
-| `--surface-2`      | `#131A23` | elevated panel                |
-| `--surface-3`      | `#19222E` | active/inset surface          |
-| `--text-primary`   | `#F5F7FA` | primary copy                  |
-| `--text-secondary` | `#A8B3C2` | body copy                     |
-| `--text-muted`     | `#718094` | metadata                      |
-| `--border-subtle`  | `#202B38` | quiet separation              |
-| `--border-strong`  | `#344354` | controls/focus context        |
-| `--signal-red`     | `#FF4D5E` | critical/primary action       |
-| `--signal-cyan`    | `#65D9E8` | connected/success alternative |
-| `--signal-blue`    | `#6F9BFF` | secondary data                |
-| `--warning`        | `#F4B860` | warning/uncertain state       |
+## Palette
 
-No green-family color is part of the UI palette. Priority uses red, amber, cyan, and slate. Charts use
-red and cyan series with labelled text summaries. Geometry uses `--radius-sm` (6px), `--radius-md` (10px),
-and `--radius-lg` (16px); pill-shaped text controls are prohibited.
+| Token            | Value     | Use                                                  |
+| ---------------- | --------- | ---------------------------------------------------- |
+| `--night`        | `#171512` | navigation, intelligence notes, high-contrast fields |
+| `--paper`        | `#F2EDE4` | primary working surface                              |
+| `--paper-raised` | `#FAF7F1` | letters, inputs, focused rows                        |
+| `--paper-deep`   | `#E4DCCF` | loading blocks and physical depth                    |
+| `--ink`          | `#1B1916` | primary content                                      |
+| `--ink-soft`     | `#625D55` | supporting copy                                      |
+| `--ultramarine`  | `#244BC5` | navigation continuity, focus, selected state         |
+| `--copper`       | `#C25836` | time-sensitive attention                             |
+| `--danger`       | `#A12F2F` | destructive and critical states                      |
+
+Green, teal, purple-gradient, and decorative-neon treatments are not part of the product palette.
+
+## Type
+
+- Space Grotesk is the display, metric, and index face.
+- Manrope is the body, control, and reading face.
+- Large titles are intentionally editorial; functional rows stay compact.
+- Uppercase is reserved for small folio labels, permission notes, and table headers.
+
+## Geometry and composition
+
+- Use square corners, one-pixel rules, and aligned baselines.
+- Do not convert every grouping into a card. Prefer chapters, ledgers, margins, and letter sheets.
+- The dark header is a horizontal route index. A persistent left sidebar is not part of this system.
+- Controls are rectangular; textual pills and decorative badges are prohibited.
+- Page composition may be asymmetric when the primary reading or decision surface remains obvious.
+
+## State language
+
+Loading uses stable ruled placeholders. Empty and error states occupy the same structural region as the
+content they replace. Success is communicated with ultramarine plus text; warning uses copper or amber;
+danger uses red. Color is never the only signal.

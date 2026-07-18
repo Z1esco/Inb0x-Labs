@@ -14,7 +14,6 @@ export type IconName =
   | "plus"
   | "search"
   | "settings"
-  | "spark"
   | "tasks"
   | "trend"
   | "warning";
@@ -59,9 +58,6 @@ const paths: Record<IconName, ReactNode> = {
       <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1M7.7 16.3l-2.1 2.1" />
       <circle cx="12" cy="12" r="3.5" />
     </>
-  ),
-  spark: (
-    <path d="m12 3 1.3 6.7L20 12l-6.7 1.3L12 20l-1.3-6.7L4 12l6.7-2.3L12 3Z" />
   ),
   tasks: (
     <>
