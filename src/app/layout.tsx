@@ -19,8 +19,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Inb0x — Noise becomes signal",
-  description: "A read-only intelligence workspace for Gmail.",
+  title: "Inb0x — Your inbox, with judgment",
+  description: "A read-only attention workspace for Gmail.",
 };
 
 export default function RootLayout({
@@ -29,6 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${sora.variable} ${manrope.variable} ${spaceGrotesk.variable}`}
       suppressHydrationWarning
     >

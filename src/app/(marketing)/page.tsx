@@ -2,11 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 
+const briefing = [
+  ["01", "Approval needed", "Aurora proposal", "Critical"],
+  ["02", "Reply expected", "Interview schedule", "Today"],
+  ["03", "Payment due", "Invoice INV-1042", "20 Jul"],
+] as const;
+
 export default function LandingPage() {
   return (
-    <main className="hero-page">
-      <header className="hero-nav">
-        <Link className="brand-lockup" href="/">
+    <main className="landing-page">
+      <header className="landing-nav">
+        <Link className="brand-lockup" href="/" aria-label="Inb0x home">
           <span className="brand-mark" aria-hidden="true">
             <Image
               src="/logo/inb0x-labs-logo.png"
@@ -20,91 +26,112 @@ export default function LandingPage() {
             inb<span>0</span>x
           </span>
         </Link>
-        <div className="hero-nav-actions">
+        <p className="landing-nav-note">A read-only attention workspace</p>
+        <div className="landing-nav-actions">
           <Link className="button ghost" href="/login">
             Sign in
           </Link>
-          <Link className="button secondary" href="/dashboard">
+          <Link className="button primary" href="/dashboard">
             Open demo <Icon name="arrow" />
           </Link>
         </div>
       </header>
-      <div className="hero-grid">
-        <section className="hero-copy">
-          <p className="eyebrow">Inb0x Labs / read-only intelligence</p>
+
+      <section className="landing-hero">
+        <div className="landing-index" aria-hidden="true">
+          <span>01</span>
+          <span>Read</span>
+          <i />
+          <span>Decide</span>
+          <i />
+          <span>Act</span>
+        </div>
+
+        <div className="landing-copy">
+          <p className="eyebrow">Inb0x Labs / Attention, deliberately edited</p>
           <h1>
-            Noise becomes <em>signal.</em>
+            Your inbox,
+            <br />
+            <em>with judgment.</em>
           </h1>
-          <p>
-            Inb0x turns a crowded Gmail into a deliberate action plan: what
-            matters, what can wait, and what deserves your next ten minutes.
+          <p className="landing-lede">
+            A private workspace that finds the consequential threads, preserves
+            the evidence, and leaves every decision with you.
           </p>
-          <div className="hero-actions">
+          <div className="landing-actions">
             <Link className="button primary" href="/dashboard">
-              Enter the demo <Icon name="arrow" />
+              Enter the workspace <Icon name="arrow" />
             </Link>
             <Link className="button secondary" href="/login">
-              Connect your workspace
+              Connect Gmail safely
             </Link>
           </div>
-          <p className="hero-note">
-            <span className="status-dot connected" /> No messages sent. No
-            mailbox changes. Human control stays in the loop.
-          </p>
-        </section>
-        <section className="hero-preview" aria-label="Inb0x product preview">
-          <div className="preview-window">
-            <div className="preview-sidebar">
-              <div />
-              <div />
-              <div />
-              <div />
-              <div />
-              <div />
-            </div>
-            <div className="preview-body">
-              <div className="preview-kicker" />
-              <div className="preview-title" />
-              <div className="preview-metrics">
-                <div />
-                <div />
-                <div />
-              </div>
-              <div className="preview-chart" />
-              <div className="preview-row" />
-              <div className="preview-row" />
-            </div>
+          <div className="landing-trust">
+            <span className="status-dot connected" />
+            <span>Read-only Gmail</span>
+            <span>No automatic replies</span>
+            <span>No mailbox changes</span>
           </div>
-        </section>
-      </div>
-      <section
-        className="data-grid"
-        style={{ maxWidth: 1440, margin: "0 auto" }}
-      >
-        <article className="surface surface-pad">
-          <p className="eyebrow">01 / Prioritize</p>
-          <h2>Attention, ordered.</h2>
-          <p className="muted">
-            Deadlines, replies, and high-consequence threads rise above the
-            noise.
-          </p>
-        </article>
-        <article className="surface surface-pad">
-          <p className="eyebrow">02 / Decide</p>
-          <h2>Context, intact.</h2>
-          <p className="muted">
-            Normalized message history and evidence keep every suggestion
-            reviewable.
-          </p>
-        </article>
-        <article className="surface surface-pad">
-          <p className="eyebrow">03 / Act</p>
-          <h2>Control, preserved.</h2>
-          <p className="muted">
-            Tasks and copy-only drafts require your explicit confirmation before
-            anything happens.
-          </p>
-        </article>
+        </div>
+
+        <aside className="briefing-board" aria-label="Example daily briefing">
+          <header>
+            <div>
+              <p className="eyebrow">Today / 09:41</p>
+              <h2>Attention brief</h2>
+            </div>
+            <span className="brief-count">03</span>
+          </header>
+          <div className="briefing-list">
+            {briefing.map(([rank, reason, subject, timing]) => (
+              <article className="briefing-row" key={rank}>
+                <span className="brief-rank">{rank}</span>
+                <div>
+                  <small>{reason}</small>
+                  <strong>{subject}</strong>
+                </div>
+                <span>{timing}</span>
+              </article>
+            ))}
+          </div>
+          <footer>
+            <span>12 threads scanned</span>
+            <span>9 can wait</span>
+          </footer>
+        </aside>
+      </section>
+
+      <section className="landing-statement" aria-label="Product principle">
+        <p>Not another inbox.</p>
+        <strong>A decision layer above it.</strong>
+      </section>
+
+      <section className="landing-method">
+        <header>
+          <p className="eyebrow">The method</p>
+          <h2>Signal is a sequence.</h2>
+        </header>
+        <div className="method-list">
+          <article>
+            <span>01</span>
+            <h3>Reduce the field</h3>
+            <p>Recent, relevant, read-only threads. Never the whole mailbox.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Show the evidence</h3>
+            <p>
+              Priority, deadlines, and actions remain grounded in the source.
+            </p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Keep the human</h3>
+            <p>
+              Tasks require acceptance. Drafts remain copy-only. Nothing sends.
+            </p>
+          </article>
+        </div>
       </section>
     </main>
   );
