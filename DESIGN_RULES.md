@@ -53,6 +53,25 @@ analysis item requires explicit user action. Dashboard and Insights show only fi
 existing contracts. Demo data is fictional and deterministic; no visual treatment may imply that demo
 data came from a real mailbox.
 
+## Marketing composition and data presentation
+
+The V2 implementation extends this authority with Spenza's transferable structure, not its
+branding. Use a 1240px marketing container, 24px minimum mobile gutters, 48–112px section
+spacing, a centered 46–90px product statement, a wide actual-interface stage and varied
+evidence, reply, insights, trust and FAQ chapters. The marketing heading can reach 90px;
+operational page titles remain bounded at 64px. Use original Inb0x product captures with
+matching mobile sources, clearly labelled fictional. No borrowed artwork or social proof.
+
+The source-to-action walkthrough is an explanatory client island. It never calls providers
+or creates tasks. Keep static content server-rendered; selection, disclosures and keyboard
+feedback use small local state. No timers, scroll listeners or animation dependencies.
+Use the existing semantic palette and typefaces; marketing CSS is scoped to product-site.
+
+Attention counts and descriptions must follow actual returned data, including zero and one.
+Stored thread totals are not “threads that can wait”. Scale volume bars to the largest count;
+zero stays zero, and count/date labels remain readable without color or pointer interaction.
+Never claim time estimates are measured savings or claim an arbitrary majority can wait.
+
 ## QA checklist
 
 Before a frontend PR, inspect desktop/tablet/mobile screenshots, scan for prohibited color words and

@@ -1,14 +1,14 @@
 # Inb0x Labs · Startup roadmap
 
-**Status:** Local candidate implemented, 11 October 2026. Draft PRs remain unmerged. See [QA evidence](QA_2026-10-11.md); this is not a launched product.
+**Status:** Solo developer, main only, confirmed 12 October 2026. Previous candidate history is consolidated locally on main; older draft PRs remain historical and unmerged. The V2 product experience is recorded in V2_FRONTEND_PLAN.md. This is not a launched product.
 
 ## Stage 0: Repository and product truth
 
-- Keep main stable and develop as the application integration branch.
+- Use main as the only current development branch, per the founder's latest instruction. Publishing main is a separately authorized Production action.
 - Reconcile outdated two-person/hackathon documentation; maintain one definitive solo-founder workflow.
 - Verify MIT licensing intent before any change. Public source is not automatically proprietary.
 - Keep README, security, deployment status and supported features factual.
-- Gate: documentation PR reviewed, no behavior changes, no secret exposure.
+- Gate: solo workflow documented, changes scoped, no secret exposure.
 
 ## Stage 1: Premium product experience
 
@@ -47,6 +47,6 @@
 
 ## Backlog discipline
 
-Every milestone should define user problem, scope, API impact, trust boundary, test evidence, rollback, and manual verification. Avoid fake traction, unverified marketing claims and vanity features. Keep work small enough to review as independent PRs.
+Every milestone should define user problem, scope, API impact, trust boundary, test evidence, rollback, and manual verification. Avoid fake traction, unverified marketing claims and vanity features. Keep changes small enough to review and verify on main.
 
 See [CODEX_HANDOFF.md](CODEX_HANDOFF.md) and [PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md).

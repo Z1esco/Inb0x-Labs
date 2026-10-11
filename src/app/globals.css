@@ -1008,9 +1008,10 @@ label {
 }
 .brief-scoreline > div:first-child strong {
   color: var(--signal-red);
+  font-size: 52px;
 }
 .brief-scoreline > div:nth-child(2) strong {
-  color: var(--signal-cyan);
+  color: var(--text);
 }
 .brief-scoreline > div {
   min-height: 132px;
@@ -1025,7 +1026,7 @@ label {
 }
 .brief-scoreline strong {
   font-family: var(--font-data);
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 440;
   letter-spacing: -0.06em;
 }

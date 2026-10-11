@@ -19,7 +19,7 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     {
       name: "webkit",
-      testMatch: /workbench\.spec\.ts/,
+      testMatch: /(?:workbench|marketing)\.spec\.ts/,
       use: { ...devices["Desktop Safari"] },
     },
   ],

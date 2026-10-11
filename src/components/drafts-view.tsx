@@ -61,6 +61,12 @@ export function DraftsView() {
   }, []);
 
   async function remove(id: string) {
+    if (
+      !window.confirm(
+        "Delete this saved reply permanently? This does not change Gmail.",
+      )
+    )
+      return;
     try {
       await apiClient.deleteDraft(id);
       setDrafts((items) => {

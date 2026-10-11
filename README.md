@@ -34,7 +34,7 @@ Inb0x transforms information overload into a calm attention workbench. It priori
 
 ## Current status
 
-**Pre-release software.** The Next.js application, authenticated route structure, API contracts, demo fixtures and core feature flows exist on `develop`. The premium dark **attention workbench is implemented on the draft candidate branch** `codex/dark-attention-workbench`; it has not been merged or released. See [candidate QA](docs/QA_2026-10-11.md) for exact results and remaining gates.
+**Pre-release software.** The founder confirmed solo development on **one branch, main**, on 12 October 2026. The previous application, security and attention-workbench candidate history is consolidated locally on main with the Spenza-inspired V2 product website. Publishing main is a separate Production action; the current authorization permits automatic Previews only. See [V2 implementation and research](docs/V2_FRONTEND_PLAN.md) and the dated QA reports for evidence and remaining release gates.
 
 Real-mode Supabase, Google OAuth/Gmail, OpenAI and hosted deployment require current environment-specific verification. This repository does **not** claim general availability, an independent security audit, Google verification, or a live production release.
 
@@ -85,12 +85,12 @@ Protected routes include `/dashboard`, `/inbox`, `/inbox/[threadId]`, `/tasks`, 
 
 ## Run the demo
 
-Requirements: **Node.js 20.9+**, npm, and Git. The `develop` branch is the current application integration branch; `main` remains the stable branch and may lag until an approved release.
+Requirements: **Node.js 20.9+**, npm, and Git. Use main for current development. The local consolidated main candidate has not been published; a fresh remote clone will not contain it until that release action is authorized.
 
 ```bash
 git clone https://github.com/Z1esco/Inb0x-Labs.git
 cd Inb0x-Labs
-git switch develop
+git switch main
 npm ci
 cp .env.example .env.local
 # Set DEMO_MODE=true in .env.local
@@ -114,15 +114,15 @@ npm run check
 
 The full check combines formatting, lint, typecheck, tests and build. Browser, hosted-provider, and production-security verification are separate release gates. The existence of CI or previous test results is not evidence that a new change has passed.
 
-**Solo-founder workflow:** one accountable maintainer, separate scoped feature branches and reviewable draft PRs. AI coding tools can implement changes but do not approve security, production deployments or destructive migrations. Read [AGENTS.md](AGENTS.md), [PROJECT_RULES.md](PROJECT_RULES.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
+**Solo-founder workflow:** one accountable developer and one branch, main. Keep changes scoped and locally reviewable; preserve history and run checks. AI coding tools do not approve production deployments or destructive migrations. Existing draft PRs are retained as history; no new split workflow is required. Read [AGENTS.md](AGENTS.md), [PROJECT_RULES.md](PROJECT_RULES.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Roadmap
 
 - [x] Secure application foundation, contracts and deterministic demo
 - [x] Read-only Gmail integration, on-demand analysis, accepted tasks and copy-only drafts implemented in code
 - [x] Dashboard, inbox, tasks, drafts, insights and settings routes implemented
-- [ ] Complete the approved premium attention workbench frontend redesign
-- [ ] Revalidate all automated checks and end-to-end demo journeys on current code
+- [x] Complete the approved premium attention workbench and V2 product website locally
+- [x] Revalidate automated checks and fictional demo journeys; see [current QA](docs/QA_2026-10-12.md)
 - [ ] Verify hosted Supabase isolation, a dedicated Gmail account and real OpenAI flows
 - [ ] Configure and verify `inb0x.my` DNS, HTTPS and preview/production mapping when approved
 - [ ] Complete privacy, consent-screen and release-readiness checks

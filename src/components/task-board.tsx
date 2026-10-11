@@ -74,6 +74,8 @@ export function TaskBoard() {
   }
 
   async function remove(task: Task) {
+    if (!window.confirm(`Delete “${task.title}” from your Inb0x task list?`))
+      return;
     try {
       await apiClient.deleteTask(task.id);
       setTasks((items) => items.filter((item) => item.id !== task.id));
@@ -182,6 +184,7 @@ export function TaskBoard() {
                 <div>
                   {editing === task.id ? (
                     <input
+                      aria-label={`Edit ${task.title}`}
                       value={editTitle}
                       onChange={(event) => setEditTitle(event.target.value)}
                       onKeyDown={(event) => {

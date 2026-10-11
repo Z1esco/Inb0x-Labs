@@ -4,6 +4,9 @@ This project is pre-release. Entries describe source changes, not published rele
 
 ## Unreleased
 
+- Build the Spenza-inspired product website with actual fictional workspace captures, responsive navigation, an evidence walkthrough, copy-only reply explanation and read-only trust disclosures.
+- Derive dashboard wording from its actual queue; share proportional, date-labelled thread charts; confirm task and saved-reply deletion before calling the existing APIs.
+- Consolidate current development on local main, following the founder's solo workflow; publication remains gated by Production authorization.
 - Implement the dark attention workbench across existing routes, responsive navigation and shared states, with Sora/Manrope/Space Grotesk typography.
 - Expose explicit thread analysis and source-message links through existing APIs; show reply confidence, evidence and uncertainty alongside copy-only drafts.
 - Patch Next.js, Vitest and compatible transitive dependencies; add privacy response headers and tracked-source credential checks. Remaining tool advisories and hosted verification are documented.

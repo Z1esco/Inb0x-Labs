@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { ThreadVolumeChart } from "@/components/thread-volume-chart";
 import {
   ErrorState,
   LoadingGrid,
@@ -53,10 +54,6 @@ export function InsightsView() {
       </PageShell>
     );
 
-  const max = Math.max(
-    1,
-    ...data.analytics.weeklyThreads.map((item) => item.count),
-  );
   return (
     <PageShell
       eyebrow="Measured patterns · persisted workspace only"
@@ -66,10 +63,10 @@ export function InsightsView() {
       <section className="insight-opening">
         <div>
           <span>The clearest reading</span>
-          <h2>{data.overview.needsReply} conversations are waiting on you.</h2>
+          <h2>Conversations waiting on you: {data.overview.needsReply}.</h2>
           <p>
-            The pressure is concentrated, not universal. Most recent
-            correspondence does not require an immediate response.
+            Counts reflect the stored workspace. Review correspondence to see
+            which threads need a reply.
           </p>
         </div>
         <dl>
@@ -81,7 +78,7 @@ export function InsightsView() {
             </dd>
           </div>
           <div>
-            <dt>Grounded confidence</dt>
+            <dt>Average analysis confidence</dt>
             <dd>
               {Math.round(data.analytics.averageConfidence * 100)}
               <small>percent</small>
@@ -103,19 +100,7 @@ export function InsightsView() {
           <h2>When did correspondence arrive?</h2>
           <p>Seven-day normalized thread volume.</p>
         </header>
-        <div className="editorial-chart" aria-label="Seven-day thread volume">
-          {data.analytics.weeklyThreads.map((point) => (
-            <div key={point.date}>
-              <span>{point.count}</span>
-              <i
-                style={{
-                  height: `${Math.max(10, (point.count / max) * 100)}%`,
-                }}
-              />
-              <small>{point.date.slice(-2)}</small>
-            </div>
-          ))}
-        </div>
+        <ThreadVolumeChart points={data.analytics.weeklyThreads} />
       </section>
 
       <div className="pattern-columns">

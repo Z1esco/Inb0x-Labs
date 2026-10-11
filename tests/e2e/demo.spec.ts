@@ -7,7 +7,10 @@ test("user can complete the controlled beta demo flow", async ({
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.request.post("/api/demo/reset");
   await page.goto("/");
-  await page.getByRole("link", { name: "Open the demo" }).click();
+  await page
+    .getByRole("link", { name: "Open the demo", exact: true })
+    .first()
+    .click();
   await expect(
     page.getByRole("heading", { name: "Today, edited." }),
   ).toBeVisible();
@@ -94,8 +97,9 @@ test("user can complete the controlled beta demo flow", async ({
   await expect(page.getByRole("status")).toContainText("Demo restored");
   await page.getByRole("button", { name: "Open user menu" }).click();
   await page.getByRole("button", { name: "Exit demo" }).click();
+  await expect(page).toHaveURL("/");
   await expect(
-    page.getByRole("heading", { name: /Email, edited into decisions/i }),
+    page.getByRole("heading", { name: /Make room for what needs you/i }),
   ).toBeVisible();
 });
 

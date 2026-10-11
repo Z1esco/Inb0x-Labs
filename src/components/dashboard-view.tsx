@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
+import { ThreadVolumeChart } from "@/components/thread-volume-chart";
 import {
   EmptyState,
   ErrorState,
@@ -86,7 +87,11 @@ export function DashboardView({
           : "Private workspace · Today"
       }
       title="Today, edited."
-      description="Three places deserve a decision. The rest of the inbox can wait."
+      description={
+        data.today.items.length === 0
+          ? "Your attention queue is clear. Review correspondence when you’re ready."
+          : `${data.today.items.length} ${data.today.items.length === 1 ? "item needs" : "items need"} a decision. Review the source before acting.`
+      }
       actions={
         <Link className="desk-button desk-button-ink" href="/inbox">
           Open correspondence <Icon name="arrow" />
@@ -107,8 +112,8 @@ export function DashboardView({
           <span>open tasks</span>
         </div>
         <div>
-          <strong>{data.overview.threads - data.today.items.length}</strong>
-          <span>threads can wait</span>
+          <strong>{data.overview.threads}</strong>
+          <span>stored threads</span>
         </div>
       </section>
 
@@ -263,15 +268,7 @@ export function DashboardView({
             </div>
             <Link href="/insights">Read patterns</Link>
           </header>
-          <div className="line-bars" aria-label="Seven-day thread volume">
-            {data.analytics.weeklyThreads.map((point) => (
-              <div key={point.date}>
-                <strong>{point.count}</strong>
-                <i style={{ height: `${Math.max(12, point.count * 7)}px` }} />
-                <small>{point.date.slice(-2)}</small>
-              </div>
-            ))}
-          </div>
+          <ThreadVolumeChart points={data.analytics.weeklyThreads} />
         </section>
       </div>
     </PageShell>

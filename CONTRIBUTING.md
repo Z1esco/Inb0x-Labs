@@ -6,15 +6,14 @@ Inb0x is an active, founder-led SaaS project. Contributions and AI-generated pat
 
 Read [PROJECT_RULES.md](PROJECT_RULES.md), [AGENTS.md](AGENTS.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/SECURITY.md](docs/SECURITY.md), and [docs/OWNERSHIP.md](docs/OWNERSHIP.md). For frontend work, also read [DESIGN_RULES.md](DESIGN_RULES.md) and [docs/FRONTEND_ARCHITECTURE.md](docs/FRONTEND_ARCHITECTURE.md).
 
-Use `develop` for integration, `main` for approved stable/release states. Make focused `feat/*`, `fix/*`, `docs/*`, `test/*`, `refactor/*` or `chore/*` branches. Never commit directly to `main` or `develop`, force-push shared history, or merge an agent's own PR.
+The founder explicitly requested solo development on one branch, main, on 12 October 2026. Keep work scoped on main and preserve history. Do not create new feature branches or PR stacks unless requested. Never force push. Local main commits are authorized; publishing main may trigger Production and needs separate release authorization beyond the current Preview-only permission.
 
 ## Workflow
 
 ```bash
 git fetch origin
-git switch develop
-git pull --ff-only origin develop
-git switch -c feat/short-description
+git switch main
+git status --short
 npm ci
 npm run check
 ```
@@ -30,7 +29,7 @@ Review the current branch, uncommitted files, active pull requests and relevant 
 - [ ] Keyboard, reduced-motion, responsive and text-only email rendering were reviewed where relevant.
 - [ ] Tests cover behavior and regressions; `npm run check` results are recorded accurately.
 - [ ] Secret and diff review completed; no personal mailbox data, screenshots with PII or local artifacts committed.
-- [ ] A draft PR targets `develop`; the founder makes the merge and release decisions.
+- [ ] Work is consolidated on main as requested; the founder authorizes publication and any Production deployment separately.
 
 ## External contributions and security
 

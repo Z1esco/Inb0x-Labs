@@ -12,20 +12,90 @@ const routes = [
   ["settings", "/settings"],
 ] as const;
 
-for (const width of [360, 390, 768, 1024, 1280, 1440, 1920]) {
-  test(`all routes are usable at ${width}px`, async ({ page }, testInfo) => {
+test("task and saved reply deletion require confirmation and support cancellation", async ({
+  page,
+}) => {
+  await page.request.post("/api/demo/reset");
+  await page.goto("/tasks");
+  await page
+    .getByPlaceholder("Write the next action, not the entire project")
+    .fill("Deletion confirmation example");
+  await page
+    .getByRole("button", { name: "Add to the ledger", exact: true })
+    .click();
+  const dialogs: string[] = [];
+  let confirm = false;
+  page.on("dialog", async (dialog) => {
+    dialogs.push(dialog.message());
+    if (confirm) await dialog.accept();
+    else await dialog.dismiss();
+  });
+  const deleteTask = page.getByRole("button", {
+    name: "Delete Deletion confirmation example",
+    exact: true,
+  });
+  await deleteTask.click();
+  expect(dialogs).toHaveLength(1);
+  await expect(deleteTask).toBeVisible();
+  confirm = true;
+  await deleteTask.click();
+  await expect(deleteTask).toHaveCount(0);
+  await page.goto("/inbox/proposal-approval");
+  await page
+    .getByRole("button", { name: "Prepare reply", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Copy reply", exact: true }),
+  ).toBeVisible();
+  await page.goto("/drafts");
+  confirm = false;
+  const deleteDraft = page.getByRole("button", {
+    name: "Delete this draft",
+    exact: true,
+  });
+  await deleteDraft.click();
+  expect(dialogs).toHaveLength(3);
+  await expect(deleteDraft).toBeVisible();
+  confirm = true;
+  await deleteDraft.click();
+  await expect(
+    page.getByRole("heading", { name: "The writing room is quiet" }),
+  ).toBeVisible();
+});
+
+for (const [width, height] of [
+  [360, 800],
+  [390, 844],
+  [768, 1024],
+  [1024, 768],
+  [1280, 800],
+  [1440, 900],
+  [1920, 1080],
+]) {
+  test(`all routes are usable at ${width}px`, async ({
+    page: setupPage,
+    context,
+  }, testInfo) => {
     test.setTimeout(180_000);
-    await page.setViewportSize({ width, height: width < 768 ? 844 : 1000 });
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.request.post("/api/demo/reset");
-    await page.goto("/inbox/proposal-approval");
-    await page
+    await setupPage.request.post("/api/demo/reset");
+    await setupPage.goto("/inbox/proposal-approval");
+    await setupPage
       .getByRole("button", { name: "Prepare reply", exact: true })
       .click();
     await expect(
-      page.getByRole("button", { name: "Copy reply", exact: true }),
+      setupPage.getByRole("button", { name: "Copy reply", exact: true }),
     ).toBeVisible();
     for (const [name, path] of routes) {
+      // Independent route loads avoid cancelling the prior document's Next.js
+      // prefetches. User-driven navigation is exercised in the journey tests.
+      const page = await context.newPage();
+      const runtimeErrors: string[] = [];
+      page.on("pageerror", (error) => runtimeErrors.push(error.message));
+      page.on("console", (message) => {
+        if (message.type() === "error") runtimeErrors.push(message.text());
+      });
+      await page.setViewportSize({ width: width!, height: height! });
+      await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);
       await expect(page.locator("main h1")).toBeVisible();
       await expect(
@@ -36,6 +106,17 @@ for (const width of [360, 390, 768, 1024, 1280, 1440, 1920]) {
           page.getByLabel("Appearance", { exact: true }),
         ).toBeVisible();
       await page.evaluate(() => document.fonts.ready);
+      if (name === "landing") {
+        await expect(page.locator(".preview-image img")).toHaveJSProperty(
+          "complete",
+          true,
+        );
+        expect(
+          await page
+            .locator(".preview-image img")
+            .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+        ).toBeGreaterThan(0);
+      }
       expect(
         await page.evaluate(
           () => getComputedStyle(document.documentElement).scrollBehavior,
@@ -84,6 +165,8 @@ for (const width of [360, 390, 768, 1024, 1280, 1440, 1920]) {
         fullPage: true,
         animations: "disabled",
       });
+      expect(runtimeErrors, `${name} browser errors`).toEqual([]);
+      await page.close();
     }
   });
 }

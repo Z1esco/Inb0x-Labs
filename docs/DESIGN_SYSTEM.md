@@ -55,6 +55,7 @@ meaning alongside it. Test actual computed foreground/background pairs in browse
 Sora owns display headings, Manrope interface and reading copy, Space Grotesk metrics and technical
 metadata. Keep system fallbacks. Desktop titles are bounded at 64px; small screens use 32–44px
 headings with wrapping. Correspondence and evidence prioritize reading width over oversized type.
+The V2 marketing hero is a deliberate exception, bounded at 90px desktop and 38–50px phone.
 
 Keep the existing horizontal desktop route index, mobile bottom navigation and full-screen route
 drawer. Do not document an unimplemented sidebar. Shared metrics and analysis surfaces use restrained
@@ -70,3 +71,14 @@ acceptance, replies are review-and-copy only, and Gmail is read-only.
 
 Respect reduced motion, focus visibility, keyboard navigation and comfortable touch controls. Test all
 routes at 360, 390, 768, 1024, 1280, 1440 and 1920px, with screenshots from fictional data only.
+
+## V2 product website
+
+DESIGN_RULES.md remains the single authority. Marketing composition uses a 1240px container,
+24px minimum mobile gutter and 48–112px section spacing. A full-width product preview replaces
+the old abstract brief. The evidence walkthrough, reply reading surface, feature directory,
+permission ledger, FAQ and final CTA each serve a different reading task. Three small client
+islands handle disclosure and selection; the page and factual content remain Server Components.
+Actual product captures use separate phone sources. Buttons remain 8px and media frames 14px.
+Only feedback transitions are animated. Product charts share ThreadVolumeChart with explicit
+count/date labels and mathematically proportional bars, including true zero values.

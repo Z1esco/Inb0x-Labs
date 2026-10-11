@@ -1,0 +1,47 @@
+.thread-volume-chart {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  align-items: end;
+  gap: clamp(8px, 2vw, 24px);
+  list-style: none;
+  padding: 24px 0 0;
+  margin: 0;
+}
+.thread-volume-chart li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
+}
+.thread-volume-chart strong {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 500;
+}
+.volume-track {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 128px;
+  border-bottom: 1px solid var(--border-strong);
+}
+.volume-track i {
+  display: block;
+  width: min(100%, 36px);
+  background: var(--signal-blue);
+  border-radius: 3px 3px 0 0;
+}
+.thread-volume-chart time {
+  color: var(--text-secondary);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.volume-empty {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding-block: 24px;
+}

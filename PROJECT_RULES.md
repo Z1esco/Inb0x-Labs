@@ -22,7 +22,7 @@ UI frameworks, or duplicate libraries.
 
 ## 3. Logical code boundaries (solo-founder workflow)
 
-As of 11 October 2026, the founder owns all product and repository decisions. The historical backend/frontend split below describes **change-review boundaries for AI agents**, not a current two-person staffing model. See `docs/OWNERSHIP.md`.
+As confirmed on 12 October 2026, the founder is the solo developer and owns all product and repository decisions. The historical backend/frontend split below describes logical code boundaries, not separate developers or required branches. See `docs/OWNERSHIP.md`.
 
 - Backend domain: `src/app/api/**`, `src/server/**`, `src/lib/**`, `src/schemas/**`, `src/prompts/**`,
   `src/types/**`, `supabase/**`, backend tests/docs, migrations, security, and API contracts.
@@ -46,16 +46,17 @@ and preserve frontend work outside the requested scope.
 
 ## 5. Git workflow
 
-`main` is stable production; `develop` is integration. Use `feat/*`, `fix/*`, `docs/*`, `test/*`, or
-`refactor/*`. Never commit directly to main/develop, force push, rewrite shared history, or merge your
-own PR. Branch from the correct dependency; stack on an unmerged dependency and retarget after it
-merges. Use Conventional Commits, run checks before pushes, open draft PRs, and merge stacks in order.
+The founder explicitly requested **one branch, `main`, and solo development** on 12 October 2026.
+Develop and the previous stacked draft PRs are historical references. Keep current work on main;
+do not split it into new feature branches or PRs. Preserve history and unrelated working-tree changes.
+Never force push or rewrite shared history. Use Conventional Commits and deterministic checks.
 
-Before changes: fetch, inspect branch/PR dependencies, use and pull the correct base, inspect commits,
-shared files, `AGENTS.md`, this file, ownership and architecture docs, then run baseline checks.
-Before finishing: update from the dependency, resolve conflicts, run format/lint/typecheck/tests/build/
-`npm run check`, review the diff and secrets/unrelated files, push only the feature branch, open a
-draft PR, and do not merge it.
+Before changes: fetch and inspect branch/PR state, local changes, rules and relevant architecture.
+Before finishing: run format/lint/typecheck/tests/build, npm run check, relevant browser tests,
+production audit and secret/diff review. Local main commits are authorized. **Publishing main is a
+separate release action** because GitHub/Vercel may automatically deploy Production. The current
+authorization permits automatic Previews only; finish a concrete verified candidate before seeking
+Production authorization. Do not bypass this boundary by changing Vercel or GitHub settings.
 
 ## 6. Security rules
 
