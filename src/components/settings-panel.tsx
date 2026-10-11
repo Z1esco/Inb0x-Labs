@@ -132,6 +132,8 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
         setDeleteConfirmation("");
         setMessage("Demo account data reset.");
       } else {
+        // Discard the authenticated client tree after permanent account deletion.
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
         window.location.assign("/login");
       }
     } catch (value) {
