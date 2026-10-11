@@ -20,17 +20,19 @@ useful, Playwright, ESLint, Prettier, GitHub Actions, and Vercel. Avoid large de
 necessary. Do not add Redis, vector databases, embeddings, workers, cron, other AI providers, other
 UI frameworks, or duplicate libraries.
 
-## 3. Repository ownership
+## 3. Logical code boundaries (solo-founder workflow)
 
-- Backend lead: `src/app/api/**`, `src/server/**`, `src/lib/**`, `src/schemas/**`, `src/prompts/**`,
+As of 11 October 2026, the founder owns all product and repository decisions. The historical backend/frontend split below describes **change-review boundaries for AI agents**, not a current two-person staffing model. See `docs/OWNERSHIP.md`.
+
+- Backend domain: `src/app/api/**`, `src/server/**`, `src/lib/**`, `src/schemas/**`, `src/prompts/**`,
   `src/types/**`, `supabase/**`, backend tests/docs, migrations, security, and API contracts.
-- Frontend partner: `src/components/**`, `src/features/**`, `src/styles/**`, `public/**`, marketing and
+- Frontend domain: `src/components/**`, `src/features/**`, `src/styles/**`, `public/**`, marketing and
   dashboard visual routes, charts, animations, responsive UI, and Figma implementation.
 - Shared: `src/types/contracts.ts`, `src/mock/**`, `docs/**`, `README.md`, route layouts, and
   `src/lib/api-client.ts`.
 
 Before editing shared files, inspect recent commits, active branches, and ownership docs. Avoid
-overwriting partner work and report likely conflicts first.
+overwriting concurrent or uncommitted work and report likely conflicts first.
 
 ## 4. Required codebase structure
 
@@ -40,7 +42,7 @@ for their named responsibilities; `supabase/migrations` for SQL; and `tests/{uni
 fixtures,mocks}` for tests. Business logic belongs in services, database logic in repositories,
 public types in shared contracts, validation in Zod schemas, and demo fixtures outside production
 providers. Extend existing modules, avoid duplicate architectures/circular imports/unnecessary moves,
-and preserve frontend-owned files.
+and preserve frontend work outside the requested scope.
 
 ## 5. Git workflow
 

@@ -50,6 +50,10 @@ Import the GitHub repository, add environment variables, deploy in demo mode fir
 production Google and Supabase callback URLs, then test real mode with a dedicated account. No
 deployment or cloud-resource creation is performed by this repository setup.
 
+The planned public product domain is `inb0x.my`, acquired from Exabytes. Before using it, follow
+`docs/DOMAIN_DEPLOYMENT.md` for external DNS, HTTPS, provider callbacks and verification.
+Do not change Exabytes DNS until a deployment exists and the founder approves the cutover.
+
 Use `docs/ENVIRONMENT.md` for the exact variable inventory, `docs/PRODUCTION_CHECKLIST.md` for
 pre/post-deployment verification, and `docs/RELEASE_RUNBOOK.md` for deployment, rollback, rotation,
 and incident response. Rotate the previously exposed Supabase privileged secret before linking a
