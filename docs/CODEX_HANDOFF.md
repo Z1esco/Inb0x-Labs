@@ -1,12 +1,13 @@
 # Codex development handoff · Inb0x Labs
 
-**Owner:** Solo founder. **Integration:** develop. **Project:** Inb0x / Inbox Zero AI by Inb0x Labs.
+**Owner:** Solo founder. **Integration:** develop. **Project:** Inb0x / Inbox Zero AI by Inb0x Labs. **Acquired domain:** `inb0x.my` (Exabytes, DNS/live deployment not verified).
 
 ## Start here
 1. Inspect git status, remote branches, open PRs, working-tree changes and latest develop. Never overwrite local work.
-2. Read PROJECT_RULES.md, AGENTS.md, DESIGN_RULES.md, docs/OWNERSHIP.md, docs/ARCHITECTURE.md, docs/SECURITY.md, docs/FRONTEND_ARCHITECTURE.md, docs/DESIGN_SYSTEM.md, docs/MOTION_SYSTEM.md, docs/ACCESSIBILITY.md.
-3. Read the premium design and implementation documents supplied by the founder. They were prepared outside GitHub; ask for paths only if genuinely unavailable in the workspace. The original specimen was at .superpowers/brainstorm/1270-1784380033/content/06-saas-system.html.
-4. Establish baseline npm run check and applicable Playwright tests, recording actual failures without destructive cleanup.
+2. Read docs/DOMAIN_DEPLOYMENT.md for the acquired `inb0x.my` domain. Do not assume it is live, edit DNS records, purchase hosting or deploy without founder approval.
+3. Read PROJECT_RULES.md, AGENTS.md, DESIGN_RULES.md, docs/OWNERSHIP.md, docs/ARCHITECTURE.md, docs/SECURITY.md, docs/FRONTEND_ARCHITECTURE.md, docs/DESIGN_SYSTEM.md, docs/MOTION_SYSTEM.md, docs/ACCESSIBILITY.md.
+4. Read the premium design and implementation documents supplied by the founder. They were prepared outside GitHub; ask for paths only if genuinely unavailable in the workspace. The original specimen was at .superpowers/brainstorm/1270-1784380033/content/06-saas-system.html.
+5. Establish baseline npm run check and applicable Playwright tests, recording actual failures without destructive cleanup.
 
 ## First coding objective
 Continue the premium dark attention workbench redesign, retaining route URLs, Supabase auth, APIs, deterministic demo, strict contracts, read-only Gmail, evidence/uncertainty, explicit task acceptance and copy-only drafts. Start by resolving the dark-versus-light design rules conflict and verifying the original specimen. Implement in small, dependency-aware PRs. No frontend behavior changes beyond approved presentation and accessibility repairs.
