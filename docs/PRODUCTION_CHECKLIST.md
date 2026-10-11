@@ -1,6 +1,8 @@
 # Production checklist
 
 This checklist is intentionally manual. Do not mark an item complete based only on static review.
+Historical checked items below describe the July 2026 verification pass only; they are not current launch clearance. Use [BETA_READINESS.md](BETA_READINESS.md) for fresh candidate gates. Revalidate all hosted checks in the actual target environment.
+
 Use dedicated test accounts and never place tokens, email bodies, prompts, or drafts in screenshots
 or logs.
 

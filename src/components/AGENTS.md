@@ -1,5 +1,7 @@
-# Frontend partner ownership
+# Frontend review boundary
 
-This directory is primarily owned by the frontend partner. Keep shared contracts stable,
-avoid backend-driven visual refactors, and edit these components only when explicitly asked
-or when the minimal functional shell requires a narrowly scoped fix.
+The solo founder owns this directory; coding agents implement scoped changes. Keep shared
+contracts stable and follow DESIGN_RULES.md, the approved dark attention workbench direction,
+and the frontend architecture, motion and accessibility documents. Preserve explicit AI actions,
+evidence, task acceptance, copy-only drafts and plain-text email rendering. Avoid unrelated
+backend-driven visual refactors. Record browser evidence for meaningful presentation changes.

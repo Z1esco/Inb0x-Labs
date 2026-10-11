@@ -54,8 +54,8 @@ server routes perform explicitly user-scoped mutations. Missing and cross-user i
 same not-found response.
 
 Before production, replace the lightweight request-burst limiter with a distributed implementation
-and test deletion against a dedicated Gmail account. Hosted Supabase lint, Advisors, table grants,
-and two-user row isolation were verified on 2026-07-17 with disposable synthetic accounts.
+and test deletion against a dedicated Gmail account. Historical documentation reports that hosted Supabase lint, Advisors, table grants,
+and two-user row isolation were verified on 2026-07-17 with disposable synthetic accounts. This has not been revalidated for the current environment and is not a production approval.
 
 Settings updates are authenticated, strictly validated, rate-limited, and explicitly scoped by the
 server-derived user ID. Account export selects bounded allowlisted fields; it intentionally includes
@@ -63,8 +63,10 @@ owned normalized content and generated drafts because it is a user data export, 
 material. Account deletion uses the server-only Supabase admin client for exactly the authenticated
 Auth user. Production deletion must be manually verified in a disposable test project before launch.
 
-The previously exposed Supabase privileged key was revoked and replaced before the hosted migration
-pass. The replacement is stored only in local `.env.local` and branch-scoped Vercel Preview secrets.
+Historical notes report privileged-key rotation during a previous hosted migration pass. Current
+revocation and replacement storage are unverified. GitHub currently reports automatic Vercel Preview
+deployments, but this audit has not inspected their environment or runtime. Require current operator
+evidence before enabling real mode; never reuse an exposed key.
 Reply drafts use
 the stored owned thread as source of truth; user instructions cannot authorize secrets, fake facts,
 external actions, sending, or Gmail draft creation. Public contracts are copy-only and always report
