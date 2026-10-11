@@ -1,4 +1,8 @@
-# Inb0x implementation plan
+# Historical foundation implementation plan
+
+This is the July 2026 foundation plan, retained for provenance. Its initial empty-repository
+state is historical. Current implementation and ownership are described in ARCHITECTURE.md,
+OWNERSHIP.md, STARTUP_ROADMAP.md and QA_2026-10-11.md.
 
 ## Current repository state
 
@@ -34,7 +38,7 @@ fixtures behind the same contracts and requires no external credentials.
 - Gmail content is hostile input; HTML, prompt injection, oversized bodies, and malformed data
   require bounded parsing and strict trust boundaries.
 - OAuth tokens and service-role credentials create high-impact leakage risk.
-- A two-person team can create merge conflicts in UI-owned directories without clear ownership.
+- Concurrent changes can create merge conflicts without clear change-review boundaries.
 - Free-tier and model costs require explicit analysis triggers, caching, quotas, and bounded retries.
 
 ## External setup requirements
@@ -68,9 +72,9 @@ fixtures behind the same contracts and requires no external credentials.
   constrained by daily, batch, input-size, timeout, and retry limits.
 - The MVP uses no embeddings, vector database, Redis, scheduler, background agent, or paid monitoring.
 
-## Partner handoff plan
+## Historical handoff boundaries
 
-- The frontend partner owns `src/components`, marketing/dashboard route-group presentation,
+- UI review covers `src/components`, marketing/dashboard route-group presentation,
   `src/styles`, and `public` after the minimal shell is created.
 - Stable public types live in `src/types/contracts.ts`; matching fixtures live in `src/mock`.
 - `src/lib/api-client.ts` provides the typed boundary from mock-backed UI to real routes.

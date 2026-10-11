@@ -33,7 +33,9 @@ Never commit values, paste privileged values into issues or logs, or prefix a se
 | `DATA_RETENTION_HOURS`          | Server-only tuning        | Optional                   | Optional           | Normalized-content retention window; default 24.                                |
 
 Demo mode requires no Supabase, Google, or OpenAI credentials. A deployed demo should still set
-`NEXT_PUBLIC_APP_URL=https://YOUR_PRODUCTION_DOMAIN` so fixed redirects use the deployed origin.
+`NEXT_PUBLIC_APP_URL` to the exact approved Preview origin so fixed redirects use that origin.
+Use `https://inb0x.my` only after production/domain approval and verification. Keep Preview and
+Production environment scopes separate; do not copy live provider secrets into a fictional preview.
 Real mode globally requires the three Supabase values. Gmail and OpenAI configuration is validated
 only when those optional provider-backed features are used, allowing application Auth to be rolled
 out and verified independently.

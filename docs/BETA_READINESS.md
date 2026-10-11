@@ -12,11 +12,12 @@ Status: pre-release, 11 October 2026. Local synthetic tests and static review do
 
 ## Local release candidate
 
-- [ ] `npm ci` and `npm run check` pass on the candidate SHA.
-- [ ] Playwright demo journey, all-route viewport screenshots, keyboard, reduced motion and error recovery pass.
-- [ ] Dependency findings are resolved or explicitly assessed; secret scan and source/diff review pass.
-- [ ] No real credentials/content in screenshots, fixtures, logs or browser bundles.
-- [ ] No mailbox mutations, background analysis, automatic task acceptance or reply sending.
+- [x] `npm ci` and `npm run check` pass on the candidate SHA.
+- [x] Playwright demo journey, all-route viewport screenshots, keyboard, reduced motion and error recovery pass.
+- [x] Dependency findings are resolved or explicitly assessed; secret scan and source/diff review pass.
+- [x] Fictional screenshots/fixtures and source diff reviewed; tracked-source scan passed with documented limits.
+- [ ] Inspect the actual hosted client bundles and provider environment for unintended secret/content exposure.
+- [x] No mailbox mutations, background analysis, automatic task acceptance or reply sending.
 
 ## External verification before real users
 

@@ -25,6 +25,11 @@
 
 ## Operational constraints
 
+Current session exception: the founder authorized existing automatic **Preview** builds on
+11 October 2026. This does not authorize production promotion, domain changes, purchases or
+provider configuration. Verify the actual Preview application through its access protection;
+GitHub build success alone is insufficient.
+
 - **Do not buy hosting, transfer nameservers, change DNS, deploy, configure Google Cloud or link Supabase secrets autonomously.**
 - **Do not treat domain acquisition as public application availability.**
 - Review platform terms/pricing: Vercel Hobby has non-commercial restrictions; use a plan eligible for the intended SaaS.

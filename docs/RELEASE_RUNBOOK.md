@@ -1,20 +1,31 @@
 # Release runbook
 
-## Deployment
+## Preview and production approval
 
-1. Branch from the latest green `develop`; do not deploy an unreviewed local worktree.
-2. Run `npm ci`, `npm run check`, `npm run test:e2e`, dependency audit, and security scans.
-3. Rotate compromised secrets before configuring any live environment.
-4. Create or select a dedicated Supabase project, link it locally, inspect the migration list, then run
-   `npx supabase db push`. Run database lint and Advisors before application traffic.
-5. Import `Z1esco/Inb0x-Labs` into Vercel and select the approved production branch.
-6. Configure the exact variables from `docs/ENVIRONMENT.md` in Vercel. Start with `DEMO_MODE=true`.
-7. Deploy Preview, run the demo E2E/smoke flow, then promote the reviewed build.
-8. Configure the production domain and update `NEXT_PUBLIC_APP_URL`.
-9. Update Supabase Site URL and redirect allowlist, then configure the Google provider callback.
-10. Register the separate Gmail callback URI and verify its consent screen remains read-only.
-11. After dedicated-account testing, set `DEMO_MODE=false`, redeploy, and execute
-    `docs/PRODUCTION_CHECKLIST.md`.
+The existing GitHub/Vercel integration creates Preview builds. On 11 October 2026 the founder
+authorized automatic Preview deployments only. Production promotion, provider changes, migrations,
+DNS, purchases and merges require separate approval. Do not re-import or reconfigure a project blindly.
+
+1. Identify the exact reviewed candidate SHA and its dependency PRs. Keep `main` stable and `develop`
+   as integration. Draft PRs are not release approval.
+2. Run `npm ci`, `npm run check`, `npm run test:e2e`, production dependency audit and source scan.
+   Review screenshots, remaining advisories and the current beta gates.
+3. Let the authorized integration build Preview. An operator verifies its actual project/environment,
+   `DEMO_MODE=true`, exact Preview origin, no provider secrets, access protection and no indexing.
+   Existing Preview URLs redirect anonymous checks to Vercel authentication; do not bypass protection.
+4. Run fictional hosted smoke checks as an authorized operator. Record actual application results,
+   headers and candidate SHA. A green deployment status or Vercel login page is not app verification.
+5. Before real mode, obtain founder approval for the dedicated test environment and any additive
+   migration. Inspect existing hosted schema and migration history; never assume an empty database.
+   Rotation, RLS/grants, two-user denial, quotas, export/deletion and rollback evidence are mandatory.
+   Do not run `supabase db push` merely because it appears in an older checklist.
+6. Review legal/operator/support details, Google restricted-scope consent requirements, commercial
+   hosting eligibility and spending controls. No purchase or broad beta is authorized by local QA.
+7. After production approval, configure only the approved production environment and exact provider
+   callbacks described in DOMAIN_DEPLOYMENT.md. Set `NEXT_PUBLIC_APP_URL=https://inb0x.my` only after
+   domain/HTTPS verification. Preserve email DNS records and retrieve actual host records from Vercel.
+8. Promote only the reviewed SHA after BETA_READINESS.md and the current production checklist pass.
+   Turning `DEMO_MODE=false` is a separate real-mode cutover; rehearse recovery before real users.
 
 No `vercel.json` is required: Vercel detects the Next.js App Router project, `package.json` pins the
 Node engine floor, and `package-lock.json` is the dependency lock. Environment values belong in the
@@ -25,7 +36,7 @@ Vercel dashboard, not source control.
 1. Stop new traffic by switching the domain to the last known-good Vercel deployment or use Vercel's
    instant rollback.
 2. If provider behavior is suspect, set `DEMO_MODE=true` and redeploy to remove live Supabase, Gmail,
-   and OpenAI calls while preserving the judge experience.
+   and OpenAI calls while preserving the fictional demo experience.
 3. Revoke or rotate affected provider credentials immediately; do not wait for a code rollback.
 4. Preserve request IDs, deployment SHA, timestamps, and safe status metadata for diagnosis.
 5. Reproduce in Preview with fictional or disposable data before releasing a fix.
