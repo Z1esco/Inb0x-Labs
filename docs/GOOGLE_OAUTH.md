@@ -15,7 +15,7 @@ the identity scopes plus `gmail.readonly`; it never requests or implements Gmail
    - `email`
    - `profile`
    - `https://www.googleapis.com/auth/gmail.readonly`
-5. Add team and judge accounts as test users while the app is in testing mode.
+5. Add explicitly authorized dedicated test accounts while the app is in testing mode.
 6. Create an OAuth client with application type **Web application**.
 7. Register the exact callback URIs below and copy the client ID and secret into server-side
    environment variables.

@@ -30,6 +30,6 @@ Attach redacted before/after images **only if UI changed**, or explain why unava
 
 ## Release and approval
 
-- [ ] Draft PR targets `develop`
+- [ ] Draft PR targets `develop` or an explicitly documented dependency branch
 - [ ] No autonomous merge, provider changes, paid resources or production deployment
 - Founder review: **pending**.
