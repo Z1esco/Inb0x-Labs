@@ -22,15 +22,15 @@ A read-only Gmail intelligence workspace that helps you find important conversat
 
 Inb0x transforms information overload into a calm attention workbench. It prioritizes persisted email threads, summarizes evidence, identifies possible deadlines, proposes actions, and prepares reviewable drafts. **Nothing is sent or changed in Gmail.**
 
-| Capability | Experience | Boundary |
-| --- | --- | --- |
-| Priority inbox | Focus on high-impact conversations and response needs | Existing saved and analyzed threads |
-| Explainable analysis | Summaries, priority reasons, supporting excerpts, confidence and uncertainty | Explicit user-triggered analysis |
-| Deadline and action extraction | Review dates and suggested next steps | Uncertain dates remain marked for review |
-| Task ledger | Create, track, complete and reopen tasks | AI suggestions become tasks **only after acceptance** |
-| Reply Studio | Generate drafts with tone and length choices | **Copy only**; no sending or Gmail draft creation |
-| Insights | Trends, usage, inbox health and completed work | Persisted, bounded workspace metrics |
-| Deterministic demo | Explore fictional inbox data without external credentials | Never silently substitutes for real-mode errors |
+| Capability                     | Experience                                                                   | Boundary                                              |
+| ------------------------------ | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Priority inbox                 | Focus on high-impact conversations and response needs                        | Existing saved and analyzed threads                   |
+| Explainable analysis           | Summaries, priority reasons, supporting excerpts, confidence and uncertainty | Explicit user-triggered analysis                      |
+| Deadline and action extraction | Review dates and suggested next steps                                        | Uncertain dates remain marked for review              |
+| Task ledger                    | Create, track, complete and reopen tasks                                     | AI suggestions become tasks **only after acceptance** |
+| Reply Studio                   | Generate drafts with tone and length choices                                 | **Copy only**; no sending or Gmail draft creation     |
+| Insights                       | Trends, usage, inbox health and completed work                               | Persisted, bounded workspace metrics                  |
+| Deterministic demo             | Explore fictional inbox data without external credentials                    | Never silently substitutes for real-mode errors       |
 
 ## Current status
 
@@ -53,14 +53,14 @@ Analysis and draft generation are explicit actions, not background activities. S
 
 ## Architecture
 
-| Layer | Stack |
-| --- | --- |
-| Web | Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4 |
-| Identity and data | Supabase Auth, PostgreSQL, Row Level Security |
-| Mailbox connection | Google OAuth 2.0, Gmail API (`gmail.readonly`) |
-| AI | OpenAI Responses API, structured outputs, Zod validation |
-| Testing | Vitest, React Testing Library, Playwright, ESLint, Prettier |
-| Deployment target | Vercel |
+| Layer              | Stack                                                       |
+| ------------------ | ----------------------------------------------------------- |
+| Web                | Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4 |
+| Identity and data  | Supabase Auth, PostgreSQL, Row Level Security               |
+| Mailbox connection | Google OAuth 2.0, Gmail API (`gmail.readonly`)              |
+| AI                 | OpenAI Responses API, structured outputs, Zod validation    |
+| Testing            | Vitest, React Testing Library, Playwright, ESLint, Prettier |
+| Deployment target  | Vercel                                                      |
 
 ```text
 src/app/                  Marketing, auth, protected application, API routes

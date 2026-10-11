@@ -7,11 +7,11 @@ handled through coordinated disclosure.
 ## 📌 Supported versions
 
 Inb0x is currently in pre-release development. Security fixes are applied to the
-latest code on the `main` branch.
+current application on `develop`; `main` remains the stable branch and currently lags the application.
 
 | Version                        | Supported |
 | ------------------------------ | :-------: |
-| Latest `main` branch           |    ✅     |
+| Current `develop` application  |    ✅     |
 | Older commits and forks        |    ❌     |
 | Unreleased local modifications |    ❌     |
 
@@ -47,7 +47,7 @@ session cookies, or other people's personal information in a report.
 
 ## ⏱️ Response process
 
-The maintainers aim to:
+The solo maintainer aims to:
 
 | Stage                         | Target                                           |
 | ----------------------------- | ------------------------------------------------ |
@@ -56,7 +56,7 @@ The maintainers aim to:
 | Share remediation progress    | At least every 14 days while active              |
 | Coordinate disclosure         | After a fix is available and users are protected |
 
-These are best-effort targets for a small hackathon team. Complex reports or external
+These are best-effort targets for a solo-founder pre-release project. Complex reports or external
 provider dependencies may require additional time. Reporters will be informed when
 timelines materially change.
 
