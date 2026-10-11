@@ -32,7 +32,7 @@ Inb0x transforms information overload into a calm attention workbench. It priori
 
 ## Current status
 
-**Pre-release software.** The Next.js application, authenticated route structure, API contracts, demo fixtures and core feature flows exist on the \`develop\` branch. A premium **attention workbench redesign is planned**, not yet applied to production source.
+**Pre-release software.** The Next.js application, authenticated route structure, API contracts, demo fixtures and core feature flows exist on the `develop` branch. A premium **attention workbench redesign is planned**, not yet applied to production source.
 
 Real-mode Supabase, Google OAuth/Gmail, OpenAI and hosted deployment require current environment-specific verification. This repository does **not** claim general availability, an independent security audit, Google verification, or a live production release.
 
@@ -54,12 +54,12 @@ Analysis and draft generation are explicit actions, not background activities. S
 | --- | --- |
 | Web | Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4 |
 | Identity and data | Supabase Auth, PostgreSQL, Row Level Security |
-| Mailbox connection | Google OAuth 2.0, Gmail API (\`gmail.readonly\`) |
+| Mailbox connection | Google OAuth 2.0, Gmail API (`gmail.readonly`) |
 | AI | OpenAI Responses API, structured outputs, Zod validation |
 | Testing | Vitest, React Testing Library, Playwright, ESLint, Prettier |
 | Deployment target | Vercel |
 
-\`\`\`text
+```text
 src/app/                  Marketing, auth, protected application, API routes
 src/components/           Shared and domain-specific user interface
 src/server/               Trusted services, provider integrations and repositories
@@ -68,15 +68,15 @@ src/types/contracts.ts    Public application contracts
 src/mock/                 Deterministic fictional demo data
 supabase/                 Database migrations, policies and tests
 docs/                     Architecture, security, setup and release procedures
-\`\`\`
+```
 
-Protected routes include \`/dashboard\`, \`/inbox\`, \`/inbox/[threadId]\`, \`/tasks\`, \`/drafts\`, \`/insights\`, and \`/settings\`. The landing page and sign-in experience have separate routes. Do not invent functionality that the existing contracts do not support.
+Protected routes include `/dashboard`, `/inbox`, `/inbox/[threadId]`, `/tasks`, `/drafts`, `/insights`, and `/settings`. The landing page and sign-in experience have separate routes. Do not invent functionality that the existing contracts do not support.
 
 ## Run the demo
 
-Requirements: **Node.js 20.9+**, npm, and Git. The \`develop\` branch is the current application integration branch; \`main\` remains the stable branch and may lag until an approved release.
+Requirements: **Node.js 20.9+**, npm, and Git. The `develop` branch is the current application integration branch; `main` remains the stable branch and may lag until an approved release.
 
-\`\`\`bash
+```bash
 git clone https://github.com/Z1esco/Inb0x-Labs.git
 cd Inb0x-Labs
 git switch develop
@@ -84,22 +84,22 @@ npm ci
 cp .env.example .env.local
 # Set DEMO_MODE=true in .env.local
 npm run dev
-\`\`\`
+```
 
-Open http://localhost:3000. On Windows PowerShell, replace the copy command with \`Copy-Item .env.example .env.local\`.
+Open http://localhost:3000. On Windows PowerShell, replace the copy command with `Copy-Item .env.example .env.local`.
 
-Demo mode is fictional and deterministic and does not require live Gmail, OpenAI or Supabase credentials where fixture mode is supported. For real-mode configuration follow [docs/SETUP.md](docs/SETUP.md), [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) and [docs/GOOGLE_OAUTH.md](docs/GOOGLE_OAUTH.md). Never commit \`.env.local\`, tokens or provider secrets.
+Demo mode is fictional and deterministic and does not require live Gmail, OpenAI or Supabase credentials where fixture mode is supported. For real-mode configuration follow [docs/SETUP.md](docs/SETUP.md), [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) and [docs/GOOGLE_OAUTH.md](docs/GOOGLE_OAUTH.md). Never commit `.env.local`, tokens or provider secrets.
 
 ## Quality and development
 
-\`\`\`bash
+```bash
 npm run format:check
 npm run lint
 npm run typecheck
 npm test
 npm run build
 npm run check
-\`\`\`
+```
 
 The full check combines formatting, lint, typecheck, tests and build. Browser, hosted-provider, and production-security verification are separate release gates. The existence of CI or previous test results is not evidence that a new change has passed.
 
