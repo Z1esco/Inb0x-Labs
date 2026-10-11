@@ -12,17 +12,17 @@ Codex and other AI agents are implementation assistants. They may read, research
 
 | Area | Paths / guardrails |
 | --- | --- |
-| Backend and security | \`src/app/api/**\`, \`src/server/**\`, \`src/lib/**\`, \`src/schemas/**\`, \`src/prompts/**\`, \`src/types/**\`, \`supabase/**\` |
-| Frontend and design | \`src/components/**\`, \`src/features/**\`, \`src/styles/**\`, \`public/**\`, visual routes and \`src/app/globals.css\` |
-| Shared contracts and handoffs | \`src/types/contracts.ts\`, \`src/mock/**\`, \`src/lib/api-client.ts\`, layouts, \`docs/**\`, \`README.md\` |
+| Backend and security | `src/app/api/**`, `src/server/**`, `src/lib/**`, `src/schemas/**`, `src/prompts/**`, `src/types/**`, `supabase/**` |
+| Frontend and design | `src/components/**`, `src/features/**`, `src/styles/**`, `public/**`, visual routes and `src/app/globals.css` |
+| Shared contracts and handoffs | `src/types/contracts.ts`, `src/mock/**`, `src/lib/api-client.ts`, layouts, `docs/**`, `README.md` |
 
 These are **review boundaries**, not ownership restrictions on the founder. An agent should not mix unrelated areas in the same PR. Backend changes must not silently overwrite a design pass; frontend changes must not change the API contract for visual convenience.
 
 ## Branches and release gates
 
-- \`main\`: stable baseline/release branch; currently behind \`develop\` and not evidence of an approved production launch.
-- \`develop\`: source integration branch for the application.
-- \`feat/*\`, \`fix/*\`, \`docs/*\`: short-lived focused branches from the correct dependency.
+- `main`: stable baseline/release branch; currently behind `develop` and not evidence of an approved production launch.
+- `develop`: source integration branch for the application.
+- `feat/*`, `fix/*`, `docs/*`: short-lived focused branches from the correct dependency.
 - Draft PRs require founder review and recorded validation. No autonomous merge or main deployment.
 - Before a public beta: demo validation, cross-user isolation, hosted OAuth/scope review, billing limits, security and privacy checks, deployment and rollback rehearsals.
 
