@@ -239,6 +239,7 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
               <label htmlFor="settings-appearance">Appearance</label>
               <select
                 id="settings-appearance"
+                aria-describedby="appearance-note"
                 className="form-select"
                 value={settings.appearance}
                 onChange={(event) =>
@@ -251,6 +252,10 @@ export function SettingsPanel({ demo }: { demo: boolean }) {
                 <option value="system">System</option>
                 <option value="light">Light preference</option>
               </select>
+              <small id="appearance-note">
+                Your preference is saved. This beta currently uses the dark
+                workbench for all preferences.
+              </small>
             </div>
           </div>
           <div className="settings-section">

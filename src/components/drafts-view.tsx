@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
+import { DraftTransparency } from "@/components/draft-transparency";
 import {
   EmptyState,
   ErrorState,
@@ -137,7 +138,7 @@ export function DraftsView() {
                 <h2>{selectedDraft.subject}</h2>
               </div>
               <strong>
-                {Math.round(selectedDraft.confidence * 100)}% grounded
+                {Math.round(selectedDraft.confidence * 100)}% confidence
               </strong>
             </header>
             <p className="writing-meta">
@@ -147,6 +148,7 @@ export function DraftsView() {
             <div className="draft-paper">
               <p>{selectedDraft.body}</p>
             </div>
+            <DraftTransparency draft={selectedDraft} />
             {selectedDraft.warnings.length > 0 && (
               <aside className="editorial-warning">
                 <strong>Review before copying</strong>

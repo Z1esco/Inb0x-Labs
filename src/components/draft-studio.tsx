@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/icons";
+import { DraftTransparency } from "@/components/draft-transparency";
 import { apiClient } from "@/lib/api-client";
 import type { ReplyDraft, ReplyLength, ReplyTone } from "@/types/contracts";
 
@@ -106,6 +107,7 @@ export function DraftStudio({ threadId }: { threadId: string }) {
           <strong>{draft.subject}</strong>
           <span>Body</span>
           <p>{draft.body}</p>
+          <DraftTransparency draft={draft} />
           {draft.warnings.length > 0 && (
             <aside className="editorial-warning">
               <strong>Review before copying</strong>

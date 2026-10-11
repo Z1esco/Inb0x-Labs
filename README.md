@@ -34,7 +34,7 @@ Inb0x transforms information overload into a calm attention workbench. It priori
 
 ## Current status
 
-**Pre-release software.** The Next.js application, authenticated route structure, API contracts, demo fixtures and core feature flows exist on the `develop` branch. A premium **attention workbench redesign is planned**, not yet applied to production source.
+**Pre-release software.** The Next.js application, authenticated route structure, API contracts, demo fixtures and core feature flows exist on `develop`. The premium dark **attention workbench is implemented on the draft candidate branch** `codex/dark-attention-workbench`; it has not been merged or released. See [candidate QA](docs/QA_2026-10-11.md) for exact results and remaining gates.
 
 Real-mode Supabase, Google OAuth/Gmail, OpenAI and hosted deployment require current environment-specific verification. This repository does **not** claim general availability, an independent security audit, Google verification, or a live production release.
 
@@ -44,6 +44,14 @@ Real-mode Supabase, Google OAuth/Gmail, OpenAI and hosted deployment require cur
 - Frontend rules: [DESIGN_RULES.md](DESIGN_RULES.md)
 - Deployment gates: [docs/PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md)
 - Detailed security model: [docs/SECURITY.md](docs/SECURITY.md)
+
+### Candidate screenshots
+
+Actual local Chromium captures using fictional demo data, 11 October 2026. These are candidate UI evidence, not a hosted release or real mailbox.
+
+![Dark attention workbench dashboard](docs/screenshots/dashboard-1440.png)
+
+[Mobile inbox](docs/screenshots/inbox-390.png) · [Thread and source evidence](docs/screenshots/thread-1440.png) · [Copy-only reply review](docs/screenshots/drafts-1440.png)
 
 ## Privacy and user control
 
