@@ -10,6 +10,8 @@ A read-only Gmail intelligence workspace that helps you find important conversat
 
 **A product by Inb0x Labs · Independent SaaS · Founder-led · Pre-release**
 
+**Official domain acquired:** `inb0x.my` (Exabytes). Hosting, DNS, HTTPS and application availability remain unverified; this is not yet a public launch.
+
 [Product](#product) · [Safety](#privacy-and-user-control) · [Architecture](#architecture) · [Local demo](#run-the-demo) · [Roadmap](#roadmap) · [Security](SECURITY.md)
 
 </div>
@@ -36,6 +38,7 @@ Inb0x transforms information overload into a calm attention workbench. It priori
 
 Real-mode Supabase, Google OAuth/Gmail, OpenAI and hosted deployment require current environment-specific verification. This repository does **not** claim general availability, an independent security audit, Google verification, or a live production release.
 
+- Domain/DNS and future deployment: [docs/DOMAIN_DEPLOYMENT.md](docs/DOMAIN_DEPLOYMENT.md)
 - Product and engineering roadmap: [docs/STARTUP_ROADMAP.md](docs/STARTUP_ROADMAP.md)
 - Codex development instructions: [docs/CODEX_HANDOFF.md](docs/CODEX_HANDOFF.md)
 - Frontend rules: [DESIGN_RULES.md](DESIGN_RULES.md)
@@ -113,6 +116,7 @@ The full check combines formatting, lint, typecheck, tests and build. Browser, h
 - [ ] Complete the approved premium attention workbench frontend redesign
 - [ ] Revalidate all automated checks and end-to-end demo journeys on current code
 - [ ] Verify hosted Supabase isolation, a dedicated Gmail account and real OpenAI flows
+- [ ] Configure and verify `inb0x.my` DNS, HTTPS and preview/production mapping when approved
 - [ ] Complete privacy, consent-screen and release-readiness checks
 - [ ] Deploy a limited beta only after explicit release approval
 
