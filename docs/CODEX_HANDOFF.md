@@ -10,9 +10,11 @@
 4. Read the premium design and implementation documents supplied by the founder. They were prepared outside GitHub; ask for paths only if genuinely unavailable in the workspace. The original specimen was at .superpowers/brainstorm/1270-1784380033/content/06-saas-system.html.
 5. Establish baseline npm run check and applicable Playwright tests, recording actual failures without destructive cleanup.
 
-## First coding objective
+## Current candidate and next objective
 
-Continue the premium dark attention workbench redesign, retaining route URLs, Supabase auth, APIs, deterministic demo, strict contracts, read-only Gmail, evidence/uncertainty, explicit task acceptance and copy-only drafts. Start by resolving the dark-versus-light design rules conflict and verifying the original specimen. Implement in small, dependency-aware PRs. No frontend behavior changes beyond approved presentation and accessibility repairs.
+The dark attention workbench is implemented on `codex/dark-attention-workbench`, stacked above the documentation and security branches. Read QA_2026-10-11.md for exact evidence. DESIGN_RULES.md and DESIGN_SYSTEM.md now agree; the original local HTML specimen was unavailable, and historical PR #12 was reviewed without merging its conflicting implementation.
+
+Next: founder review of the stacked draft PRs, followed by dedicated-account hosted security verification and durable request-burst limiting before real-user beta. Preserve routes, Supabase auth, APIs, demo fixtures, read-only Gmail, explicit analysis/task acceptance and copy-only replies. Do not repeat the redesign or deploy production without approval. The founder authorized automatic Preview deployments only on 11 October 2026.
 
 ## Mandatory safety
 

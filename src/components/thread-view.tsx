@@ -26,6 +26,11 @@ export function ThreadView({
   );
   const [error, setError] = useState<string | null>(null);
   const [taskMessage, setTaskMessage] = useState<string | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysisMessage, setAnalysisMessage] = useState<string | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [accepting, setAccepting] = useState(false);
+  const sourceThreadId = thread?.id;
 
   useEffect(() => {
     if (!initialThread)
@@ -38,6 +43,31 @@ export function ThreadView({
           ),
         );
   }, [initialThread, threadId]);
+
+  useEffect(() => {
+    if (!sourceThreadId) return;
+    // Real-mode messages arrive after navigation; focus the requested source
+    // once it exists, as well as on native same-page fragment navigation.
+    function focusSource() {
+      let id: string;
+      try {
+        id = decodeURIComponent(window.location.hash.slice(1));
+      } catch {
+        return;
+      }
+      if (!id.startsWith("message-")) return;
+      const source = document.getElementById(id);
+      if (!source?.classList.contains("letter")) return;
+      source.scrollIntoView({ block: "start" });
+      source.focus({ preventScroll: true });
+    }
+    const frame = requestAnimationFrame(focusSource);
+    window.addEventListener("hashchange", focusSource);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", focusSource);
+    };
+  }, [sourceThreadId]);
 
   if (error)
     return (
@@ -55,8 +85,56 @@ export function ThreadView({
   const currentThread = thread;
   const analysis = currentThread.analysis;
 
+  function sourceLink(messageId: string) {
+    if (!currentThread.messages.some((message) => message.id === messageId))
+      return <small>Source message unavailable in this view.</small>;
+    return (
+      <a
+        className="evidence-source"
+        href={`#${encodeURIComponent(`message-${messageId}`)}`}
+      >
+        View source message
+      </a>
+    );
+  }
+
+  async function analyze() {
+    setAnalyzing(true);
+    setAnalysisMessage(null);
+    setAnalysisError(null);
+    setTaskMessage(null);
+    try {
+      const result = await apiClient.analyzeThreadWithMetadata(
+        currentThread.id,
+      );
+      setThread(
+        (value) =>
+          value && {
+            ...value,
+            analysis: result.analysis,
+            analysisId: result.analysisId,
+          },
+      );
+      setAnalysisMessage(
+        result.cached
+          ? "Cached analysis ready for review."
+          : "Analysis ready for review.",
+      );
+    } catch (value) {
+      setAnalysisError(
+        value instanceof Error
+          ? value.message
+          : "Analysis could not be prepared.",
+      );
+    } finally {
+      setAnalyzing(false);
+    }
+  }
+
   async function createTask(actionIndex: number) {
-    if (!currentThread.analysisId) return;
+    if (!currentThread.analysisId || accepting) return;
+    setAccepting(true);
+    setAnalysisMessage(null);
     setTaskMessage(null);
     try {
       const result = await apiClient.createTaskFromAnalysis({
@@ -72,6 +150,8 @@ export function ThreadView({
       setTaskMessage(
         value instanceof Error ? value.message : "Task could not be created.",
       );
+    } finally {
+      setAccepting(false);
     }
   }
 
@@ -90,10 +170,15 @@ export function ThreadView({
         <article className="letter-stack">
           <header className="reading-heading">
             <span>Conversation</span>
-            <p>Normalized plain text. Source HTML never enters this view.</p>
+            <p>Read-only conversation · attachments are not downloaded.</p>
           </header>
           {currentThread.messages.map((message, index) => (
-            <section className="letter" key={message.id}>
+            <section
+              className="letter"
+              key={message.id}
+              id={`message-${message.id}`}
+              tabIndex={-1}
+            >
               <header>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
@@ -126,6 +211,10 @@ export function ThreadView({
               <>
                 <h2>What this thread means</h2>
                 <p className="analysis-prose">{analysis.summary}</p>
+                <p className="analysis-prose">{analysis.priorityReason}</p>
+                {analysis.replyReason && (
+                  <p className="analysis-prose">{analysis.replyReason}</p>
+                )}
                 <dl className="analysis-facts">
                   <div>
                     <dt>Priority</dt>
@@ -154,9 +243,11 @@ export function ThreadView({
                         <div>
                           <strong>{item.title}</strong>
                           <p>{item.evidence}</p>
+                          {sourceLink(item.sourceMessageId)}
                         </div>
                         <button
                           type="button"
+                          disabled={accepting || analyzing}
                           onClick={() => void createTask(index)}
                         >
                           Accept task
@@ -185,6 +276,11 @@ export function ThreadView({
                             {deadline.dateText ?? "Date needs review"} ·{" "}
                             {deadline.evidence}
                           </p>
+                          <p>
+                            {Math.round(deadline.confidence * 100)}% confidence
+                            · verify before acting
+                          </p>
+                          {sourceLink(deadline.sourceMessageId)}
                         </div>
                       </article>
                     ))}
@@ -198,6 +294,7 @@ export function ThreadView({
                     >
                       <strong>{evidence.claim}</strong>
                       <p>“{evidence.excerpt}”</p>
+                      {sourceLink(evidence.sourceMessageId)}
                     </blockquote>
                   ))}
                 </section>
@@ -207,6 +304,26 @@ export function ThreadView({
                 title="Not analyzed"
                 message="Analysis begins only when you explicitly request it."
               />
+            )}
+            <div className="analysis-action">
+              <button
+                className="desk-button desk-button-ink"
+                type="button"
+                disabled={analyzing || accepting}
+                onClick={() => void analyze()}
+              >
+                {analyzing ? "Analyzing…" : "Analyze thread"}
+              </button>
+            </div>
+            {analysisMessage && (
+              <p className="inline-confirmation" role="status">
+                {analysisMessage}
+              </p>
+            )}
+            {analysisError && (
+              <p className="inline-warning" role="alert">
+                {analysisError}
+              </p>
             )}
           </section>
           <DraftStudio threadId={currentThread.id} />

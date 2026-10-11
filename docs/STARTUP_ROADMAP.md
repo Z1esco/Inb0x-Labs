@@ -1,6 +1,6 @@
 # Inb0x Labs · Startup roadmap
 
-**Status:** Planning, 11 October 2026. This is a founder-controlled delivery plan, not a claim that the product is launched.
+**Status:** Local candidate implemented, 11 October 2026. Draft PRs remain unmerged. See [QA evidence](QA_2026-10-11.md); this is not a launched product.
 
 ## Stage 0: Repository and product truth
 
@@ -12,9 +12,9 @@
 
 ## Stage 1: Premium product experience
 
-- Revisit the approved attention workbench local specimen and the prepared premium concept.
-- Resolve conflict between dark DESIGN_RULES.md and old light docs/DESIGN_SYSTEM.md before implementation.
-- Rebuild shell, dashboard, inbox, thread evidence inspector, accepted tasks, copy-only drafts, insights, settings, landing and login.
+- Implemented on the candidate: dark design authority, shared shell and every existing route, including source links, explicit analysis and reply transparency.
+- Historical PR #12 reviewed; original HTML specimen unavailable. Conflicting light design documentation reconciled with DESIGN_RULES.md.
+- Keep existing shell, dashboard, inbox, thread evidence, accepted tasks, copy-only replies, insights, settings, landing and login coherent as features evolve.
 - Use existing APIs and contracts. No Gmail write scopes, background analysis, automatic task acceptance or invented data.
 - Gate: responsive visual QA at 360, 390, 768, 1024, 1280, 1440 and 1920 widths; keyboard, screen-reader, reduced-motion and demo journey regressions.
 

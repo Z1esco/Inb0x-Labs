@@ -62,23 +62,53 @@ export function AppNav({
   const [signingOut, setSigningOut] = useState(false);
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const menuCloseRef = useRef<HTMLButtonElement>(null);
-  const userLabel = demo ? "Demo Judge" : (userEmail ?? "Inb0x user");
+  const drawerRef = useRef<HTMLElement>(null);
+  const userLabel = demo ? "Demo workspace" : (userEmail ?? "Inb0x user");
   const currentRoute = routes.find(
     (route) => pathname === route.href || pathname.startsWith(`${route.href}/`),
   );
 
   useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 900px)");
+    function closeOnDesktop(event: MediaQueryListEvent) {
+      if (!event.matches) setMenuOpen(false);
+    }
+    mobile.addEventListener("change", closeOnDesktop);
+    return () => mobile.removeEventListener("change", closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
     if (!menuOpen) return;
 
-    menuCloseRef.current?.focus();
+    const frame = requestAnimationFrame(() => menuCloseRef.current?.focus());
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-      setMenuOpen(false);
-      requestAnimationFrame(() => menuTriggerRef.current?.focus());
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        requestAnimationFrame(() => menuTriggerRef.current?.focus());
+      }
+      if (event.key !== "Tab") return;
+      const controls = drawerRef.current?.querySelectorAll<HTMLElement>(
+        "a[href], button:not([disabled])",
+      );
+      const first = controls?.[0];
+      const last = controls?.[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
     }
 
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, [menuOpen]);
 
   async function signOut() {
@@ -102,6 +132,7 @@ export function AppNav({
             className="desk-brand"
             href="/dashboard"
             aria-label="Inb0x home"
+            inert={menuOpen}
           >
             <Image
               src="/logo/inb0x-labs-logo.png"
@@ -115,6 +146,8 @@ export function AppNav({
           </Link>
 
           <aside
+            id="workspace-navigation"
+            ref={drawerRef}
             className={classNames("route-drawer", menuOpen && "is-open")}
             aria-label="Primary navigation"
           >
@@ -125,7 +158,10 @@ export function AppNav({
                 type="button"
                 className="plain-icon-button"
                 aria-label="Close navigation"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  setMenuOpen(false);
+                  requestAnimationFrame(() => menuTriggerRef.current?.focus());
+                }}
               >
                 <Icon name="close" />
               </button>
@@ -140,9 +176,17 @@ export function AppNav({
                 </small>
               </div>
             </div>
+            <button
+              className="desk-button desk-button-outline drawer-exit"
+              type="button"
+              disabled={signingOut}
+              onClick={() => void signOut()}
+            >
+              {signingOut ? "Signing out…" : demo ? "Exit demo" : "Sign out"}
+            </button>
           </aside>
 
-          <div className="desk-account">
+          <div className="desk-account" inert={menuOpen}>
             <span className="workspace-state">
               <i aria-hidden="true" /> {demo ? "Demo desk" : "Private desk"}
             </span>
@@ -158,17 +202,12 @@ export function AppNav({
               <Icon name="chevron" />
             </button>
             {accountOpen && (
-              <div className="account-popover" role="menu">
-                <Link
-                  href="/settings"
-                  role="menuitem"
-                  onClick={() => setAccountOpen(false)}
-                >
+              <div className="account-popover" aria-label="Account actions">
+                <Link href="/settings" onClick={() => setAccountOpen(false)}>
                   Preferences
                 </Link>
                 <button
                   type="button"
-                  role="menuitem"
                   disabled={signingOut}
                   onClick={() => void signOut()}
                 >
@@ -186,6 +225,7 @@ export function AppNav({
               className="plain-icon-button mobile-index-trigger"
               aria-label={menuOpen ? "Close navigation" : "Open navigation"}
               aria-expanded={menuOpen}
+              aria-controls="workspace-navigation"
               onClick={() => setMenuOpen((value) => !value)}
             >
               <Icon name={menuOpen ? "close" : "menu"} />
@@ -193,7 +233,7 @@ export function AppNav({
           </div>
         </div>
 
-        <div className="desk-header-secondary">
+        <div className="desk-header-secondary" inert={menuOpen}>
           <div>
             <span>{currentRoute?.key ?? "00"}</span>
             <strong>{currentRoute?.label ?? "Workspace"}</strong>
@@ -205,9 +245,15 @@ export function AppNav({
         </div>
       </header>
 
-      <div className="desk-canvas">{children}</div>
+      <div className="desk-canvas" inert={menuOpen}>
+        {children}
+      </div>
 
-      <nav className="mobile-desk-nav" aria-label="Mobile navigation">
+      <nav
+        className="mobile-desk-nav"
+        aria-label="Mobile navigation"
+        inert={menuOpen}
+      >
         {routes.slice(0, 4).map((route) => {
           const active =
             pathname === route.href || pathname.startsWith(`${route.href}/`);

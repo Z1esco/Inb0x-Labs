@@ -1,9 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-test("judge can complete the critical demo flow", async ({ page, context }) => {
+test("user can complete the controlled beta demo flow", async ({
+  page,
+  context,
+}) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.request.post("/api/demo/reset");
   await page.goto("/");
-  await page.getByRole("link", { name: "Open demo" }).click();
+  await page.getByRole("link", { name: "Open the demo" }).click();
   await expect(
     page.getByRole("heading", { name: "Today, edited." }),
   ).toBeVisible();
@@ -26,7 +30,7 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
     sent: false,
   });
   await page
-    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("navigation", { name: "Workspace routes" })
     .getByRole("link", { name: "Correspondence", exact: true })
     .click();
   await page.locator('a[href="/inbox/proposal-approval"]').first().click();
@@ -63,27 +67,27 @@ test("judge can complete the critical demo flow", async ({ page, context }) => {
   expect(deleteDraftResponse.ok()).toBe(true);
   expect((await deleteDraftResponse.json()).data.deleted).toBe(true);
   await page
-    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("navigation", { name: "Workspace routes" })
     .getByRole("link", { name: "Tasks", exact: true })
     .click();
-  await page.getByLabel("Task title").fill("Prepare judging notes");
+  await page.getByLabel("Task title").fill("Prepare beta notes");
   await page.getByRole("button", { name: "Add to the ledger" }).click();
-  await expect(page.getByText("Prepare judging notes")).toBeVisible();
+  await expect(page.getByText("Prepare beta notes")).toBeVisible();
   await page
-    .getByRole("button", { name: "Complete Prepare judging notes" })
+    .getByRole("button", { name: "Complete Prepare beta notes" })
     .click();
   await expect(
-    page.getByRole("button", { name: "Reopen Prepare judging notes" }),
+    page.getByRole("button", { name: "Reopen Prepare beta notes" }),
   ).toBeVisible();
   await page
-    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("navigation", { name: "Workspace routes" })
     .getByRole("link", { name: "Patterns", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Patterns, not scores." }),
   ).toBeVisible();
   await page
-    .getByRole("complementary", { name: "Primary navigation" })
+    .getByRole("navigation", { name: "Workspace routes" })
     .getByRole("link", { name: "Preferences", exact: true })
     .click();
   await page.getByRole("button", { name: "Reset demo" }).click();
@@ -136,7 +140,7 @@ test("dashboard shell remains usable at release viewports", async ({
   ).toBeVisible();
   await page.getByRole("button", { name: "Open navigation" }).click();
   await expect(
-    page.getByRole("complementary", { name: "Primary navigation" }),
+    page.getByRole("navigation", { name: "Workspace routes" }),
   ).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 800 });
