@@ -23,8 +23,13 @@
 - Confirm usage limits, cost ceilings, privacy/terms, incident response and rollback.
 - Gate: verified evidence, no critical unresolved security issues; founder approval.
 
+## Acquired domain (not a deployment claim)
+- `inb0x.my` was acquired from Exabytes and is intended as the canonical product domain.
+- Follow [DOMAIN_DEPLOYMENT.md](DOMAIN_DEPLOYMENT.md) for nameserver/DNS ownership, Vercel project records, SSL and OAuth callbacks. Avoid overwriting existing email DNS records.
+- Vercel Hobby is restricted to non-commercial personal use; assess an eligible hosting plan before commercial operation.
+
 ## Stage 3: Controlled beta
-- Deploy a demo first with Vercel and no real user data.
+- Deploy a demo first with an eligible hosting provider and no real user data; verify `inb0x.my` only when a deployment is approved.
 - Set up actual environment, monitored usage, provider configuration and callback URLs separately.
 - Run a limited opt-in beta with deliberate privacy disclosures and a recovery path.
 - Gate: authorized real-world tests and clear support/feedback channel.
