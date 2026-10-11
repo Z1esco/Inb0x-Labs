@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main, develop]
 
 permissions:
   contents: read
@@ -21,6 +20,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run security:scan
+      - run: npm run audit:production
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck

@@ -85,6 +85,8 @@ export function AppNav({
     setSigningOut(true);
     try {
       const response = await fetch("/api/auth/logout", { method: "POST" });
+      // A full document navigation discards cached authenticated UI after logout.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       if (response.ok) window.location.assign("/");
       else setSigningOut(false);
     } catch {
