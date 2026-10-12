@@ -27,6 +27,25 @@ import {
 } from "@/server/security/oauth-state";
 
 describe("Gmail scope policy", () => {
+  it("accepts Google's canonical identity scope names", () => {
+    expect(
+      verifyGrantedScopes([
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/gmail.readonly",
+      ]),
+    ).toEqual([...GMAIL_SCOPES]);
+  });
+  it.each([
+    "https://www.googleapis.com/auth/gmail.labels",
+    "https://www.googleapis.com/auth/gmail.settings.basic",
+    "https://www.googleapis.com/auth/drive",
+  ])("rejects unapproved extra scope %s", (scope) => {
+    expect(() => verifyGrantedScopes([...GMAIL_SCOPES, scope])).toThrowError(
+      AppError,
+    );
+  });
   it("contains only the required identity and read-only scopes", () => {
     expect(GMAIL_SCOPES).toEqual([
       "openid",

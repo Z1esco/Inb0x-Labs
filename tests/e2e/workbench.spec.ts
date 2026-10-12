@@ -1,5 +1,32 @@
 import { expect, test } from "@playwright/test";
 
+test("server-rendered dates hydrate without errors across browser timezones", async ({
+  browser,
+}) => {
+  for (const timezoneId of ["America/New_York", "Asia/Tokyo"]) {
+    const context = await browser.newContext({
+      timezoneId,
+      reducedMotion: "reduce",
+    });
+    const page = await context.newPage();
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    for (const path of [
+      "/dashboard",
+      "/inbox/proposal-approval",
+      "/tasks",
+      "/insights",
+    ]) {
+      await page.goto(`http://localhost:3000${path}`, {
+        waitUntil: "networkidle",
+      });
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      expect(errors, `${path} in ${timezoneId}`).toEqual([]);
+    }
+    await context.close();
+  }
+});
+
 const routes = [
   ["landing", "/"],
   ["login", "/login"],

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icons";
-import { classNames, formatRelativeTime } from "@/lib/ui";
+import { classNames } from "@/lib/ui";
+export { RelativeTime } from "@/components/relative-time";
 
 export function PageShell({
   eyebrow,
@@ -164,8 +165,4 @@ export function EmptyState({
 
 export function PriorityLabel({ value }: { value: string }) {
   return <span className={classNames("priority-word", value)}>{value}</span>;
-}
-
-export function RelativeTime({ value }: { value: string | null }) {
-  return <time dateTime={value ?? undefined}>{formatRelativeTime(value)}</time>;
 }

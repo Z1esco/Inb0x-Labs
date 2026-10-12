@@ -10,6 +10,18 @@ import { ReplyExample } from "@/components/reply-example";
 import "./marketing.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://inb0x.my"),
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "https://inb0x.my/",
+    title: "Inb0x Labs — Make room for what needs you",
+    description:
+      "Email, edited into decisions. Explore the fictional Inb0x demo.",
+    images: [
+      { url: "/product/briefing.png", alt: "Inb0x fictional attention desk" },
+    ],
+  },
   title: "Inb0x Labs — Make room for what needs you",
   description:
     "Turn email threads into summaries, source-linked decisions, tasks you accept and replies you review. Explore the fictional demo. Gmail stays read-only.",

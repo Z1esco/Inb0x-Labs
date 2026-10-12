@@ -250,7 +250,7 @@ export function DashboardView({
                   <strong>{task.title}</strong>
                   <p>
                     {task.dueAt
-                      ? `Due ${new Date(task.dueAt).toLocaleDateString("en-US")}`
+                      ? `Due ${new Date(task.dueAt).toLocaleDateString("en-US", { timeZone: "UTC" })} UTC`
                       : "No due date"}
                   </p>
                 </div>

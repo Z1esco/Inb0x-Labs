@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { failure } from "@/lib/api-response";
 import { getEnvironment } from "@/lib/env";
+import { redirectOrigin } from "@/lib/redirect-origin";
 import { AppError } from "@/lib/errors";
 import { requireCurrentUser } from "@/server/auth/current-user";
 import { exchangeAndStoreGoogleCode } from "@/server/gmail/connection-service";
@@ -13,15 +14,19 @@ import {
 const OAUTH_COOKIE = "inb0x_oauth_state";
 
 function fixedRedirect(path: string): NextResponse {
-  return NextResponse.redirect(
-    new URL(path, getEnvironment().NEXT_PUBLIC_APP_URL),
-  );
+  return NextResponse.redirect(new URL(path, redirectOrigin(getEnvironment())));
 }
 
 export async function GET(request: NextRequest) {
   const store = await cookies();
   try {
     const user = await requireCurrentUser();
+    if (user.demo)
+      throw new AppError(
+        "DEMO_MODE_ONLY",
+        "Gmail connection is disabled in demo mode.",
+        409,
+      );
     const receivedState = request.nextUrl.searchParams.get("state") ?? "";
     const expectedState = store.get(OAUTH_COOKIE)?.value ?? "";
     if (

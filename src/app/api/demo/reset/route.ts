@@ -12,9 +12,10 @@ export async function POST() {
         "Demo reset is available only in demo mode.",
         409,
       );
-    enforceRateLimit(user.id, "demo-reset", 3, 60_000);
+    // Resetting fictional fixtures must not reset the reset endpoint's own budget.
+    enforceRateLimit(user.id, "demo-reset", 30, 60_000);
     resetDemo();
-    clearRateLimits();
+    clearRateLimits({ userId: user.id, action: "demo-reset" });
     return ok({ reset: true }, { demo: true });
   } catch (error) {
     return failure(error);

@@ -26,6 +26,26 @@ import {
 
 afterEach(clearRateLimits);
 describe("environment validation", () => {
+  it("uses the platform Preview URL when no application URL was configured", () => {
+    expect(
+      parseEnvironment({
+        DEMO_MODE: "true",
+        VERCEL_ENV: "preview",
+        VERCEL_URL: "inb0x-candidate.vercel.app",
+        NEXT_PUBLIC_APP_URL: "",
+      }).NEXT_PUBLIC_APP_URL,
+    ).toBe("https://inb0x-candidate.vercel.app");
+  });
+  it("preserves the owner's explicit application URL", () => {
+    expect(
+      parseEnvironment({
+        DEMO_MODE: "true",
+        VERCEL_ENV: "preview",
+        VERCEL_URL: "candidate.vercel.app",
+        NEXT_PUBLIC_APP_URL: "https://inb0x.my",
+      }).NEXT_PUBLIC_APP_URL,
+    ).toBe("https://inb0x.my");
+  });
   it("starts in demo mode without private credentials", () => {
     const env = parseEnvironment({});
     expect(env.DEMO_MODE).toBe(true);

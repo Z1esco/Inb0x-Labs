@@ -86,7 +86,14 @@ export type Environment = z.infer<typeof environmentSchema>;
 export function parseEnvironment(
   source: Record<string, string | undefined>,
 ): Environment {
-  return environmentSchema.parse(source);
+  const previewUrl =
+    source.VERCEL_ENV === "preview" && source.VERCEL_URL
+      ? `https://${source.VERCEL_URL}`
+      : undefined;
+  return environmentSchema.parse({
+    ...source,
+    NEXT_PUBLIC_APP_URL: source.NEXT_PUBLIC_APP_URL || previewUrl,
+  });
 }
 export function getEnvironment(): Environment {
   return parseEnvironment(process.env);

@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { AppNav } from "@/components/app-nav";
 import { SkipLink } from "@/components/skip-link";
 import { requireCurrentUser } from "@/server/auth/current-user";
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

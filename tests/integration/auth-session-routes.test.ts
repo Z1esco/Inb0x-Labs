@@ -34,6 +34,7 @@ describe("auth session routes", () => {
   });
 
   it("exchanges a Supabase PKCE code and uses only fixed redirects", async () => {
+    mocks.demoMode = false;
     mocks.exchangeCodeForSession.mockResolvedValue({ error: null });
     const success = await callback(
       new NextRequest("http://localhost:3000/auth/callback?code=safe-code"),
@@ -59,6 +60,27 @@ describe("auth session routes", () => {
       new NextRequest("http://localhost:3000/auth/callback"),
     );
     expect(missing.headers.get("location")).toBe(
+      "http://localhost:3000/login?auth=error",
+    );
+  });
+  it("does not contact Supabase from a demo callback", async () => {
+    const response = await callback(
+      new NextRequest("http://localhost:3000/auth/callback?code=demo-code"),
+    );
+    expect(response.headers.get("location")).toBe(
+      "http://localhost:3000/dashboard",
+    );
+    expect(mocks.exchangeCodeForSession).not.toHaveBeenCalled();
+  });
+  it("redirects safely when the identity provider throws", async () => {
+    mocks.demoMode = false;
+    mocks.exchangeCodeForSession.mockRejectedValue(
+      new Error("private provider detail"),
+    );
+    const response = await callback(
+      new NextRequest("http://localhost:3000/auth/callback?code=test"),
+    );
+    expect(response.headers.get("location")).toBe(
       "http://localhost:3000/login?auth=error",
     );
   });

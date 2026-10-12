@@ -16,8 +16,18 @@ export const FORBIDDEN_GMAIL_SCOPES = [
 ] as const;
 
 export function verifyGrantedScopes(scopes: readonly string[]): string[] {
-  const unique = [...new Set(scopes.filter(Boolean))];
-  if (FORBIDDEN_GMAIL_SCOPES.some((scope) => unique.includes(scope)))
+  // Google may return the canonical userinfo names for the short OIDC aliases.
+  const normalize = (scope: string) => {
+    if (scope === "https://www.googleapis.com/auth/userinfo.email")
+      return "email";
+    if (scope === "https://www.googleapis.com/auth/userinfo.profile")
+      return "profile";
+    return scope;
+  };
+  const unique = [...new Set(scopes.filter(Boolean).map(normalize))];
+  if (
+    unique.some((scope) => !(GMAIL_SCOPES as readonly string[]).includes(scope))
+  )
     throw new AppError(
       "GMAIL_PERMISSION_DENIED",
       "Google granted permissions that Inb0x does not accept.",

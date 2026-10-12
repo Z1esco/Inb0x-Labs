@@ -1,6 +1,8 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function LoginPage() {
   return (

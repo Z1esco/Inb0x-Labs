@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import { failure } from "@/lib/api-response";
 import { getEnvironment } from "@/lib/env";
+import { redirectOrigin } from "@/lib/redirect-origin";
 import { AppError } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 export async function GET() {
   try {
     const env = getEnvironment();
     if (env.DEMO_MODE)
-      return NextResponse.redirect(
-        new URL("/dashboard", env.NEXT_PUBLIC_APP_URL),
-      );
+      return NextResponse.redirect(new URL("/dashboard", redirectOrigin(env)));
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",

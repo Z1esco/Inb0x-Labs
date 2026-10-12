@@ -66,6 +66,21 @@ beforeEach(() => {
 });
 
 describe("authenticated Gmail connection routes", () => {
+  it("does not consume state or exchange Gmail codes in demo mode", async () => {
+    mocks.requireCurrentUser.mockResolvedValue({
+      id: "demo",
+      email: null,
+      demo: true,
+    });
+    const response = await callback(
+      new NextRequest(
+        "http://localhost:3000/api/gmail/callback?state=valid-state&code=test-code",
+      ),
+    );
+    expect(response.status).toBe(409);
+    expect(mocks.consumeOAuthState).not.toHaveBeenCalled();
+    expect(mocks.exchangeAndStoreGoogleCode).not.toHaveBeenCalled();
+  });
   it.each([
     ["connect", connect],
     ["status", status],

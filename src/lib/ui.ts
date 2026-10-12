@@ -9,9 +9,16 @@ export function formatRelativeTime(value: string | null): string {
   if (minutes > 0 && hours < 24) return `${hours}h ago`;
   const days = Math.round(hours / 24);
   if (minutes > 0 && days < 7) return `${days}d ago`;
+  return formatCalendarDate(value);
+}
+
+export function formatCalendarDate(value: string | null): string {
+  if (!value) return "No date";
+  if (!Number.isFinite(Date.parse(value))) return "Unknown date";
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",
+    timeZone: "UTC",
   }).format(new Date(value));
 }
 
@@ -24,6 +31,8 @@ export function formatDate(value: string | null): string {
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "UTC",
+    timeZoneName: "short",
   }).format(date);
 }
 

@@ -1,5 +1,26 @@
 import { expect, test } from "@playwright/test";
 
+test("search metadata and compatible CSP protect public and private pages", async ({
+  page,
+  request,
+}) => {
+  const response = await page.goto("/");
+  expect(response?.headers()["content-security-policy"]).toContain(
+    "object-src 'none'",
+  );
+  const canonical = await page
+    .locator('link[rel="canonical"]')
+    .getAttribute("href");
+  expect(new URL(canonical!).href).toBe("https://inb0x.my/");
+  expect((await request.get("/robots.txt")).status()).toBe(200);
+  expect((await request.get("/sitemap.xml")).status()).toBe(200);
+  await page.goto("/dashboard");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    "noindex, nofollow",
+  );
+});
+
 test("product previews and evidence walkthrough teach without provider calls", async ({
   page,
 }) => {
