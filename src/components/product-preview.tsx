@@ -73,7 +73,7 @@ export function ProductPreview() {
         <span className="preview-fixture">Fictional demo workspace</span>
       </div>
       <div className="preview-image" id="product-image">
-        <picture key={view.image.src}>
+        <picture key={view.image.src} className="preview-frame">
           <source
             media="(max-width: 480px)"
             srcSet={view.mobileImage.src}

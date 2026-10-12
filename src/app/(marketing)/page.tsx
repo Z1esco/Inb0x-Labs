@@ -4,6 +4,9 @@ import { EmailWalkthrough } from "@/components/email-walkthrough";
 import { Icon } from "@/components/icons";
 import { MarketingHeader } from "@/components/marketing-header";
 import { ProductPreview } from "@/components/product-preview";
+import { HeroCorrespondence } from "@/components/hero-correspondence";
+import { MarketingMotion } from "@/components/marketing-motion";
+import { ReplyExample } from "@/components/reply-example";
 import "./marketing.css";
 
 export const metadata: Metadata = {
@@ -19,36 +22,61 @@ export default function LandingPage() {
         Skip to content
       </a>
       <MarketingHeader />
+      <MarketingMotion />
       <main id="main-content" tabIndex={-1}>
         <section
           className="site-hero site-container"
           aria-labelledby="landing-title"
         >
-          <h1 id="landing-title">
-            Make room for
-            <br /> what needs you.
-          </h1>
-          <p>
-            Email holds decisions, deadlines and requests.
-            <br className="hero-linebreak" /> Inb0x brings them into focus. You
-            decide what happens next.
-          </p>
-          <div className="site-cta-row">
-            <Link className="desk-button desk-button-ink" href="/dashboard">
-              Open the demo <Icon name="arrow" />
-            </Link>
-            <a className="site-secondary-action" href="#method">
-              See how it works <Icon name="chevron" />
-            </a>
+          <div className="hero-copy" data-reveal>
+            <p className="site-eyebrow">Email, edited into decisions.</p>
+            <h1 id="landing-title">
+              Make room for
+              <br /> <span>what needs you.</span>
+            </h1>
+            <p>
+              Email holds decisions, deadlines and requests.
+              <br className="hero-linebreak" /> Inb0x brings them into focus.
+              You decide what happens next.
+            </p>
+            <div className="site-cta-row">
+              <Link className="desk-button desk-button-ink" href="/dashboard">
+                Open the demo <Icon name="arrow" />
+              </Link>
+              <a className="site-secondary-action" href="#method">
+                See how it works <Icon name="chevron" />
+              </a>
+            </div>
+            <p className="hero-reassurance">
+              <Icon name="check" /> Try fictional email. No Google connection
+              needed.
+            </p>
           </div>
-          <p className="hero-reassurance">
-            <Icon name="check" /> Try fictional email. No Google connection
-            needed.
-          </p>
+          <HeroCorrespondence />
+        </section>
+        <section
+          className="site-product site-container"
+          aria-labelledby="product-title"
+          data-reveal
+        >
+          <div className="product-stage-intro">
+            <div>
+              <p className="site-eyebrow">Inside your attention desk</p>
+              <h2 id="product-title">
+                Less searching.
+                <br />
+                <span>More understanding.</span>
+              </h2>
+            </div>
+            <p>
+              Move from the morning briefing to the original thread and a
+              considered reply. Explore the actual interface below.
+            </p>
+          </div>
           <ProductPreview />
         </section>
 
-        <section className="site-problem site-container">
+        <section className="site-problem site-container" data-reveal>
           <h2>
             The work is in your email.
             <br /> The inbox makes you look for it.
@@ -65,11 +93,14 @@ export default function LandingPage() {
           id="method"
           aria-labelledby="method-title"
         >
-          <div className="site-section-intro">
-            <h2 id="method-title">
-              From a conversation
-              <br /> to a clear next step.
-            </h2>
+          <div className="site-section-intro" data-reveal>
+            <div>
+              <p className="site-eyebrow">A clearer way through</p>
+              <h2 id="method-title">
+                From a conversation
+                <br /> to a clear next step.
+              </h2>
+            </div>
             <p>
               Read the original. Understand the finding. Choose the action.
               Follow one email through the process.
@@ -83,7 +114,8 @@ export default function LandingPage() {
           aria-labelledby="evidence-title"
         >
           <div className="site-container site-evidence-layout">
-            <div className="site-evidence-copy">
+            <div className="site-evidence-copy" data-reveal>
+              <p className="site-eyebrow">Keep the source in sight</p>
               <h2 id="evidence-title">
                 Understanding,
                 <br /> with something
@@ -98,7 +130,7 @@ export default function LandingPage() {
                 Read a thread in the demo <Icon name="arrow" />
               </Link>
             </div>
-            <div className="evidence-reading">
+            <div className="evidence-reading" data-reveal>
               <h3>What deserves a closer look?</h3>
               <dl>
                 <div>
@@ -140,25 +172,9 @@ export default function LandingPage() {
           className="site-reply site-container"
           aria-labelledby="reply-title"
         >
-          <div className="reply-example">
-            <div className="reply-example-header">
-              <Icon name="copy" />
-              <strong>Reply Studio</strong>
-              <span>Illustrative draft</span>
-            </div>
-            <blockquote>
-              Thanks for sharing the proposal. I’ll review it and get back to
-              you before the deadline.
-            </blockquote>
-            <p>Review commitments and facts before copying.</p>
-            <div className="reply-example-footer">
-              <span>
-                <Icon name="check" /> Copy-only
-              </span>
-              <span>Nothing sent</span>
-            </div>
-          </div>
-          <div className="site-reply-copy">
+          <ReplyExample />
+          <div className="site-reply-copy" data-reveal>
+            <p className="site-eyebrow">A reply that sounds like you</p>
             <h2 id="reply-title">
               Find the words.
               <br /> Keep the final say.
@@ -183,7 +199,8 @@ export default function LandingPage() {
           className="site-patterns site-container"
           aria-labelledby="patterns-title"
         >
-          <div>
+          <div data-reveal>
+            <p className="site-eyebrow">Beyond the next email</p>
             <h2 id="patterns-title">
               A little perspective
               <br /> on the bigger picture.
@@ -228,7 +245,8 @@ export default function LandingPage() {
           aria-labelledby="boundary-title"
         >
           <div className="site-container site-trust-layout">
-            <div>
+            <div data-reveal>
+              <p className="site-eyebrow">Permission is a boundary</p>
               <h2 id="boundary-title">Your inbox stays yours.</h2>
               <p>
                 Google sign-in and Gmail authorization are separate. Connect
@@ -316,7 +334,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="site-final-cta site-container">
+        <section className="site-final-cta site-container" data-reveal>
+          <p className="site-eyebrow">Your next decision starts here</p>
           <h2>
             Give the important
             <br /> work some room.
@@ -338,10 +357,17 @@ export default function LandingPage() {
             Inb0x Labs
           </Link>
           <p>Email, edited into decisions.</p>
+          <p className="footer-description">
+            A little less inbox.
+            <br />A little more perspective.
+          </p>
         </div>
         <nav aria-label="Footer navigation">
+          <span className="footer-nav-title">Explore Inb0x</span>
           <a href="#product">Product</a>
           <a href="#boundary">Privacy & controls</a>
+          <a href="#method">How it works</a>
+          <Link href="/dashboard">Fictional demo</Link>
           <Link href="/login">Sign in</Link>
           <a href="https://github.com/Z1esco/Inb0x-Labs">
             Project & documentation

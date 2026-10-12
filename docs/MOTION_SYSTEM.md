@@ -22,3 +22,14 @@ and charts stay still so the desk remains calm.
 Use opacity and small transforms, never fake progress, looping decoration, expensive blur, or animation
 that delays interaction. `prefers-reduced-motion: reduce` disables nonessential movement and smooth
 scrolling while preserving visible state changes.
+
+## Marketing refinement
+
+Marketing chapters may enter once with an 18px translation and opacity over 540ms.
+One observer controls these entrances; animation handles, observers and preference
+listeners are cleaned up. Reduced-motion changes cancel active animations immediately.
+Product images, walkthrough answers and prewritten reply tones transition over 220–300ms.
+The mobile menu uses 220ms opacity/translation: it is visible immediately on opening,
+inert immediately on closing, then hidden after its dismissal. Escape restores trigger
+focus. There are no scroll handlers, timers, autoplay or animation dependencies.
+Operational reading surfaces retain the restrained motion rules above.

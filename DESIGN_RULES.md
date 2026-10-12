@@ -57,7 +57,8 @@ data came from a real mailbox.
 
 The V2 implementation extends this authority with Spenza's transferable structure, not its
 branding. Use a 1240px marketing container, 24px minimum mobile gutters, 48–112px section
-spacing, a centered 46–90px product statement, a wide actual-interface stage and varied
+spacing, an asymmetric 37–70px marketing statement, a source-to-decision composition,
+a wide actual-interface stage and varied
 evidence, reply, insights, trust and FAQ chapters. The marketing heading can reach 90px;
 operational page titles remain bounded at 64px. Use original Inb0x product captures with
 matching mobile sources, clearly labelled fictional. No borrowed artwork or social proof.
@@ -66,6 +67,12 @@ The source-to-action walkthrough is an explanatory client island. It never calls
 or creates tasks. Keep static content server-rendered; selection, disclosures and keyboard
 feedback use small local state. No timers, scroll listeners or animation dependencies.
 Use the existing semantic palette and typefaces; marketing CSS is scoped to product-site.
+
+The premium marketing refinement uses a contained sticky header, explicit product modes,
+an illustrative reply-tone selector and a left-aligned conversion section. See
+`docs/PREMIUM_MARKETING_PLAN.md`. Local examples make no provider requests. Marketing
+entrances use one IntersectionObserver and short opacity/transform animations; content
+remains visible without JavaScript, and reduced motion cancels active entrances.
 
 Attention counts and descriptions must follow actual returned data, including zero and one.
 Stored thread totals are not “threads that can wait”. Scale volume bars to the largest count;
