@@ -46,17 +46,18 @@ and preserve frontend work outside the requested scope.
 
 ## 5. Git workflow
 
-The founder explicitly requested **one branch, `main`, and solo development** on 12 October 2026.
-Develop and the previous stacked draft PRs are historical references. Keep current work on main;
-do not split it into new feature branches or PRs. Preserve history and unrelated working-tree changes.
-Never force push or rewrite shared history. Use Conventional Commits and deterministic checks.
+The founder's later 12 October stabilization request supersedes earlier main-only development.
+Use a feature branch from the latest complete approved application and a draft PR for review.
+Remote main is incomplete until the owner approves the recovery merge. Preserve history and
+unrelated working-tree changes; never force push. Use Conventional Commits and deterministic checks.
 
 Before changes: fetch and inspect branch/PR state, local changes, rules and relevant architecture.
 Before finishing: run format/lint/typecheck/tests/build, npm run check, relevant browser tests,
-production audit and secret/diff review. Local main commits are authorized. **Publishing main is a
+production audit and secret/diff review. **Publishing or merging main is a
 separate release action** because GitHub/Vercel may automatically deploy Production. The current
 authorization permits automatic Previews only; finish a concrete verified candidate before seeking
-Production authorization. Do not bypass this boundary by changing Vercel or GitHub settings.
+Production authorization. Main also triggers Supabase production synchronization. Do not bypass
+this boundary by changing Vercel, Supabase or GitHub settings. See `docs/RELEASE_RECOVERY.md`.
 
 ## 6. Security rules
 

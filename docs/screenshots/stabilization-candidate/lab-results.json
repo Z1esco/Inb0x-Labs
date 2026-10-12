@@ -1,0 +1,103 @@
+{
+  "capturedAt": "2026-10-12T06:49:21.781Z",
+  "base": "http://127.0.0.1:3100",
+  "mode": "Read-only fictional demo; single lab samples, not field Web Vitals",
+  "results": [
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 204,
+      "lcpMs": 936,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Make room for what needs you.",
+      "measuredResourceBytes": 290124,
+      "errors": []
+    },
+    {
+      "route": "/login",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 89,
+      "lcpMs": 60,
+      "cls": 0,
+      "overflow": false,
+      "heading": "One sign-in.Two separatepermissions.",
+      "measuredResourceBytes": 276432,
+      "errors": []
+    },
+    {
+      "route": "/dashboard",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 208,
+      "lcpMs": 172,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Today, edited.",
+      "measuredResourceBytes": 252480,
+      "errors": []
+    },
+    {
+      "route": "/inbox/proposal-approval",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 184,
+      "lcpMs": 152,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Approval needed: Aurora proposal",
+      "measuredResourceBytes": 252529,
+      "errors": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 127,
+      "lcpMs": 812,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Make room for what needs you.",
+      "measuredResourceBytes": 351752,
+      "errors": []
+    },
+    {
+      "route": "/login",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 101,
+      "lcpMs": 68,
+      "cls": 0,
+      "overflow": false,
+      "heading": "One sign-in.Two separatepermissions.",
+      "measuredResourceBytes": 276429,
+      "errors": []
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 133,
+      "lcpMs": 108,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Today, edited.",
+      "measuredResourceBytes": 252484,
+      "errors": []
+    },
+    {
+      "route": "/inbox/proposal-approval",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 162,
+      "lcpMs": 164,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Approval needed: Aurora proposal",
+      "measuredResourceBytes": 252533,
+      "errors": []
+    }
+  ]
+}

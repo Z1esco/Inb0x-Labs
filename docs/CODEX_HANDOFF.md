@@ -1,58 +1,63 @@
-# Codex development handoff · Inb0x Labs
+# Codex development handoff — Inb0x Labs
 
-**Owner:** Solo developer. **Working branch:** main only, explicitly confirmed 12 October 2026.
-**Product:** Inbox Zero AI by Inb0x Labs. **Domain:** inb0x.my; DNS/live release not verified.
-
-## Current state
-
-Local main consolidates the previous application, documentation, dependency security and dark
-attention-workbench candidate history, plus the V2 Spenza-inspired product website. Older draft
-PRs #16–20 remain unmerged historical records. Do not create another branch or PR stack unless
-the founder requests it. Do not rewrite or delete old remote history as a side effect.
-
-The original Downloads checkout contains pre-existing tracked deletions. Preserve them. Current
-work is in the attached managed worktree; inspect git worktree list and git status before editing.
-The local main candidate has not been pushed to origin. Publishing main may automatically deploy
-Production; the founder has authorized automatic Preview deployments only. Finish local verification
-and present the concrete candidate before seeking Production release authorization.
+Owner: solo founder. Product: Inbox Zero AI by Inb0x Labs. Domain: https://inb0x.my.
+The later 12 October 2026 stabilization request supersedes older main-only development.
 
 ## Start here
 
-1. Read AGENTS.md, PROJECT_RULES.md, DESIGN_RULES.md, docs/OWNERSHIP.md and relevant architecture.
-2. Read V2_FRONTEND_PLAN.md for the current brief, reference research, skill provenance and scope.
-   Read QA_2026-10-12.md for current local verification and remaining release gates.
-3. Inspect local status, remote refs and historical PRs; preserve unrelated work and existing history.
-4. Follow DESIGN_RULES.md as the single visual authority. DESIGN_SYSTEM.md describes implementation.
-5. Run npm run check and relevant Playwright tests with fictional data. Report fresh results and gaps.
-6. Review docs/DOMAIN_DEPLOYMENT.md and the beta register before any hosted release.
+Read AGENTS.md, PROJECT_RULES.md, scoped instructions, STABILIZATION_REPORT.md and
+RELEASE_RECOVERY.md. Preserve DESIGN_RULES.md and the approved premium marketing motion.
+Inspect status, refs and PRs before editing; use the latest complete approved application
+as a feature-branch base. Never force-push or discard unrelated work.
 
-## Implemented V2 frontend
+## Preserved application and deployment
 
-The product website has responsive navigation, actual desktop/phone product captures, a selectable
-source-to-action example, evidence/reply/insights stories, a factual read-only trust ledger, FAQ and
-demo/sign-in paths. Static composition remains server-rendered; small client islands handle selection
-and disclosure. No new runtime dependency or provider call is introduced.
+- Approved design: cda3eff200818fddc567c517f8161f5395246096 on codex/premium-marketing-experience;
+  a588d78 remains an ancestor. PR #21 is retained.
+- Production artifact: 3yL2j31cougWxjPp1eF9LB19RQgV, source cda3eff, Ready. The owner promoted
+  it separately; this stabilization work does not replace it.
+- Remote main remains incomplete at 95e56fa. Main recovery is an owner-approved release,
+  not a routine push or branch rename.
+- Candidate: codex/production-stabilization. Review its focused fixes against cda3eff and
+  the full application recovery diff against main.
+- The original Downloads checkout has pre-existing deletions. Do not reset it. Work is
+  in the attached managed worktree; verify paths before commands.
 
-The dashboard derives its queue description from data, including empty and singular states; its
-stored-thread total no longer implies that every other thread can wait. Dashboard and Insights share
-proportional volume bars with real zero heights and explicit count/date labels. Insights avoids blanket
-claims about email urgency. Task and saved-reply deletion ask for confirmation; task editing is labelled.
+## Candidate corrections and verification
 
-## Preserve these boundaries
+The candidate fixes UTC/date hydration, recent relative-time hydration races, Google
+identity-scope aliases and extra-scope rejection, safe identity callbacks, demo Gmail
+callback isolation, stale Preview redirects, limiter retention and self-resetting demo
+budgets. It pins Node 22.x and adds compatible CSP, public SEO metadata and Preview/private
+noindex behavior. API contracts and the approved design remain intact.
 
-No Gmail send, draft creation, archive, delete, labels, read-state mutations, attachment downloads,
-background analysis, automatic reply generation or silent task acceptance. Keep Supabase auth,
-ownership, RLS, encrypted tokens, rate limits, quotas, grounding, input bounds, contracts and API client.
-Email remains inert text. Real errors never fall back to fixtures. No paid or live-provider routine tests.
+Formatting, lint, TypeScript, 248 unit/integration tests, build and 38 E2E checks passed
+locally. Re-run relevant checks for new edits. Project .npmrc disables install hooks;
+optional native packages suffice for the application build. Supabase CLI's installer
+is not automatically executed; review any explicit rebuild before using it.
+Do not run npm audit fix --force to hide the known development-only advisory chain.
 
-No backend, API, contract, schema, migration or provider configuration change belongs to this V2 pass.
-Hosted auth/RLS/provider verification, durable burst limiting, secret rotation confirmation, legal
-identity and commercial spending decisions remain separate production-readiness gates.
+## Hosted boundaries
 
-## Working style
+Vercel Production and Supabase GitHub production synchronization both track main.
+A main merge can affect both systems. Supabase automatic PR database branching is disabled.
+Do not merge/push main, promote/roll back, change hosted settings, apply migrations,
+modify DNS/billing or activate integrations without explicit owner approval.
 
-Inspect, implement narrowly, verify actual behavior, review the diff and commit on main. Do not split
-a solo task by developer role. Keep reports concise and evidence-based. Local demo checks do not prove
-hosted auth, real provider behavior, physical-device accessibility or production readiness. Do not
-publish main, change DNS, purchase services, run destructive migrations, alter license/visibility or
-claim release without the applicable explicit authorization.
+Production stays DEMO_MODE=true and NEXT_PUBLIC_APP_URL=https://inb0x.my. Live health
+reports database/OpenAI/Google OAuth unconfigured. The correct Inb0x Supabase project is
+dsohdhwjzsxuppjbynxs; Spenza is outside scope. Read-only metadata verified RLS, narrow
+grants, server-only quota RPCs and six matching migrations. Real two-user/session/account
+lifecycle and provider tests remain unverified. Auth URLs still name old Preview/local callbacks.
+
+Gmail is read-only; replies are copy-only. No sending, Gmail drafts, mailbox mutation,
+attachment downloads, automatic analysis, paid test traffic or silent task acceptance.
+Email remains inert text. Never log secrets, prompts, message content or provider detail.
+
+## Owner approval gates
+
+See RELEASE_RECOVERY.md for branch protection, exact callbacks, Hobby commercial-use
+considerations, mail/DNS concerns, real-mode setup and rollback. The index proposal is
+outside supabase/migrations and was not applied. Distributed burst limiting and scheduled
+retention remain real-mode gates. Production still exhibits the example-thread hydration
+error until the owner approves the corrected candidate. Demo tests do not approve release.

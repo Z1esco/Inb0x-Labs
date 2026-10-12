@@ -1,6 +1,9 @@
 # Ownership and AI development workflow
 
-**Operating model (confirmed 12 October 2026): Solo developer + coding agents, one branch: main.** The founder explicitly superseded the V2 brief's two-developer workflow: “use main only, im a solo dev, dont separate anything. use one branch”. Backend and frontend remain code boundaries, not separate human owners or delivery branches.
+**Operating model: Solo founder + coding agents.** The later 12 October stabilization request
+requires safe feature branches, draft PRs and explicit Production approval. Earlier main-only
+guidance is superseded for this release workflow. Backend and frontend remain logical code
+boundaries, not separate human owners. Current recovery authority: `RELEASE_RECOVERY.md`.
 
 ## Accountable owner
 
@@ -20,9 +23,9 @@ These are **review boundaries**, not ownership restrictions on the founder. An a
 
 ## Branches and release gates
 
-- `main`: the single current development branch. Local main includes the previous candidate history; this does not establish a production launch.
+- `main`: approval-gated Production branch. Remote main is incomplete; the recovery PR must be reviewed before merging because both Vercel and Supabase synchronize from main.
 - `develop`, feature branches and PRs #16–20: retained historical work. Do not force-update, close or delete remote history as a side effect.
-- No new feature branches or PRs unless the founder requests them.
+- Feature branches and draft PRs are authorized for stabilization; never merge or promote without explicit founder approval.
 - Run checks and preserve a reviewable diff before local commits. Publishing main may trigger Production; Preview-only authorization does not authorize that release.
 - Before a public beta: demo validation, cross-user isolation, hosted OAuth/scope review, billing limits, security and privacy checks, deployment and rollback rehearsals.
 
