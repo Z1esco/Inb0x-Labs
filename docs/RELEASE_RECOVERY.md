@@ -1,5 +1,11 @@
 # Main recovery, release gate and rollback
 
+**Execution update:** [FREE_TIER_RELEASE.md](FREE_TIER_RELEASE.md) supersedes the proposed
+protection, automatic-domain-assignment and missing-backup states below. Main protection is
+applied, automatic Production domain assignment is disabled, and an encrypted logical backup
+passed an isolated local restore. Commercial public launch remains blocked by Hobby policy.
+The older preserved-state and rollback artifact details below remain useful history.
+
 ## Preserved state
 
 - Approved application: `cda3eff200818fddc567c517f8161f5395246096` on

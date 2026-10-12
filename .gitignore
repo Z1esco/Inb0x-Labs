@@ -15,3 +15,9 @@ artifacts-*.png
 supabase/.temp/
 supabase/.branches/
 client_secret_*.json
+.inb0x-backups/
+*.sql.enc
+*.dump.enc
+*.pgdump
+*.backup
+*.key.dpapi

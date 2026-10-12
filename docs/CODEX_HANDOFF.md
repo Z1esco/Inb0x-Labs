@@ -3,6 +3,11 @@
 Owner: solo founder. Product: Inbox Zero AI by Inb0x Labs. Domain: https://inb0x.my.
 The later 12 October 2026 stabilization request supersedes older main-only development.
 
+Latest execution authority and evidence: [FREE_TIER_RELEASE.md](FREE_TIER_RELEASE.md).
+The founder authorized non-paid preparation: main protection is applied, automatic Vercel
+Production domain assignment is disabled, and a private encrypted database backup passed a
+local isolated restore. No merge/promotion occurred. Commercial Hobby launch remains blocked.
+
 ## Start here
 
 Read AGENTS.md, PROJECT_RULES.md, scoped instructions, STABILIZATION_REPORT.md and
@@ -33,8 +38,8 @@ noindex behavior. API contracts and the approved design remain intact.
 
 Formatting, lint, TypeScript, 248 unit/integration tests, build and 38 E2E checks passed
 locally. Re-run relevant checks for new edits. Project .npmrc disables install hooks;
-optional native packages suffice for the application build. Supabase CLI's installer
-is not automatically executed; review any explicit rebuild before using it.
+optional native packages suffice for the application build. The installed Supabase 2.109.1
+CLI runs through its Node entrypoint and was verified without enabling install hooks.
 Do not run npm audit fix --force to hide the known development-only advisory chain.
 
 ## Hosted boundaries
