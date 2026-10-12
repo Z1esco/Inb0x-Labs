@@ -1,0 +1,107 @@
+{
+  "capturedAt": "2026-10-12T06:46:41.417Z",
+  "base": "https://inb0x.my",
+  "mode": "Read-only fictional demo; single lab samples, not field Web Vitals",
+  "results": [
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 280,
+      "lcpMs": 1624,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Make room for what needs you.",
+      "measuredResourceBytes": 297301,
+      "errors": []
+    },
+    {
+      "route": "/login",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 157,
+      "lcpMs": 116,
+      "cls": 0,
+      "overflow": false,
+      "heading": "One sign-in.Two separatepermissions.",
+      "measuredResourceBytes": 283210,
+      "errors": []
+    },
+    {
+      "route": "/dashboard",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 467,
+      "lcpMs": 436,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Today, edited.",
+      "measuredResourceBytes": 256961,
+      "errors": []
+    },
+    {
+      "route": "/inbox/proposal-approval",
+      "width": 390,
+      "status": 200,
+      "navigationMs": 426,
+      "lcpMs": 396,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Approval needed: Aurora proposal",
+      "measuredResourceBytes": 257146,
+      "errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 171,
+      "lcpMs": 1428,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Make room for what needs you.",
+      "measuredResourceBytes": 329961,
+      "errors": []
+    },
+    {
+      "route": "/login",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 141,
+      "lcpMs": 112,
+      "cls": 0,
+      "overflow": false,
+      "heading": "One sign-in.Two separatepermissions.",
+      "measuredResourceBytes": 283208,
+      "errors": []
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 462,
+      "lcpMs": 440,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Today, edited.",
+      "measuredResourceBytes": 256965,
+      "errors": []
+    },
+    {
+      "route": "/inbox/proposal-approval",
+      "width": 1440,
+      "status": 200,
+      "navigationMs": 432,
+      "lcpMs": 404,
+      "cls": 0,
+      "overflow": false,
+      "heading": "Approval needed: Aurora proposal",
+      "measuredResourceBytes": 257141,
+      "errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    }
+  ]
+}

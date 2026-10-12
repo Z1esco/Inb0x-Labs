@@ -1,2 +1,139 @@
-# Inb0x-Labs
-An AI-powered inbox that summarizes emails, extracts tasks, prioritizes what matters, and helps you achieve Inbox Zero.
+<div align="center">
+
+<img src="public/logo/inb0x-labs-logo.png" alt="Inb0x Labs" width="420" />
+
+# Inb0x · Inbox Zero AI
+
+**Email, edited into decisions.**
+
+A read-only Gmail intelligence workspace that helps you find important conversations, understand why they matter, capture accepted tasks, and prepare replies you copy yourself.
+
+**A product by Inb0x Labs · Independent SaaS · Founder-led · Pre-release**
+
+**Official domain acquired:** `inb0x.my` (Exabytes). Hosting, DNS, HTTPS and application availability remain unverified; this is not yet a public launch.
+
+[Product](#product) · [Safety](#privacy-and-user-control) · [Architecture](#architecture) · [Local demo](#run-the-demo) · [Roadmap](#roadmap) · [Security](SECURITY.md)
+
+</div>
+
+---
+
+## Product
+
+Inb0x transforms information overload into a calm attention workbench. It prioritizes persisted email threads, summarizes evidence, identifies possible deadlines, proposes actions, and prepares reviewable drafts. **Nothing is sent or changed in Gmail.**
+
+| Capability                     | Experience                                                                   | Boundary                                              |
+| ------------------------------ | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Priority inbox                 | Focus on high-impact conversations and response needs                        | Existing saved and analyzed threads                   |
+| Explainable analysis           | Summaries, priority reasons, supporting excerpts, confidence and uncertainty | Explicit user-triggered analysis                      |
+| Deadline and action extraction | Review dates and suggested next steps                                        | Uncertain dates remain marked for review              |
+| Task ledger                    | Create, track, complete and reopen tasks                                     | AI suggestions become tasks **only after acceptance** |
+| Reply Studio                   | Generate drafts with tone and length choices                                 | **Copy only**; no sending or Gmail draft creation     |
+| Insights                       | Trends, usage, inbox health and completed work                               | Persisted, bounded workspace metrics                  |
+| Deterministic demo             | Explore fictional inbox data without external credentials                    | Never silently substitutes for real-mode errors       |
+
+## Current status
+
+**Pre-release software.** The founder confirmed solo development on **one branch, main**, on 12 October 2026. The previous application, security and attention-workbench candidate history is consolidated locally on main with the Spenza-inspired V2 product website. Publishing main is a separate Production action; the current authorization permits automatic Previews only. See [V2 implementation and research](docs/V2_FRONTEND_PLAN.md) and the dated QA reports for evidence and remaining release gates.
+
+Real-mode Supabase, Google OAuth/Gmail, OpenAI and hosted deployment require current environment-specific verification. This repository does **not** claim general availability, an independent security audit, Google verification, or a live production release.
+
+- Domain/DNS and future deployment: [docs/DOMAIN_DEPLOYMENT.md](docs/DOMAIN_DEPLOYMENT.md)
+- Product and engineering roadmap: [docs/STARTUP_ROADMAP.md](docs/STARTUP_ROADMAP.md)
+- Codex development instructions: [docs/CODEX_HANDOFF.md](docs/CODEX_HANDOFF.md)
+- Frontend rules: [DESIGN_RULES.md](DESIGN_RULES.md)
+- Deployment gates: [docs/PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md)
+- Detailed security model: [docs/SECURITY.md](docs/SECURITY.md)
+
+### Candidate screenshots
+
+Actual local Chromium captures using fictional demo data, 11 October 2026. These are candidate UI evidence, not a hosted release or real mailbox.
+
+![Dark attention workbench dashboard](docs/screenshots/dashboard-1440.png)
+
+[Mobile inbox](docs/screenshots/inbox-390.png) · [Thread and source evidence](docs/screenshots/thread-1440.png) · [Copy-only reply review](docs/screenshots/drafts-1440.png)
+
+## Privacy and user control
+
+Inb0x requests **Gmail read-only** authorization for its mailbox connection. It must never send, delete, archive, relabel, mark email as read, create Gmail drafts, download attachments, or trigger autonomous mail actions.
+
+Analysis and draft generation are explicit actions, not background activities. Suggested tasks are not created automatically. Email is treated as untrusted content; AI evidence, warnings, and uncertain claims must remain visible. Provider credentials and tokens stay server-side. See [SECURITY.md](SECURITY.md).
+
+## Architecture
+
+| Layer              | Stack                                                       |
+| ------------------ | ----------------------------------------------------------- |
+| Web                | Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4 |
+| Identity and data  | Supabase Auth, PostgreSQL, Row Level Security               |
+| Mailbox connection | Google OAuth 2.0, Gmail API (`gmail.readonly`)              |
+| AI                 | OpenAI Responses API, structured outputs, Zod validation    |
+| Testing            | Vitest, React Testing Library, Playwright, ESLint, Prettier |
+| Deployment target  | Vercel                                                      |
+
+```text
+src/app/                  Marketing, auth, protected application, API routes
+src/components/           Shared and domain-specific user interface
+src/server/               Trusted services, provider integrations and repositories
+src/lib/api-client.ts     Typed browser-to-API boundary
+src/types/contracts.ts    Public application contracts
+src/mock/                 Deterministic fictional demo data
+supabase/                 Database migrations, policies and tests
+docs/                     Architecture, security, setup and release procedures
+```
+
+Protected routes include `/dashboard`, `/inbox`, `/inbox/[threadId]`, `/tasks`, `/drafts`, `/insights`, and `/settings`. The landing page and sign-in experience have separate routes. Do not invent functionality that the existing contracts do not support.
+
+## Run the demo
+
+Requirements: **Node.js 20.9+**, npm, and Git. Use main for current development. The local consolidated main candidate has not been published; a fresh remote clone will not contain it until that release action is authorized.
+
+```bash
+git clone https://github.com/Z1esco/Inb0x-Labs.git
+cd Inb0x-Labs
+git switch main
+npm ci
+cp .env.example .env.local
+# Set DEMO_MODE=true in .env.local
+npm run dev
+```
+
+Open http://localhost:3000. On Windows PowerShell, replace the copy command with `Copy-Item .env.example .env.local`.
+
+Demo mode is fictional and deterministic and does not require live Gmail, OpenAI or Supabase credentials where fixture mode is supported. For real-mode configuration follow [docs/SETUP.md](docs/SETUP.md), [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) and [docs/GOOGLE_OAUTH.md](docs/GOOGLE_OAUTH.md). Never commit `.env.local`, tokens or provider secrets.
+
+## Quality and development
+
+```bash
+npm run format:check
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run check
+```
+
+The full check combines formatting, lint, typecheck, tests and build. Browser, hosted-provider, and production-security verification are separate release gates. The existence of CI or previous test results is not evidence that a new change has passed.
+
+**Solo-founder workflow:** one accountable developer and one branch, main. Keep changes scoped and locally reviewable; preserve history and run checks. AI coding tools do not approve production deployments or destructive migrations. Existing draft PRs are retained as history; no new split workflow is required. Read [AGENTS.md](AGENTS.md), [PROJECT_RULES.md](PROJECT_RULES.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Roadmap
+
+- [x] Secure application foundation, contracts and deterministic demo
+- [x] Read-only Gmail integration, on-demand analysis, accepted tasks and copy-only drafts implemented in code
+- [x] Dashboard, inbox, tasks, drafts, insights and settings routes implemented
+- [x] Complete the approved premium attention workbench and V2 product website locally
+- [x] Revalidate automated checks and fictional demo journeys; see [current QA](docs/QA_2026-10-12.md)
+- [ ] Verify hosted Supabase isolation, a dedicated Gmail account and real OpenAI flows
+- [ ] Configure and verify `inb0x.my` DNS, HTTPS and preview/production mapping when approved
+- [ ] Complete privacy, consent-screen and release-readiness checks
+- [ ] Deploy a limited beta only after explicit release approval
+
+See [the detailed roadmap](docs/STARTUP_ROADMAP.md) for sequencing and exit criteria.
+
+## Ownership, security and license
+
+**Inb0x Labs is operated by a solo founder.** Architecture, delivery, security and release decisions remain owner-approved; Codex is a development tool, not an independent maintainer. See [docs/OWNERSHIP.md](docs/OWNERSHIP.md).
+
+Report vulnerabilities privately using [SECURITY.md](SECURITY.md). Do not disclose real email content, tokens or exploit details in public issues.
+
+**License:** This repository currently carries the [MIT License](LICENSE). The permission grant is broader than the proprietary license used by some commercial startups; changing the license requires an intentional decision, not a cosmetic GitHub refresh.
