@@ -106,8 +106,9 @@ unreviewed fork or local dependency patch is used to hide the finding.
    This candidate adds no migration and has no declared Edge Functions or Storage buckets.
    Supabase production synchronization should be a no-op; stop on any unexpected pending SQL.
 4. Use a normal merge commit to preserve ancestry. No reset, force push, branch deletion or
-   unrelated PR closure. A main merge still builds Production and invokes Supabase.
-5. Inspect build and synchronization logs. Verify a Production-context build with DEMO_MODE=true,
+   unrelated PR closure. A main merge still invokes Supabase. The candidate's Git deployment
+   hold prevents automatic Vercel builds; do not remove it until hosting eligibility is resolved.
+5. On approved eligible hosting, inspect build and synchronization logs. Verify a Production-context build with DEMO_MODE=true,
    NEXT_PUBLIC_APP_URL=https://inb0x.my and no live-provider credentials. Do not promote a Preview
    artifact as a substitute for checking Production-context behavior.
 6. Smoke-test home, login, dashboard, inbox/thread, tasks, replies, insights and settings;
