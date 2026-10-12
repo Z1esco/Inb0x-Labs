@@ -8,6 +8,15 @@ import { Icon } from "@/components/icons";
 export function MarketingHeader() {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
+  const header = useRef<HTMLElement>(null);
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 800px)");
+    const sync = () => setCompact(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
   useEffect(() => {
     if (!open) return;
     function closeOnEscape(event: KeyboardEvent) {
@@ -17,10 +26,17 @@ export function MarketingHeader() {
       }
     }
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    function closeOutside(event: PointerEvent) {
+      if (!header.current?.contains(event.target as Node)) setOpen(false);
+    }
+    document.addEventListener("pointerdown", closeOutside);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("pointerdown", closeOutside);
+    };
   }, [open]);
   return (
-    <header className="site-header">
+    <header className="site-header" ref={header}>
       <div className="site-container site-header-inner">
         <Link className="site-brand" href="/" aria-label="Inb0x Labs home">
           <Image
@@ -49,6 +65,7 @@ export function MarketingHeader() {
           id="site-navigation"
           className={`site-navigation${open ? " is-open" : ""}`}
           aria-label="Site navigation"
+          inert={compact && !open}
           onClick={() => setOpen(false)}
         >
           <a href="#product" tabIndex={0}>
@@ -60,11 +77,11 @@ export function MarketingHeader() {
           <a href="#boundary" tabIndex={0}>
             Privacy
           </a>
-          <Link className="site-nav-demo" href="/dashboard" tabIndex={0}>
-            Open the demo
-          </Link>
           <Link className="site-nav-signin" href="/login" tabIndex={0}>
-            Sign in <Icon name="arrow" />
+            Sign in
+          </Link>
+          <Link className="site-nav-demo" href="/dashboard" tabIndex={0}>
+            Open the demo <Icon name="arrow" />
           </Link>
         </nav>
       </div>

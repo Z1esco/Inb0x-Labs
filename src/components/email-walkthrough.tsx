@@ -55,44 +55,46 @@ export function EmailWalkthrough() {
           className="walkthrough-result"
           aria-live="polite"
         >
-          {step === 0 ? (
-            <>
-              <Icon name="inbox" />
-              <h3>A request inside a conversation</h3>
-              <p>
-                There’s a decision to make and a time attached. Inb0x helps you
-                find both without losing the original wording.
-              </p>
-              <span className="example-boundary">
-                Analysis starts when you ask.
-              </span>
-            </>
-          ) : step === 1 ? (
-            <>
-              <Icon name="search" />
-              <h3>Verify the date</h3>
-              <p>
-                “By 5:00 PM tomorrow” gives a relative deadline. This excerpt
-                doesn’t establish the date or timezone. Review the full message
-                and confirm both before scheduling the task.
-              </p>
-              <span className="example-boundary">
-                A source excerpt, not a guarantee.
-              </span>
-            </>
-          ) : (
-            <>
-              <Icon name="tasks" />
-              <h3>A suggestion until you accept</h3>
-              <p>
-                Review and approve the Aurora proposal. This becomes a task only
-                after you choose Accept task in the thread.
-              </p>
-              <Link className="text-action" href="/inbox/proposal-approval">
-                Try task acceptance in the demo <Icon name="arrow" />
-              </Link>
-            </>
-          )}
+          <div key={step} className="walkthrough-answer">
+            {step === 0 ? (
+              <>
+                <Icon name="inbox" />
+                <h3>A request inside a conversation</h3>
+                <p>
+                  There’s a decision to make and a time attached. Inb0x helps
+                  you find both without losing the original wording.
+                </p>
+                <span className="example-boundary">
+                  Analysis starts when you ask.
+                </span>
+              </>
+            ) : step === 1 ? (
+              <>
+                <Icon name="search" />
+                <h3>Verify the date</h3>
+                <p>
+                  “By 5:00 PM tomorrow” gives a relative deadline. This excerpt
+                  doesn’t establish the date or timezone. Review the full
+                  message and confirm both before scheduling the task.
+                </p>
+                <span className="example-boundary">
+                  A source excerpt, not a guarantee.
+                </span>
+              </>
+            ) : (
+              <>
+                <Icon name="tasks" />
+                <h3>A suggestion until you accept</h3>
+                <p>
+                  Review and approve the Aurora proposal. This becomes a task
+                  only after you choose Accept task in the thread.
+                </p>
+                <Link className="text-action" href="/inbox/proposal-approval">
+                  Try task acceptance in the demo <Icon name="arrow" />
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <p className="walkthrough-note">

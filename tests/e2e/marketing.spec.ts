@@ -84,3 +84,63 @@ test("mobile marketing navigation is keyboard reachable and closes on Escape and
   await expect(page).toHaveURL(/#method$/);
   await expect(page.locator("#method")).toBeInViewport();
 });
+
+test("reply tones stay local and closed mobile navigation cannot take focus", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/api/")) requests.push(request.url());
+  });
+  await page.goto("/");
+  const menu = page.getByRole("navigation", {
+    name: "Site navigation",
+    includeHidden: true,
+  });
+  await expect(menu).toHaveAttribute("inert", "");
+  await page.getByRole("button", { name: "Warm", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText(
+    "Thanks for putting this together",
+  );
+  await page.getByRole("button", { name: "Direct", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText(
+    "I’ll review the proposal",
+  );
+  await expect(page.getByText("Nothing sent", { exact: true })).toBeVisible();
+  expect(requests).toEqual([]);
+  await page.getByRole("button", { name: "Open site navigation" }).click();
+  await expect(menu).not.toHaveAttribute("inert", "");
+  await page.locator(".hero-letter").click();
+  await expect(menu).toHaveAttribute("inert", "");
+});
+
+test("reduced motion disables marketing movement and content works without JavaScript", async ({
+  page,
+  browser,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Warm", exact: true }).click();
+  expect(
+    await page
+      .locator(".reply-wording blockquote")
+      .evaluate((node) => getComputedStyle(node).animationName),
+  ).toBe("none");
+  expect(
+    await page.evaluate(
+      () => getComputedStyle(document.documentElement).scrollBehavior,
+    ),
+  ).toBe("auto");
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: { width: 390, height: 844 },
+  });
+  const staticPage = await context.newPage();
+  await staticPage.goto("/");
+  await expect(staticPage.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(
+    staticPage.getByRole("link", { name: "Open the demo", exact: true }).last(),
+  ).toBeVisible();
+  await context.close();
+});
